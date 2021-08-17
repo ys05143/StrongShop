@@ -5,21 +5,42 @@ import Icon  from "react-native-vector-icons/Ionicons";
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import SearchModal from './SearchModal';
+import AppWindow from '../constants/AppWindow';
 
+const WIDTH = AppWindow.width;
+///////////////////////////////
 const IntroView = styled.View`
-    flex: 3;
+    flex: 2;
     border: 1px solid #ff0000;
     justify-content: center;
     align-items: center;
     padding: 5px;
 `;
+const Intro = styled.View`
+    width: 80%;
+`;
 const ContentView = styled.View`
-    flex: 7;
+    flex: 5;
     border: 1px solid #00ff00;
     align-items : center;
     justify-content: space-between;
 `;
-const Intro = styled.View``;
+const IntroText = styled.Text`
+    font-size: ${WIDTH*0.09}px;
+`;
+const BtnView = styled.View`
+    width: 100%;
+    height: 80px;
+`;
+const Btn = styled.TouchableOpacity`
+    border-radius: 50px;
+    background-color: #B2EBF4;
+    width: 120px;
+    height: 60px;
+    align-items : center;
+    justify-content: center;
+`;
+///////////////////////////////////
 const SearchBar = styled.TouchableOpacity`
     background-color: #D5D5D5;
     width: 90%;
@@ -39,18 +60,6 @@ const Result = styled.View`
     flex: 1;
     align-items : center;
     justify-content: space-around;
-`;
-const BtnView = styled.View`
-    width: 100%;
-    height: 80px;
-`;
-const Btn = styled.TouchableOpacity`
-    border-radius: 50px;
-    background-color: #B2EBF4;
-    width: 120px;
-    height: 60px;
-    align-items : center;
-    justify-content: center;
 `;
 const ModalView=styled.View`
     flex: 1;
@@ -72,8 +81,8 @@ function PackageScreen_2 (props) {
             <TotalView>
                 <IntroView>
                     <Intro>
-                        <Text style={{fontSize: 35}}>시공을 원하시는</Text>
-                        <Text style={{fontSize: 35, marginTop: 10}}>차량을 입력해주세요.</Text>
+                        <IntroText>시공을 원하시는</IntroText>
+                        <IntroText style={{marginTop: 10}}>차량을 입력해주세요.</IntroText>
                     </Intro>
                 </IntroView>
                 <ContentView>
@@ -112,7 +121,7 @@ function PackageScreen_2 (props) {
                         </View>
                     </ModalView>
             </Modal>
-                </>
+        </>
     );
 }
 

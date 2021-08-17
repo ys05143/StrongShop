@@ -9,6 +9,8 @@ import MainScreen from './Main/MainScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
+import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
+import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import Temp from './Temp';
 
 const Button = styled.TouchableOpacity`
@@ -39,6 +41,10 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>}
         {/* 신차패키지 3 */}
         {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>}
+        {/* 신차패키지 4 */}
+        {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
+        {/* 신차패키지 5 */}
+        {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

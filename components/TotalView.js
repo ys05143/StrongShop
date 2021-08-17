@@ -9,6 +9,7 @@ const Total = styled.SafeAreaView`
     width: ${WIDTH}px;
     height: ${HEIGHT}px;
     background-color: white;
+    border: 1px solid #ff0000;
 `;
 const AllWindow = styled.View`
     flex: 1;
