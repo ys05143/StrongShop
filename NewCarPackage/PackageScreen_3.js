@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import styled from 'styled-components';
+import { Button } from 'react-native-paper';
 import TotalView from '../components/TotalView';
 import AppWindow from '../constants/AppWindow';
 import Row from '../components/Row';
@@ -83,13 +84,13 @@ function PackageScreen_3(props) {
         setUnderCoatingExpand(bool);
     }
 
-    const [PDFChoose, setPDFChoose] = React.useState(false);
-    const [PDFExpand, setPDFExpand] = React.useState(false);
-    function getPDFChoose(bool){
-        setPDFChoose(bool);
+    const [PPFChoose, setPPFChoose] = React.useState(false);
+    const [PPFExpand, setPPFExpand] = React.useState(false);
+    function getPPFChoose(bool){
+        setPPFChoose(bool);
     }
-    function getPDFExpand(bool){
-        setPDFExpand(bool);
+    function getPPFExpand(bool){
+        setPPFExpand(bool);
     }
 
     const [UnderDeafeningChoose, setUnderDeafeningChoose] = React.useState(false);
@@ -127,10 +128,10 @@ function PackageScreen_3(props) {
                             getExpand={getUnderCoatingExpand} 
                             choose={UnderCoatingChoose} 
                             expand={UnderCoatingExpand}>{'언더코팅'}</Select>
-                    <Select getChoose={getPDFChoose} 
-                            getExpand={getPDFExpand} 
-                            choose={PDFChoose} 
-                            expand={PDFExpand}>{'PDF'}</Select>
+                    <Select getChoose={getPPFChoose} 
+                            getExpand={getPPFExpand} 
+                            choose={PPFChoose} 
+                            expand={PPFExpand}>{'PPF'}</Select>
                     <Select getChoose={getUnderDeafeningChoose} 
                             getExpand={getUnderDeafeningExpand} 
                             choose={UnderDeafeningChoose} 
@@ -138,12 +139,8 @@ function PackageScreen_3(props) {
                 </SelectView>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Btn>
-                            <Text>이전</Text>
-                        </Btn>
-                        <Btn>
-                            <Text>다음</Text>
-                        </Btn>
+                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>다음</Button>
                     </Row>
                 </BtnView>
             </ContentView>

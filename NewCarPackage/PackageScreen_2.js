@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text, Image, StyleSheet, Modal, View } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
+import { Button } from 'react-native-paper';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import SearchModal from './SearchModal';
@@ -97,12 +98,8 @@ function PackageScreen_2 (props) {
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Btn>
-                                <Text>취소</Text>
-                            </Btn>
-                            <Btn>
-                                <Text>다음</Text>
-                            </Btn>
+                            <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>다음</Button>
                         </Row>
                     </BtnView>
                 </ContentView>

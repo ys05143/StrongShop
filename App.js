@@ -11,6 +11,8 @@ import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
+import ShopScreen_1 from './Shop/ShopScreen_1';
+import DetailGallery from './Shop/DetailGallery';
 import Temp from './Temp';
 
 const Button = styled.TouchableOpacity`
@@ -45,6 +47,10 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
         {/* 신차패키지 5 */}
         {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
+        {/* 업체페이지 5 */}
+        {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
+        {/* 업체 작업갤러리 상세 */}
+        {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

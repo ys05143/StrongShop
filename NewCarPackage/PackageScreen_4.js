@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
@@ -77,12 +78,8 @@ function PackageScreen_4(props){
                 </InputView>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Btn>
-                            <Text>이전</Text>
-                        </Btn>
-                        <Btn>
-                            <Text>다음</Text>
-                        </Btn>
+                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>다음</Button>
                     </Row>
                 </BtnView>
             </ContentView>
