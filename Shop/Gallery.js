@@ -10,89 +10,89 @@ const HEIGHT = AppWindow.height;
 //shopName 의 gallery를 받아와야함 
 const DATA = [{
     id: 1,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png', '../resource/Sonata.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
 },{
     id: 2,
-    thumbnail : require('../resource/Sonata.png'),
-    images : ['../resource/Sonata.png', '../resource/Avante.png', '../resource/Sonata2.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 },{
     id: 3,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
 },{
     id: 4,
-    thumbnail : require('../resource/Sonata.png'),
-    images : ['../resource/Sonata.png', '../resource/Avante.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 },{
     id: 5,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png', '../resource/Sonata.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
 },{
     id: 6,
-    thumbnail : require('../resource/Sonata.png'),
-    images : ['../resource/Sonata.png', '../resource/Avante.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 },{
     id: 7,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png', '../resource/Sonata.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
 },{
     id: 8,
-    thumbnail : require('../resource/Sonata.png'),
-    images : ['../resource/Sonata.png', '../resource/Avante.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 },{
     id: 9,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png', '../resource/Sonata.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
 },{
     id: 10,
-    thumbnail : require('../resource/Sonata.png'),
-    images : ['../resource/Sonata.png', '../resource/Avante.png'],
-},{
-    id: 11,
-    thumbnail : require('../resource/Avante.png'),
-    images : ['../resource/Avante.png', '../resource/Sonata.png'],
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 }];
 
 const ImageView = styled.TouchableOpacity`
     width: ${WIDTH/3}px;
     height: ${WIDTH/3}px;
     background-color: #ffffff;
+    padding: 1px;
 `;
-const ContentView = styled.View`
-    height: ${HEIGHT*2/3}px;
+const Total = styled.View`
     width: 100%;
-    position: absolute;
-    background-color: #ffffff;
+    height: 100%;
+    align-items: center;
 `;
 
 function Gallery(props){
-    const [choose, setChoose]=React.useState(null);
+    
 
     const renderItem = ({ item }) => {
         
         return(
-            <ImageView onPress={()=>{setChoose(item);}}>
-                <Image style={{height:'100%',width:'100%'}} source={item.thumbnail} resizeMode='stretch'/>
+            <ImageView onPress={()=>{props.navigation.navigate("DetailGallery", {contents:item.contents});}}>
+                <Image style={{height:'100%',width:'100%',}} source={{uri:item.thumbnail}}  resizeMode='stretch'/>
             </ImageView>
         );
     };
 
     return(
-        <>
+        <Total>
             <FlatList
                 data={DATA}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 numColumns={3}
-                style={{position: 'absolute'}}
                 />
-                {choose !== null && 
-            <ContentView>
-                <Image style={{height:'100%',width:'100%'}} source={choose.thumbnail} resizeMode='stretch'/>
-                <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{setChoose(null)}} style={{position: 'absolute', marginTop: 5}}></Icon>
-            </ContentView>}
-        </>
+        </Total>
     );
 }
 

@@ -10,6 +10,9 @@ import AppWindow from '../constants/AppWindow';
 import Description from '../components/Description';
 import ViewHeight from '../constants/ViewHeight';
 import StatusBarHeight from '../constants/StatusBarHeight';
+import TotalView from '../components/TotalView';
+//constants
+import Color from '../constants/Color';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -48,8 +51,16 @@ const RegisterView = styled.View`
 const ProcessImg = styled.View`
     border-radius: 50px;
     border: 1px solid #000000;
-    width: ${HEIGHT*0.1}px;
-    height: ${HEIGHT*0.1}px;
+    width: ${WIDTH*0.15}px;
+    height: ${WIDTH*0.15}px;
+`;
+const ProcessText = styled.Text`
+    font-size:${WIDTH*0.15*0.23}px;
+`;
+const ProcessTextView = styled.View`
+    width: ${WIDTH*0.15}px;
+    justify-content: center;
+    align-items: center;
 `;
 const Arrow = styled.View`
     justify-content: center;
@@ -58,8 +69,8 @@ const Arrow = styled.View`
     margin-right: 5px;
 `;
 const SingleProcess = styled.View`
-    justify-content: center;
     align-items: center;
+    margin: 2px;
 `;
 const CurrentBid = styled.TouchableOpacity`
     background-color: #e5e5e5;
@@ -85,7 +96,7 @@ const Total = styled.View`
 
 function PackageScreen_1 (props) {
     return(
-        <Total>
+        <TotalView TotalView color={'white'} notchColor={'white'}>
             <DescriptionView>
                 <Swiper autoplay={true} activeDotColor={'#000000'}>
                     <Description image={require('../resource/Temp.png')}>신차 패키지란?</Description>
@@ -98,58 +109,71 @@ function PackageScreen_1 (props) {
             </DescriptionView>
             <ContentView>
                 <ProcessView>
-                    <Text style={{marginTop: 10, fontSize: 15, marginLeft: 5}}>👉신차 패키지를 받는 과정👈</Text>
+                    <Text style={{marginTop: 5, fontSize: 15, marginLeft: 5}}>👉신차 패키지를 받는 과정👈</Text>
                     <Row style={{flexWrap:'wrap', marginLeft: 10, marginTop: 5}}>
-                        <SingleProcess>
-                            <ProcessImg/>
-                            <Text>차량 등록</Text>
-                        </SingleProcess>
                         <Row>
-                            <Arrow>
-                            <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
-                            </Arrow>
                             <SingleProcess>
                                 <ProcessImg/>
-                                <Text>시공 선택</Text>
+                                <ProcessTextView>
+                                    <ProcessText>차량 등록</ProcessText>
+                                </ProcessTextView>
                             </SingleProcess>
+                            <Arrow>
+                                <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
+                            </Arrow>
                         </Row>
                         <Row>
-                            <Arrow>
-                            <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
-                            </Arrow>
                             <SingleProcess>
                                 <ProcessImg/>
-                                <Text>요구사항 작성</Text>
+                                <ProcessTextView>
+                                    <ProcessText>시공 선택</ProcessText>
+                                </ProcessTextView>
                             </SingleProcess>
+                            <Arrow>
+                                <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
+                            </Arrow>
                         </Row>
                         <Row>
-                            <Arrow>
-                            <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
-                            </Arrow>
                             <SingleProcess>
                                 <ProcessImg/>
-                                <Text>입찰</Text>
+                                <ProcessTextView>
+                                    <ProcessText>요구사항 작성</ProcessText>
+                                </ProcessTextView>
                             </SingleProcess>
+                            <Arrow>
+                                <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
+                            </Arrow>
                         </Row>
                         <Row>
-                            <Arrow>
-                            <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
-                            </Arrow>
                             <SingleProcess>
                                 <ProcessImg/>
-                                <Text>업체 선정 및 문의</Text>
+                                <ProcessTextView>
+                                    <ProcessText>입찰</ProcessText>
+                                </ProcessTextView>
                             </SingleProcess>
+                            <Arrow>
+                                <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
+                            </Arrow>
                         </Row>
                         <Row>
-                            <Arrow>
-                            <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
-                            </Arrow>
                             <SingleProcess>
                                 <ProcessImg/>
-                                <Text>시공 시작</Text>
+                                <ProcessTextView>
+                                    <ProcessText>업체 선정 및 문의</ProcessText>
+                                </ProcessTextView>
+                            </SingleProcess>
+                            <Arrow>
+                                <Icon name="chevron-forward-outline" size={25} color={'black'}></Icon>
+                            </Arrow>
+                        </Row>
+                        <Row>
+                            <SingleProcess>
+                                <ProcessImg/>
+                                <ProcessTextView>
+                                    <ProcessText>시공 시작</ProcessText>
+                                </ProcessTextView>
                             </SingleProcess>
                         </Row>
-                        
                     </Row>
                 </ProcessView>
                 <BidView>
@@ -173,7 +197,7 @@ function PackageScreen_1 (props) {
                     </Register>
                 </RegisterView>
             </ContentView>
-        </Total>
+        </TotalView>
       
     );
 }

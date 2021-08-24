@@ -40,9 +40,12 @@ const IconView = styled.TouchableOpacity`
 `;
 
 function SearchModal(props){
-    const [text, setText] = React.useState();
+    const [text, setText] = React.useState(props.isResult);
     function sendModal(){
         props.getModal(false);
+    }
+    function sendText(){
+        props.getValue(text);
     }
     return (
         <Total>
@@ -57,7 +60,8 @@ function SearchModal(props){
                     <Icon name="search-outline" size={30} style={{marginRight: 5}} ></Icon>
                 </IconView>
             </SearchView>
-            <Btn onPress={()=>{sendModal();}}>
+            <Btn onPress={()=>{sendText();
+                                sendModal();}}>
                 <Text>완료</Text>
             </Btn>
         </Total>

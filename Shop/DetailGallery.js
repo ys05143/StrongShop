@@ -2,14 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text, View, SafeAreaView, Button, Image } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
+import Swiper from 'react-native-swiper';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import IntroduceShop from './IntroduceShop';
 import Gallery from './Gallery';
-import Merchandise from './MerchandiseList';
+import Merchandise from './Merchandise';
 import ReviewList from './ReviewList';
+import _ from 'lodash';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -47,17 +49,22 @@ const Btn = styled.TouchableOpacity`
 ///////////////////////////////////
   
 function DetailGallery(props){
-   
+    const [contents, setContents]=React.useState(props.route.params.contents);
     return(
-        <TotalView>
-            <ImageView>
-                <Image style={{height:'100%',width:'100%'}} source={require('../resource/Avante.png')} resizeMode='stretch'/>
-                <Icon name="chevron-back-outline" style={{position: 'absolute', marginTop: 5}} size={35} color={'white'} onPress={()=>{ props.navigation.goBack() }}></Icon>
-            </ImageView>
-            <TextView>
-
-            </TextView>
-        </TotalView>
+            <Swiper  activeDotColor={'#000000'}>
+                {_.map(contents, (item)=>{
+                    return(
+                        <TotalView key={item.page}>
+                            <ImageView>
+                                <Image style={{height:'100%',width:'100%'}} source={{uri: item.uri}} resizeMode='stretch'/>
+                                <Icon name="chevron-back-outline" style={{position: 'absolute', marginTop: 5}} size={35} color={'white'} onPress={()=>{ props.navigation.goBack() }}></Icon>
+                            </ImageView>
+                            <TextView>
+                                <Text>{item.text}</Text>
+                            </TextView>
+                        </TotalView>
+                    );})}
+            </Swiper>
     );
 }
 

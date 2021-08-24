@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,7 @@ import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
+import MapTest from './Shop/MapTest';
 import Temp from './Temp';
 
 const Button = styled.TouchableOpacity`
@@ -51,6 +52,8 @@ function App (props) {
         {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 */}
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
+        {/* 지도test */}
+        {<Stack.Screen name="MapTest" component={MapTest} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

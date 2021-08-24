@@ -5,7 +5,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Tinting_renderContent from './Tinting_renderContent';
 
-const mechadiseList= [
+const merchadiseList= [
 {
     title: 'Tinting',
 },{
@@ -28,7 +28,7 @@ const OptionName = styled.View`
     justify-content: space-between;
     align-items: center;
 `;
-const Contents = styled.ScrollView``;
+const Total = styled.ScrollView``;
 
 function Merchandise(){
     const [shopName, setShopName] = React.useState('ALL THAT CARNIVAL');
@@ -79,16 +79,16 @@ function Merchandise(){
     };
 
     return(
-        <Contents>
+        <Total>
             <Accordion
-                sections={mechadiseList}
+                sections={merchadiseList}
                 activeSections={activeSections}
                 renderHeader={_renderHeader}
                 renderContent={_renderContent}
                 onChange={_updateSections}
                 underlayColor='transparent'
                 />
-        </Contents>
+        </Total>
     )
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
 import { DefaultTheme, DataTable, List, Provider as PaperProvider } from 'react-native-paper';
 
 const theme = {
@@ -29,14 +29,6 @@ const DATA=[{
     price: 300000
 }];
 
-/*<View>
-    <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.name}
-        />
-    </View>
-*/
 
 function Tinting_renderContent(props) {
     //props로 업체 이름 전달
@@ -58,15 +50,15 @@ function Tinting_renderContent(props) {
     return(
         <View>
             <PaperProvider theme={theme}>
-            <DataTable>
-                <DataTable.Header>
-                    <DataTable.Title>{shopName}</DataTable.Title>
-                    <DataTable.Title numeric>가시광선 투과율</DataTable.Title>
-                    <DataTable.Title numeric>태양에너지 차단률</DataTable.Title>
-                    <DataTable.Title numeric>가격</DataTable.Title>
-                </DataTable.Header>
-                {DATA.map(renderItem)}
-            </DataTable>
+                <DataTable>
+                    <DataTable.Header>
+                        <DataTable.Title>{shopName}</DataTable.Title>
+                        <DataTable.Title numeric>가시광선 투과율</DataTable.Title>
+                        <DataTable.Title numeric>태양에너지 차단률</DataTable.Title>
+                        <DataTable.Title numeric>가격</DataTable.Title>
+                    </DataTable.Header>
+                    {DATA.map(renderItem)}
+                </DataTable>
             </PaperProvider>
         </View>
 

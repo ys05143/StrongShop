@@ -1,11 +1,19 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native';
 import styled from 'styled-components';
 import { Button } from 'react-native-paper';
-import TotalView from '../components/TotalView';
-import AppWindow from '../constants/AppWindow';
-import Row from '../components/Row';
+//pages
 import Select from './Select';
+import ExpandSelect from './ExpandSelect';
+//components
+import TotalView from '../components/TotalView';
+import Row from '../components/Row';
+//constants
+import AppWindow from '../constants/AppWindow';
+import Color from '../constants/Color';
+//function
+import store from '../function.js/store';
+import fetch from '../function.js/fetch';
 
 const WIDTH = AppWindow.width;
 
@@ -42,64 +50,129 @@ const Btn = styled.TouchableOpacity`
     justify-content: center;
 `;
 ///////////////////////////////////
-const SelectView = styled.View`
+const AllSelectView = styled.View`
     align-items : center;
     width: 100%;
 `;
+const InitialResult = {
+    tinting: false,
+    detailTinting: null,
+    ppf: false,
+    detailPpf: null,
+    blackbox: false,
+    glasscoating: false,
+    undercoating: false,
+    underdeafening: false,
+}
 
 function PackageScreen_3(props) {
+    
+    const [result, setResult] = React.useState(InitialResult);
+    const [start, setStart] = React.useState(false);
+
     const [TintingChoose, setTintingChoose] = React.useState(false);
     const [TintingExpand, setTintingExpand] = React.useState(false);
     function getTintingChoose(bool){
         setTintingChoose(bool);
+        const newData = result;
+        newData.tinting=bool;
+        setResult(newData);
     }
     function getTintingExpand(bool){
         setTintingExpand(bool);
-    }
-
-    const [BlackBoxChoose, setBlackBoxChoose] = React.useState(false);
-    const [BlackBoxExpand, setBlackBoxExpand] = React.useState(false);
-    function getBlackBoxChoose(bool){
-        setBlackBoxChoose(bool);
-    }
-    function getBlackBoxExpand(bool){
-        setBlackBoxExpand(bool);
-    }
-
-    const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
-    const [GlassCoatingExpand, setGlassCoatingExpand] = React.useState(false);
-    function getGlassCoatingChoose(bool){
-        setGlassCoatingChoose(bool);
-    }
-    function getGlassCoatingExpand(bool){
-        setGlassCoatingExpand(bool);
-    }
-
-    const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
-    const [UnderCoatingExpand, setUnderCoatingExpand] = React.useState(false);
-    function getUnderCoatingChoose(bool){
-        setUnderCoatingChoose(bool);
-    }
-    function getUnderCoatingExpand(bool){
-        setUnderCoatingExpand(bool);
     }
 
     const [PPFChoose, setPPFChoose] = React.useState(false);
     const [PPFExpand, setPPFExpand] = React.useState(false);
     function getPPFChoose(bool){
         setPPFChoose(bool);
+        const newData = result;
+        newData.ppf=bool;
+        setResult(newData);
     }
     function getPPFExpand(bool){
         setPPFExpand(bool);
     }
 
+    const [BlackBoxChoose, setBlackBoxChoose] = React.useState(false);
+    function getBlackBoxChoose(bool){
+        setBlackBoxChoose(bool);
+        const newData = result;
+        newData.blackbox=bool;
+        setResult(newData);
+    }
+
+    const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
+    function getGlassCoatingChoose(bool){
+        setGlassCoatingChoose(bool);
+        const newData = result;
+        newData.glasscoating=bool;
+        setResult(newData);
+    }
+
+    const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
+    function getUnderCoatingChoose(bool){
+        setUnderCoatingChoose(bool);
+        const newData = result;
+        newData.undercoating=bool;
+        setResult(newData);
+    }
+
     const [UnderDeafeningChoose, setUnderDeafeningChoose] = React.useState(false);
-    const [UnderDeafeningExpand, setUnderDeafeningExpand] = React.useState(false);
     function getUnderDeafeningChoose(bool){
         setUnderDeafeningChoose(bool);
+        const newData = result;
+        newData.underdeafening=bool;
+        setResult(newData);
     }
-    function getUnderDeafeningExpand(bool){
-        setUnderDeafeningExpand(bool);
+
+    React.useEffect( async ()=>{
+        console.log('setting Page2');
+        let order;
+        await fetch('BidOrder')
+        .then(res => {
+            order = {...res};
+            if(res !== null && res.options !== null) {
+                console.log("option's not null");
+                setResult(res.options);
+                setTintingChoose(res.options.tinting);
+                setPPFChoose(res.options.ppf);
+                setBlackBoxChoose(res.options.blackbox);
+                setGlassCoatingChoose(res.options.glasscoating);
+                setUnderCoatingChoose(res.options.undercoating);
+                setUnderDeafeningChoose(res.options.underdeafening);
+                setStart(true);
+            }
+            else{
+                setStart(true);
+            }
+        })
+        .catch(e => {
+            console.log(e);
+        });
+    },[])
+
+    async function storeOptions(){
+        let currentOrder;
+        await fetch('BidOrder')
+        .then(res => {
+            currentOrder = {...res};
+            if(currentOrder.processPage !== 3) currentOrder.processPage = 2;
+            currentOrder.options = result;
+        })
+        .catch(e => {
+            console.log(e);
+        });
+        await store('BidOrder', currentOrder);
+        props.navigation.navigate("PackageScreen_4");
+        //for check
+        await fetch('BidOrder')
+        .then(res => {
+            console.log(res);
+        })
+        .catch(e => {
+            console.log(e);
+        });
     }
 
     return(
@@ -111,36 +184,34 @@ function PackageScreen_3(props) {
                 </Intro>
             </IntroView>
             <ContentView>
-                <SelectView>
-                    <Select getChoose={getTintingChoose} 
+                {start === true ? <AllSelectView>
+                    <ExpandSelect getChoose={getTintingChoose} 
                             getExpand={getTintingExpand} 
                             choose={TintingChoose} 
-                            expand={TintingExpand}>{'틴팅'}</Select>
-                    <Select getChoose={getBlackBoxChoose} 
-                            getExpand={getBlackBoxExpand} 
-                            choose={BlackBoxChoose} 
-                            expand={BlackBoxExpand}>{'블랙박스'}</Select>
-                    <Select getChoose={getGlassCoatingChoose} 
-                            getExpand={getGlassCoatingExpand} 
-                            choose={GlassCoatingChoose} 
-                            expand={GlassCoatingExpand}>{'유리막코팅'}</Select>
-                    <Select getChoose={getUnderCoatingChoose} 
-                            getExpand={getUnderCoatingExpand} 
-                            choose={UnderCoatingChoose} 
-                            expand={UnderCoatingExpand}>{'언더코팅'}</Select>
-                    <Select getChoose={getPPFChoose} 
+                            expand={TintingExpand}
+                            name={'Tinting'}>{'틴팅'}</ExpandSelect>
+                    <ExpandSelect getChoose={getPPFChoose} 
                             getExpand={getPPFExpand} 
                             choose={PPFChoose} 
-                            expand={PPFExpand}>{'PPF'}</Select>
+                            expand={PPFExpand}
+                            name={'PPF'}>{'PPF'}</ExpandSelect>
+                    <Select getChoose={getBlackBoxChoose} 
+                            choose={BlackBoxChoose} 
+                            name={'BlackBox'}>{'블랙박스'}</Select>
+                    <Select getChoose={getGlassCoatingChoose}
+                            choose={GlassCoatingChoose} 
+                            name={'GlassCoating'}>{'유리막코팅'}</Select>
+                    <Select getChoose={getUnderCoatingChoose}  
+                            choose={UnderCoatingChoose} 
+                            name={'UnderCoating'}>{'언더코팅'}</Select>
                     <Select getChoose={getUnderDeafeningChoose} 
-                            getExpand={getUnderDeafeningExpand} 
                             choose={UnderDeafeningChoose} 
-                            expand={UnderDeafeningExpand}>{'하체방음'}</Select>
-                </SelectView>
+                            name={'UnderDeafening'}>{'하체방음'}</Select>
+                </AllSelectView> : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>다음</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {storeOptions();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                     </Row>
                 </BtnView>
             </ContentView>

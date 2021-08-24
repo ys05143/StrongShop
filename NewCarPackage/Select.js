@@ -23,29 +23,20 @@ const SelectResult = styled.View`
 `;
 
 function Select (props){
-    const [isChoose, setIsChoose] = React.useState(false);
-    const [isExpand, setIsExpand] = React.useState(false);
+    const [isChoose, setIsChoose] = React.useState(props.choose);
 
-    function sendExpand(){
-        props.getExpand(isExpand);
-        
-    }
-    function sendChoose(){
-        props.getChoose(isChoose);
+    function sendChoose(bool){
+        props.getChoose(bool);
     }
 
     return(
-        <SelectView onPress={()=>{ setIsExpand(!isExpand);
-                                sendExpand(isExpand);}}>
+        <SelectView onPress={()=>{ sendChoose(!isChoose);
+                                setIsChoose(!isChoose);}}>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <MaterialIcons onPress={()=>{ setIsChoose(!isChoose);
-                                            sendChoose(isChoose);}} name={isChoose===false?"check-box-outline-blank": "check-box"} size={35} color= 'gray'></MaterialIcons>
+                <MaterialIcons onPress={()=>{ sendChoose(!isChoose);
+                                            setIsChoose(!isChoose)}} name={isChoose===false?"check-box-outline-blank": "check-box"} size={35} color= 'gray'></MaterialIcons>
                 <SelectName>{props.children}</SelectName>
-                <SelectResult>
-                    <Text style={{color: 'gray'}}>세부사항</Text>
-                </SelectResult>
             </Row>
-            <MaterialIcons name={isExpand===false?"expand-more": "expand-less"} size={35} color= 'black'></MaterialIcons>
         </SelectView>
     )
 }

@@ -1,12 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Text, Image, StyleSheet, Modal, View } from 'react-native';
+import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
-import { Button } from 'react-native-paper';
+import { Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+//pages
+import SearchModal from './SearchModal';
+//components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
-import SearchModal from './SearchModal';
+//constants
 import AppWindow from '../constants/AppWindow';
+import Color from '../constants/Color';
+import { join } from 'lodash';
+//function
+import store from '../function.js/store';
+import fetch from '../function.js/fetch';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -43,12 +53,13 @@ const Btn = styled.TouchableOpacity`
 `;
 ///////////////////////////////////
 const SearchBar = styled.TouchableOpacity`
+    flex-direction: row;
     background-color: #D5D5D5;
     width: 90%;
     height: 50px;
     border-radius: 10px;
-    align-items : flex-end;
-    justify-content: center;
+    align-items : center;
+    justify-content: space-between;
 `;
 const ResulView = styled.View`
     width: 100%;
@@ -69,17 +80,160 @@ const ModalView=styled.View`
     background-color: rgba(0,0,0,0.5);
 `;
 
+const DATA={
+    name: 'AVANTE',
+    image: require('../resource/Avante.png'),
+};
+const BidOrderList = {
+    processPage: null,
+    carName: null,
+    options: null,
+    require: null,
+    region: null,
+};
+
 function PackageScreen_2 (props) {
-    const [result, setResult] = React.useState(true);
+    const [isResult, setIsResult] = React.useState(null); //modal로 부터 받은 차량명
     const [searchModal, setSearchModal] = React.useState(false);
+    const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
+    const [existingDialog, setExistingDialog] = React.useState(false);
+    const [start, setStart] = React.useState(false);
+    
+    const hideDialog = () => setExistingDialog(false);
+
+    React.useEffect( async ()=>{
+        console.log('setting Page1');
+        await fetch('BidOrder')
+        .then(res=>{
+            if(res !== null && res !== -1) {
+                setExistingDialog(true);
+                if(res.carName!==null){
+                    getValue(res.carName);
+                }
+            }
+        })
+        .catch(e=>{
+            console.log(e);
+        });
+    },[]);
+
+    async function CancelExisting(){
+        await AsyncStorage.removeItem('BidOrder', ()=>{
+            setIsResult(null);
+            setResult(null);
+            setExistingDialog(false);
+        });
+    }
+    async function OKExisting(){
+        
+        await fetch('BidOrder')
+        .then(res=>{
+            if(res.processPage === 1){
+                setExistingDialog(false);
+            }
+            else if(res.processPage === 2){
+                props.navigation.navigate("PackageScreen_3");
+            }
+            else if(res.processPage === 3){
+                props.navigation.navigate("PackageScreen_4")
+            }
+        })
+        .catch(e=>{
+            console.log(e);
+            setExistingDialog(false);
+        });
+    }
+
+    function PrintResult(){
+        if(isResult !== '' && isResult !== null){
+            if(result === null){
+                return(
+                    <ActivityIndicator size = 'large' color= {Color.main}/>
+                );
+            }
+            else{
+                return(
+                    <Result>
+                        <Text style={{fontSize: 50, fontWeight: 'bold'}}>{result.name}</Text>
+                        <Image source={result.image} resizeMode='cover'/>
+                    </Result>
+                );
+            }
+        }
+        else {
+            return(<></>);
+        }
+    }
 
     function getSearchModal(close){
         setSearchModal(close);
     }
+    function getValue(name){
+        setIsResult(name);
+        //modal로 받은 name으로 서버에 {이름/이미지} 요청
+        /*if(txt !== ''){
+            axios({
+                method: 'GET',
+                url: '~~~name',
+            })
+            .then(res => {
+                setResult(res.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        }*/
+        setResult(DATA);
+    }
+
+    async function storeCarName() {
+        let currentOrder = null;
+        await fetch('BidOrder')
+        .then(res => {
+            if(res !== null){
+                currentOrder = {...res};
+            }
+        })
+        .catch(e => {
+            console.log(e);
+        });
+        if(currentOrder === null){ //async에 아무것도 없을 때
+            if(result !== null){
+                let newOrder = BidOrderList;
+                newOrder.processPage = 1;
+                newOrder.carName = result.name;
+                await store('BidOrder', newOrder);
+                props.navigation.navigate("PackageScreen_3");
+            }
+            else{
+                Alert.alert(
+                    '경고',
+                    '차량을 입력해주세요.',
+                    [
+                      {text: 'OK', onPress: () => {}},
+                    ],
+                    { cancelable: false }
+                  );
+            }
+        }
+        else{
+            currentOrder.carName = result.name;
+            await store('BidOrder', currentOrder);
+            props.navigation.navigate("PackageScreen_3");
+        }
+        //for check
+        await fetch('BidOrder')
+            .then(res => {
+                console.log(res);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    }
 
     return(
-        <>
-            <TotalView>
+        <PaperProvider>
+            <TotalView TotalView color={'white'} notchColor={'white'}>
                 <IntroView>
                     <Intro>
                         <IntroText>시공을 원하시는</IntroText>
@@ -88,18 +242,16 @@ function PackageScreen_2 (props) {
                 </IntroView>
                 <ContentView>
                     <SearchBar onPress={()=>{setSearchModal(true)}}>
+                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? result.name : ''}</Text>
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>
-                        {result && <Result>
-                            <Text style={{fontSize: 50, fontWeight: 'bold'}}>AVANTE</Text>
-                            <Image source={require('../resource/Avante.png')} resizeMode='cover'/>
-                        </Result>}
+                        <PrintResult/>
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>취소</Button>
-                            <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>다음</Button>
+                            <Button mode={"contained"} onPress={() => {props.navigation.goBack()}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                         </Row>
                     </BtnView>
                 </ContentView>
@@ -114,11 +266,25 @@ function PackageScreen_2 (props) {
                 >
                     <ModalView>
                         <View style={{width: '90%'}}>
-                            <SearchModal getModal={getSearchModal}/>
+                            <SearchModal getModal={getSearchModal}
+                                        getValue={getValue}
+                                        isResult={isResult}/>
                         </View>
                     </ModalView>
             </Modal>
-        </>
+            <Portal>
+                <Dialog visible={existingDialog} onDismiss={hideDialog}>
+                    <Dialog.Content>
+                        <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button mode="outlined" onPress={() => {CancelExisting()}}>Cancel</Button>
+                        <Button mode="outlined" onPress={() => {OKExisting()}}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            
+        </PaperProvider>
     );
 }
 

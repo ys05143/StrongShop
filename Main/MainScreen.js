@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, Image, StyleSheet } from 'react-native';
 import styled from 'styled-components';
+//components
 import TotalView from '../components/TotalView';
 
 const IntroView = styled.View`
@@ -45,7 +46,7 @@ const SelectTitle = styled.Text`
 
 function MainScreen (props) {
     return (
-        <TotalView>
+        <TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
                     <Text style={{fontSize: 35}}>안녕하세요.</Text>

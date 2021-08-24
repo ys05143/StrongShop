@@ -2,10 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+//pages
+import Shop from './Shop';
+//components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
+//constants
 import AppWindow from '../constants/AppWindow';
-import Shop from './Shop';
+import Color from '../constants/Color';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -70,7 +74,7 @@ const ShopList = styled.View`
 
 function PackageScreen_5(props){
     return(
-        <TotalView>
+        <TotalView TotalView color={'white'} notchColor={'white'}>
             <TitleView>
                 <Text style={{fontSize: 30}}>참여중인 업체</Text>
                 <TimeView>
@@ -85,7 +89,7 @@ function PackageScreen_5(props){
                 </ShopList>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={"#B2EBF4"}>홈으로</Button>
+                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>홈으로</Button>
                     </Row>
                 </BtnView>
             </ContentView>
