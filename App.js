@@ -12,6 +12,7 @@ import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import ShopScreen_1 from './Shop/ShopScreen_1';
+import ShopScreen_Test from './Shop/ShopScreen_Test';
 import DetailGallery from './Shop/DetailGallery';
 import MapTest from './Shop/MapTest';
 import Temp from './Temp';
@@ -54,6 +55,8 @@ function App (props) {
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
         {/* 지도test */}
         {<Stack.Screen name="MapTest" component={MapTest} options={{headerShown:false}}/>}
+        {/* 업체 작업갤러리 상세 test */}
+        {<Stack.Screen name="ShopScreen_Test" component={ShopScreen_Test} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

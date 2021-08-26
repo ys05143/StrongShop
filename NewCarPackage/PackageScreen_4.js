@@ -9,8 +9,8 @@ import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color'
 //function
-import store from '../function.js/store';
-import fetch from '../function.js/fetch';
+import store from '../function/store';
+import fetch from '../function/fetch';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////

@@ -58,24 +58,26 @@ const OptionName = styled.TouchableOpacity`
 function Merchandise_2(){
     //shopName으로 서버에 정보 요청해서 각 페이지에 나눠줘도 됨.
     const [shopName, setShopName] = React.useState('ALL THAT CARNIVAL');
-    const [show, setShow] = React.useState('Tinting');
+    const [show, setShow] = React.useState('BlackBox');
 
     return(
-        <Total>
-            <Option horizontal={true} contentContainerStyle={{alignItems: 'center'}}>
-                {_.map(merchadiseList, (item) => {
-                    return(
-                        <OptionView key={item.title}>
-                            <OptionName style={{borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{setShow(item.title)}}>
-                                <Text style={{color: show === item.title ? Color.main : 'gray'}}>{item.name}</Text>
-                            </OptionName>
-                        </OptionView>
-                    );}
-                )}
-            </Option>
+        <>
+            <View>
+                <Option horizontal={true} contentContainerStyle={{alignItems: 'center'}}>
+                    {_.map(merchadiseList, (item) => {
+                        return(
+                            <OptionView key={item.title}>
+                                <OptionName style={{borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{setShow(item.title)}}>
+                                    <Text style={{color: show === item.title ? Color.main : 'gray'}}>{item.name}</Text>
+                                </OptionName>
+                            </OptionView>
+                        );}
+                    )}
+                </Option>
+            </View>
             {show === 'Tinting' && <TintingDetail>{shopName}</TintingDetail>}
             {show === 'BlackBox' && <BlackBoxDetail>{shopName}</BlackBoxDetail>}
-        </Total>
+        </>
     )
 }
 

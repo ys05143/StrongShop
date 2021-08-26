@@ -40,7 +40,7 @@ const IconView = styled.TouchableOpacity`
 `;
 
 function SearchModal(props){
-    const [text, setText] = React.useState(props.isResult);
+    const [text, setText] = React.useState(props.search);
     function sendModal(){
         props.getModal(false);
     }

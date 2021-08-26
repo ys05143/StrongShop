@@ -15,8 +15,8 @@ import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
 import { join } from 'lodash';
 //function
-import store from '../function.js/store';
-import fetch from '../function.js/fetch';
+import store from '../function/store';
+import fetch from '../function/fetch';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -93,7 +93,7 @@ const BidOrderList = {
 };
 
 function PackageScreen_2 (props) {
-    const [isResult, setIsResult] = React.useState(null); //modal로 부터 받은 차량명
+    const [search, setSearch] = React.useState(null); //modal로 부터 받은 차량 검색어
     const [searchModal, setSearchModal] = React.useState(false);
     const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
     const [existingDialog, setExistingDialog] = React.useState(false);
@@ -105,11 +105,8 @@ function PackageScreen_2 (props) {
         console.log('setting Page1');
         await fetch('BidOrder')
         .then(res=>{
-            if(res !== null && res !== -1) {
-                setExistingDialog(true);
-                if(res.carName!==null){
-                    getValue(res.carName);
-                }
+            if(res !== null && res.carName !== null) {               
+                getValue(res.carName);
             }
         })
         .catch(e=>{
@@ -119,7 +116,7 @@ function PackageScreen_2 (props) {
 
     async function CancelExisting(){
         await AsyncStorage.removeItem('BidOrder', ()=>{
-            setIsResult(null);
+            setSearch(null);
             setResult(null);
             setExistingDialog(false);
         });
@@ -133,9 +130,11 @@ function PackageScreen_2 (props) {
             }
             else if(res.processPage === 2){
                 props.navigation.navigate("PackageScreen_3");
+                setExistingDialog(false);
             }
             else if(res.processPage === 3){
-                props.navigation.navigate("PackageScreen_4")
+                props.navigation.navigate("PackageScreen_4");
+                setExistingDialog(false);
             }
         })
         .catch(e=>{
@@ -145,7 +144,7 @@ function PackageScreen_2 (props) {
     }
 
     function PrintResult(){
-        if(isResult !== '' && isResult !== null){
+        if(search !== '' && search !== null){ //검색을 했을 때
             if(result === null){
                 return(
                     <ActivityIndicator size = 'large' color= {Color.main}/>
@@ -169,8 +168,8 @@ function PackageScreen_2 (props) {
         setSearchModal(close);
     }
     function getValue(name){
-        setIsResult(name);
-        //modal로 받은 name으로 서버에 {이름/이미지} 요청
+        setSearch(name);
+        //modal로 받은 검색어로 서버에 {이름/이미지} 요청
         /*if(txt !== ''){
             axios({
                 method: 'GET',
@@ -250,7 +249,7 @@ function PackageScreen_2 (props) {
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {props.navigation.goBack()}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_1")}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
                             <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                         </Row>
                     </BtnView>
@@ -268,7 +267,7 @@ function PackageScreen_2 (props) {
                         <View style={{width: '90%'}}>
                             <SearchModal getModal={getSearchModal}
                                         getValue={getValue}
-                                        isResult={isResult}/>
+                                        search={search}/>
                         </View>
                     </ModalView>
             </Modal>

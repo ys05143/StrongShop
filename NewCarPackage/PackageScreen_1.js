@@ -4,6 +4,8 @@ import { Text, StyleSheet } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { ifIphoneX } from "react-native-iphone-x-helper";
+import { Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //components
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
@@ -13,6 +15,9 @@ import StatusBarHeight from '../constants/StatusBarHeight';
 import TotalView from '../components/TotalView';
 //constants
 import Color from '../constants/Color';
+//function
+import fetch from '../function/fetch';
+import store from '../function/store';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -95,8 +100,49 @@ const Total = styled.View`
 `;
 
 function PackageScreen_1 (props) {
+    const [existingDialog, setExistingDialog] = React.useState(false);
+    const [currentOrder, setCurrentOrder] = React.useState(null);
+
+    const hideDialog = () => setExistingDialog(false);
+
+    async function CheckAsync(){
+        await fetch('BidOrder')
+        .then(res=>{
+            if(res !== null){
+                setCurrentOrder(res);
+                setExistingDialog(true);
+            }
+            else{
+                props.navigation.navigate("PackageScreen_2");
+            }
+        })
+        .catch(e=>{
+            console.log(e);
+        });
+    }
+
+    async function CancelExisting(){
+        await AsyncStorage.removeItem('BidOrder', ()=>{
+            setExistingDialog(false);
+        });
+    }
+    async function OKExisting(){
+        if(currentOrder.processPage === 1){
+            props.navigation.navigate("PackageScreen_2");
+            setExistingDialog(false);
+        }
+        else if(currentOrder.processPage === 2){
+            props.navigation.navigate("PackageScreen_3");
+            setExistingDialog(false);
+        }
+        else if(currentOrder.processPage === 3){
+            props.navigation.navigate("PackageScreen_4");
+            setExistingDialog(false);
+        }
+    }
     return(
         <TotalView TotalView color={'white'} notchColor={'white'}>
+            <PaperProvider>
             <DescriptionView>
                 <Swiper autoplay={true} activeDotColor={'#000000'}>
                     <Description image={require('../resource/Temp.png')}>신차 패키지란?</Description>
@@ -192,11 +238,23 @@ function PackageScreen_1 (props) {
                     </CurrentBid>
                 </BidView>
                 <RegisterView>
-                    <Register>
+                    <Register onPress={()=>{CheckAsync();}}>
                         <Text>차량 등록하기</Text>
                     </Register>
                 </RegisterView>
             </ContentView>
+            <Portal>
+                <Dialog visible={existingDialog} onDismiss={hideDialog}>
+                    <Dialog.Content>
+                        <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button mode="outlined" onPress={() => {CancelExisting()}}>Cancel</Button>
+                        <Button mode="outlined" onPress={() => {OKExisting()}}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            </PaperProvider>
         </TotalView>
       
     );
