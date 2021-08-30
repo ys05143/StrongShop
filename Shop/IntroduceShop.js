@@ -1,13 +1,21 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text,Animated } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import axios from 'axios';
 import styled from 'styled-components';
 import { useIsFocused } from '@react-navigation/native';
+//constants
+import AppWindow from '../constants/AppWindow';
+import Color from '../constants/Color';
+
+const HEIGHT = AppWindow.height;
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 84;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const MapView = styled.View`
     width: 100%;
-    height: 200px;
+    height: 600px;
     background-color: white;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -22,6 +30,7 @@ const IntroView = styled.View`
 const Total = styled.ScrollView``;
 
 function IntroduceShop(props){
+    const scrollY = React.useRef(new Animated.Value(0)).current; 
     const P0 = {latitude: 37.547167222, longitude: 127.068899861};
     const [coord, setCoord] = React.useState(P0);
 
@@ -42,12 +51,46 @@ function IntroduceShop(props){
         }
     }, [isFocused]);
 
+    function sendScrollTurn(){
+        props.getScrollTurn(true);
+    }
 
     return(
-        <Total>
+        <Animated.ScrollView 
+        scrollEnabled={props.scrollEnabled}
+        onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
+            { useNativeDriver: true,
+              listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) props.getScrollTurn(true);;}}, // use native driver for animation: ;
+          )}>
             <IntroView>
                 <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
             </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            <IntroView>
+                <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+            </IntroView>
+            
             {isFocused && <MapView>
                 <NaverMapView style={{width: '100%', height: '100%'}}
                                     showsMyLocationButton={true}
@@ -55,7 +98,7 @@ function IntroduceShop(props){
                     <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>
                 </NaverMapView>
             </MapView>}
-        </Total>
+        </Animated.ScrollView>
     )
 
     

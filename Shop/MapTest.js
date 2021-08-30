@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text,View } from 'react-native';
+import { ScrollView, Text,View } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import axios from 'axios';
 import styled from 'styled-components';
@@ -92,16 +92,128 @@ function MapTest(props){
     
     return(
         <TotalView>
-            <Swiper activeDotColor={'#000000'}>
-                <TotalView>
-                    <Intro/>
-                    <Con/>
-                </TotalView>
-                <TotalView>
-                    <Intro2/>
-                    <Con2/>
-                </TotalView>
-            </Swiper>
+            <ScrollView>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+                <View style={{width: 300, height: 200, backgroundColor: 'red', marginBottom: 20}}>
+                    <ScrollView>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                        <Text>hello</Text>
+                    </ScrollView>
+                </View>
+            </ScrollView>
         </TotalView>
     )
 }
