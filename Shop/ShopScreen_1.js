@@ -6,7 +6,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 //pages
 import IntroduceShop from './IntroduceShop';
 import Gallery from './Gallery';
-import Merchandise from './Merchandise';
 import Merchandise_2 from './Merchandise_2';
 import ReviewList from './ReviewList';
 //components
@@ -18,6 +17,7 @@ import Color from '../constants/Color';
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
 
+const TAB_HEIGHT = 50;
 const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -29,7 +29,7 @@ const IntroView = styled.View`
     padding: 5px;
     background-color: ${Color.main};
 `;
-const Intro = styled.View`
+const Intro = styled.TouchableOpacity`
     justify-content: center;
 `;
 const ContentView = styled.View`
@@ -46,46 +46,60 @@ const IntroText = styled.Text`
 const Tab = createMaterialTopTabNavigator();
 
 function ShopScreen_1(props){
-  const [first, setFirst] = React.useState(true);
-  const [last, setLast] = React.useState(false);
-  const pan = React.useRef(new Animated.ValueXY({x: 0, y: 0})).current;
+  const [totalFirst, setTotalFirst] = React.useState(true);
+  const [Pan, setPan] = React.useState(new Animated.ValueXY({x: 0, y: 0}));
 
-  const headerTranslateY = pan.y.interpolate({
+  function setInitial(){
+    if(totalFirst !== true){
+      //setPan(new Animated.ValueXY({x: 0, y: 0}));
+      Animated.spring(
+        Pan, // Auto-multiplexed
+        { toValue: { x: 0, y: 0 },
+            useNativeDriver: true } // Back to zero
+        ).start();
+      setTotalFirst(true);
+    }
+  }
+
+  const headerTranslateY = Pan.y.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, HEADER_SCROLL_DISTANCE],
     extrapolate: 'clamp',
   });
   
   // our opacity animated from 0 to 1 and our opacity will be 0
-  const imageOpacity = pan.y.interpolate({
+  const imageOpacity = Pan.y.interpolate({
     inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE / 2, 0, +HEADER_SCROLL_DISTANCE / 2, +HEADER_SCROLL_DISTANCE],
     outputRange: [0, 0, 1, 0, 0],
     extrapolate: 'clamp',
   });
-  const imageTranslateY = pan.y.interpolate({
+  const imageTranslateY = Pan.y.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 100],
     extrapolate: 'clamp',
   });
   
   // change header title size from 1 to 0.9
-  const titleScale = pan.y.interpolate({
+  const titleScale = Pan.y.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [1, 1, 0.95],
     extrapolate: 'clamp',
   });
   // change header title y-axis
-  const titleTranslateY = pan.y.interpolate({
+  const titleTranslateY = Pan.y.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 0, 0],
     extrapolate: 'clamp',
   });
 
-  function getScrollTurn(bool){
-    setLast(bool);
+  function getPan(val){
+    setPan(val);
+  }
+  function getTotalFirst(bool){
+    setTotalFirst(bool);
   }
 
-  React.useEffect(()=>{
+  /*React.useEffect(()=>{
     setFirst(true);
   },[]);
 
@@ -139,7 +153,7 @@ function ShopScreen_1(props){
         setFirst(true);
       }
     },
-  });
+  });*/
 
     
   return(
@@ -147,8 +161,8 @@ function ShopScreen_1(props){
       <Animated.View
       style={{
         position: 'absolute',
-        transform: [{ translateY: pan.y }],
         width: '100%',
+        transform: [{ translateY: Pan.y }],
         height: HEIGHT-HEADER_MIN_HEIGHT,
         marginTop: HEADER_MAX_HEIGHT,
         zIndex: 15,
@@ -157,26 +171,16 @@ function ShopScreen_1(props){
       <Tab.Navigator style={{ paddingTop: 0}} backBehavior={'none'} screenOptions={{
                                                                                     swipeEnabled: false, 
                                                                                     tabBarIndicatorStyle: {backgroundColor: Color.main},
-                                                                                    tabBarActiveTintColor: Color.main }}>
-          <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} scrollEnabled={!first} getScrollTurn={getScrollTurn}/>}/>
-          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} scrollEnabled={!first} getScrollTurn={getScrollTurn}/>}/>
+                                                                                    tabBarActiveTintColor: Color.main,
+                                                                                    tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
+                                                                                      
+          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           
       </Tab.Navigator>
       </Animated.View>
-
-      {(first||last)&&<Animated.View
-      style={{
-        position: 'absolute',
-        transform: [{ translateY: pan.y }],
-        width: '100%',
-        backgroundColor: 'transparent',
-        height: 300,
-        marginTop: HEADER_MAX_HEIGHT,
-        zIndex: 15,
-      }}
-      {...panResponder.panHandlers}
-    >
-      </Animated.View>}
     
       <Animated.View
         style={[styles.header]}>
@@ -199,7 +203,7 @@ function ShopScreen_1(props){
         },
         ]}>
         <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{}}></Icon>
-        <Intro>
+        <Intro onPress={()=>{setInitial();}}>
           <Text style={styles.title}>ALL THAT AUTOMOBILE</Text>
         </Intro>
     </Animated.View>

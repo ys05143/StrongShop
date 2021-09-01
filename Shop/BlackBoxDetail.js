@@ -37,7 +37,7 @@ function BlackBoxDetail(props){
     const [shopName, setShopName] = React.useState(props.children);
 
     return (
-        <ScrollView style={{backgroundColor: 'white'}}>
+        <View style={{backgroundColor: 'white'}}>
             <TitleView>
                 <Title>블랙박스</Title>
             </TitleView>
@@ -48,7 +48,7 @@ function BlackBoxDetail(props){
                     );
                 })}
             </ContentView>
-        </ScrollView>
+        </View>
     );
 }
 

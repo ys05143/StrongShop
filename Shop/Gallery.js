@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Text, View, Image, Animated,ScrollView } from 'react-native';
+import { Text, View, Image, Animated,ScrollView, PanResponder } from 'react-native';
 import AppWindow from '../constants/AppWindow';
-import Icon from "react-native-vector-icons/Ionicons";
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
+
+const TAB_HEIGHT = 50;
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 60;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 //shopName 의 gallery를 받아와야함 
 const DATA = [{
@@ -108,6 +112,16 @@ const DATA = [{
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
     contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
                 {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
+},{
+    id: 21,
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
+},{
+    id: 22,
+    thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
+    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
+                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
 }];
 
 const ImageView = styled.TouchableOpacity`
@@ -118,9 +132,8 @@ const ImageView = styled.TouchableOpacity`
 `;
 const Total = styled.View`
     width: 100%;
-    height: ${HEIGHT-60}px;
+    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
     align-items: center;
-    border: 2px solid #ff0000;
 `;
 
 function Gallery(props){
@@ -134,38 +147,107 @@ function Gallery(props){
         );
     };
 
-    function sendScrollTurn(){
-        props.getScrollTurn(true);
-    }
+    const [first, setFirst] = React.useState(props.totalFirst);
+    const [last, setLast] = React.useState(false);
+    const pan = React.useRef(props.Pan).current;
 
-    /*<Animated.FlatList
-                data={DATA}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                numColumns={3}
-                scrollEnabled={props.scrollEnabled}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                    { useNativeDriver: true,
-                    listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) sendScrollTurn();}}, // use native driver for animation: ;
-                )}
-                />*/
+    React.useEffect(()=>{
+        setFirst(props.totalFirst);
+        setLast(false);
+    },[props.totalFirst]);
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+        if(first){
+            pan.setValue({
+            x: 0,
+            y: 0
+            })
+            pan.setOffset({
+            x: 0,
+            y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+            });
+        }
+        if(last){
+            pan.setValue({
+            x: 0,
+            y: 0
+            })
+            console.log(first);
+            pan.setOffset({
+                x: 0,
+                y: last === true?  -HEADER_SCROLL_DISTANCE : 0
+            });         
+        }},
+        onPanResponderMove: Animated.event([
+        null,
+        {
+            dx: pan.x,
+            dy: pan.y,
+        },
+        ],{
+            useNativeDriver: false,
+            listener: (e)=>{props.getPan(pan);}
+        }),
+        onPanResponderRelease: () => {
+        if(first){
+            Animated.spring(
+            pan, // Auto-multiplexed
+            { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
+                useNativeDriver: true } // Back to zero
+            ).start();
+            props.getTotalFirst(false);
+            //setFirst(false);
+        }
+        if(last){
+            Animated.spring(
+            pan, // Auto-multiplexed
+            { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
+                useNativeDriver: true } // Back to zero
+            ).start();
+            setLast(false);
+            props.getTotalFirst(true);
+            //setFirst(true);
+        }
+        },
+    });
+
 
     return(
         <Total>
-            <Animated.FlatList
-                data={DATA}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                numColumns={3}
-                nestedScrollEnabled={true}
-                scrollEnabled={props.scrollEnabled}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                    { useNativeDriver: true,
-                    listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) props.getScrollTurn(true);}}, // use native driver for animation: ;
-                )}
-                />
+            <Animated.View
+            style={{
+                position: 'absolute',
+                width: '100%',
+                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
+            }}
+            >
+                <Animated.FlatList
+                    data={DATA}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    numColumns={3}
+                    nestedScrollEnabled={true}
+                    scrollEnabled={true}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
+                        { useNativeDriver: true,
+                        listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) setLast(true)}}, // use native driver for animation: ;
+                    )}
+                    />
+            </Animated.View>
+            {(first||last)&&<Animated.View
+                style={{
+                position: 'absolute',
+                transform: [{ translateY: pan.y }],
+                width: '100%',
+                backgroundColor: 'tranparent',
+                height: 2*HEIGHT,
+                }}
+                {...panResponder.panHandlers}
+            >
+                </Animated.View>}
         </Total>
     );
 }

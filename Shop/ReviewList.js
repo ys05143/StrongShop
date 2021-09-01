@@ -1,15 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Text,Image, FlatList,View } from 'react-native';
+import { Text,Image, FlatList,View, Animated, PanResponder } from 'react-native';
 import AppWindow from '../constants/AppWindow';
 
 const WIDTH = AppWindow.width;
+const HEIGHT = AppWindow.height;
+
+const TAB_HEIGHT = 50;
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 60;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const Total = styled.View`
     width: 100%;
-    height: 100%;
+    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
     align-items: center;
-    padding-top: 10px;
 `;
 const ReviewView = styled.View`
     width: ${WIDTH*0.9}px;
@@ -80,7 +85,7 @@ const DATA=[{
 }];
 
 function ReviewList(props){
-
+    const scrollY = React.useRef(new Animated.Value(0)).current; 
     function renderItem({item}){
         return(
             <View style={{width: WIDTH, alignItems: 'center'}}>
@@ -101,12 +106,107 @@ function ReviewList(props){
             </View>
         );
     }
+    
+    const [first, setFirst] = React.useState(props.totalFirst);
+    const [last, setLast] = React.useState(false);
+    const pan = React.useRef(props.Pan).current;
+
+    React.useEffect(()=>{
+        setFirst(props.totalFirst);
+        setLast(false);
+    },[props.totalFirst]);
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+        if(first){
+            pan.setValue({
+            x: 0,
+            y: 0
+            })
+            pan.setOffset({
+            x: 0,
+            y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+            });
+        }
+        if(last){
+            pan.setValue({
+            x: 0,
+            y: 0
+            })
+            console.log(first);
+            pan.setOffset({
+                x: 0,
+                y: last === true?  -HEADER_SCROLL_DISTANCE : 0
+            });         
+        }},
+        onPanResponderMove: Animated.event([
+        null,
+        {
+            dx: pan.x,
+            dy: pan.y,
+        },
+        ],{
+            useNativeDriver: false,
+            listener: (e)=>{props.getPan(pan);}
+        }),
+        onPanResponderRelease: () => {
+        if(first){
+            Animated.spring(
+            pan, // Auto-multiplexed
+            { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
+                useNativeDriver: true } // Back to zero
+            ).start();
+            props.getTotalFirst(false);
+            //setFirst(false);
+        }
+        if(last){
+            Animated.spring(
+            pan, // Auto-multiplexed
+            { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
+                useNativeDriver: true } // Back to zero
+            ).start();
+            setLast(false);
+            props.getTotalFirst(true);
+            //setFirst(true);
+        }
+        },
+    });
+
 
     return(
         <Total>
-            <FlatList data={DATA}
+            <Animated.View
+            style={{
+                position: 'absolute',
+                width: '100%',
+                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
+                paddingTop: 10,
+            }}
+            >
+                <Animated.FlatList data={DATA}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}/>
+                    keyExtractor={(item) => item.id}
+                    nestedScrollEnabled={true}
+                    scrollEnabled={true}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
+                        { useNativeDriver: true,
+                        listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) setLast(true)}}, // use native driver for animation: ;
+                    )}
+                    />
+            </Animated.View>
+            {(first||last)&&<Animated.View
+                style={{
+                position: 'absolute',
+                transform: [{ translateY: pan.y }],
+                width: '100%',
+                backgroundColor: 'tranparent',
+                height: 2*HEIGHT,
+                }}
+                {...panResponder.panHandlers}
+            >
+                </Animated.View>}
         </Total>
     )
 }

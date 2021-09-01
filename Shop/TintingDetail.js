@@ -124,19 +124,18 @@ function TintingDetail(props){
     const [shopName, setShopName] = React.useState(props.children);
 
     return (
-        <ScrollView style={{backgroundColor: 'white'}}>
+        <View style={{backgroundColor: 'white'}}>
             <TitleView>
                 <Title>틴팅</Title>
             </TitleView>
             <ContentView>
                 {_.map(DATA , (item) => {
-                    console.log(item.name);
                     return(
                         <ExpandTinting item={[item]} key={item.name}></ExpandTinting>
                     );
                 })}
             </ContentView>
-        </ScrollView>
+        </View>
     );
 }
 
