@@ -5,22 +5,27 @@ import styled from 'styled-components';
 import TotalView from '../components/TotalView';
 
 const IntroView = styled.View`
+    flex: 3;
     justify-content: center;
     align-items: center;
     padding: 5px;
-    flex: 3;
-    border: 1px solid #ff0000;
 `;
-const Intro = styled.View``;
+const Intro = styled.View`
+    width: 90%;
+    height: 100%;
+    justify-content: center;
+`;
 const ContentView = styled.View`
     flex: 4;
-    border: 1px solid #00ff00;
     justify-content: space-evenly;
     align-items: center;
 `;
+const IntroText = styled.Text`
+    font-size: 35px;
+    font-family: 'NotoSansKR-Bold';
+`;
 const LoginView = styled.View`
     flex: 1;
-    border: 1px solid #0000ff;
     justify-content: center;
     align-items: center;
 `;
@@ -42,6 +47,7 @@ const Login = styled.TouchableOpacity`
 `;
 const SelectTitle = styled.Text`
     font-size: 30px;
+    font-family: 'DoHyeon-Regular';
 `;
 
 function MainScreen (props) {
@@ -49,8 +55,7 @@ function MainScreen (props) {
         <TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
-                    <Text style={{fontSize: 35}}>안녕하세요.</Text>
-                    <Text style={{fontSize: 35, marginTop: 10}}>무엇을 도와드릴까요?</Text>
+                    <IntroText>{'안녕하세요.\n찾으시는 서비스를\n선택해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>

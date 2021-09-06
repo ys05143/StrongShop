@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import _ from 'lodash';
 //pages
 import Shop from './Shop';
 //components
@@ -71,6 +72,20 @@ const ShopList = styled.View`
     border: 1px solid #0000ff;
     align-items: center;
 `;
+//현재 입찰에 참여중인 업체들
+const DATA = [{
+    id:1,
+    name: '올댓 오토모빌',
+    simpleRegion: '서울 광진',
+    bidPrice: '20,000,000',
+    bidContents: '구체 견적들',
+},{
+    id:2,
+    name: '카샵',
+    simpleRegion: '서울 금천',
+    bidPrice: '15,000,000',
+    bidContents: '견적',
+}];
 
 function PackageScreen_5(props){
     return(
@@ -84,8 +99,11 @@ function PackageScreen_5(props){
             <ContentView>
                 <Filter>-최신순</Filter>
                 <ShopList>
-                    <Shop name="올댓 카니발" simpleRegion="서울/광진" price="20,000,000"></Shop>
-                    <Shop name="대천 카샵" simpleRegion="충남/보령" price="15,000,000"></Shop>
+                    {_.map(DATA, (item)=>{
+                        return(
+                            <Shop key={item.id} name={item.name} simpleRegion={item.simpleRegion} price={item.bidPrice}></Shop>
+                        )
+                    })}
                 </ShopList>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>

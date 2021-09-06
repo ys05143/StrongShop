@@ -20,22 +20,24 @@ const WIDTH = AppWindow.width;
 ///////////////////////////////
 const IntroView = styled.View`
     flex: 2;
-    border: 1px solid #ff0000;
+    border-bottom-width: 1px;
     justify-content: center;
     align-items: center;
     padding: 5px;
 `;
 const Intro = styled.View`
-    width: 80%;
+    width: 90%;
+    height: 100%;
+    justify-content: center;
 `;
 const ContentView = styled.View`
     flex: 5;
-    border: 1px solid #00ff00;
     align-items : center;
     justify-content: space-between;
 `;
 const IntroText = styled.Text`
-    font-size: ${WIDTH*0.09}px;
+    font-size: 35px;
+    font-family: 'NotoSansKR-Bold';
 `;
 const BtnView = styled.View`
     width: 100%;
@@ -74,7 +76,7 @@ function PackageScreen_3(props) {
     const [TintingExpand, setTintingExpand] = React.useState(false);
     function getTintingChoose(bool){
         setTintingChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.tinting=bool;
         setResult(newData);
     }
@@ -86,7 +88,7 @@ function PackageScreen_3(props) {
     const [PPFExpand, setPPFExpand] = React.useState(false);
     function getPPFChoose(bool){
         setPPFChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.ppf=bool;
         setResult(newData);
     }
@@ -97,7 +99,7 @@ function PackageScreen_3(props) {
     const [BlackBoxChoose, setBlackBoxChoose] = React.useState(false);
     function getBlackBoxChoose(bool){
         setBlackBoxChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.blackbox=bool;
         setResult(newData);
     }
@@ -105,7 +107,7 @@ function PackageScreen_3(props) {
     const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
     function getGlassCoatingChoose(bool){
         setGlassCoatingChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.glasscoating=bool;
         setResult(newData);
     }
@@ -113,7 +115,7 @@ function PackageScreen_3(props) {
     const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
     function getUnderCoatingChoose(bool){
         setUnderCoatingChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.undercoating=bool;
         setResult(newData);
     }
@@ -121,19 +123,18 @@ function PackageScreen_3(props) {
     const [UnderDeafeningChoose, setUnderDeafeningChoose] = React.useState(false);
     function getUnderDeafeningChoose(bool){
         setUnderDeafeningChoose(bool);
-        const newData = result;
+        const newData = {...result};
         newData.underdeafening=bool;
         setResult(newData);
     }
 
-    React.useEffect( async ()=>{
-        console.log('setting Page2');
+    React.useEffect( ()=>{
         let order;
-        await fetch('BidOrder')
+        fetch('BidOrder')
         .then(res => {
             order = {...res};
             if(res !== null && res.options !== null) {
-                console.log("option's not null");
+                console.log('In page 3 useEffect: ', res);
                 setResult(res.options);
                 setTintingChoose(res.options.tinting);
                 setPPFChoose(res.options.ppf);
@@ -168,7 +169,7 @@ function PackageScreen_3(props) {
         //for check
         await fetch('BidOrder')
         .then(res => {
-            console.log(res);
+            console.log('In page 3 check: ', res);
         })
         .catch(e => {
             console.log(e);
@@ -179,8 +180,7 @@ function PackageScreen_3(props) {
         <TotalView>
             <IntroView>
                 <Intro>
-                    <IntroText>원하시는 시공을</IntroText>
-                    <IntroText style={{marginTop: 10}}>선택해주세요.</IntroText>
+                    <IntroText>{'원하시는 시공을\n선택해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>

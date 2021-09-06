@@ -65,9 +65,11 @@ const OptionName = styled.TouchableOpacity`
 `;
 
 function Merchandise_2(props){
-    //shopName으로 서버에 정보 요청해서 각 페이지에 나눠줘도 됨.
-    const [shopName, setShopName] = React.useState('ALL THAT CARNIVAL');
+    //props로 받은 shopName으로 서버에 그 shop의 정보 요청
+    //이후 asyncstorage 캐시도 필요할듯.
+    const [shopName, setShopName] = React.useState(props.shopName);
     const [show, setShow] = React.useState('Tinting');
+    const [tintingList, setTintingList] = React.useState(props.merchandise.tinting);
 
     const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [first, setFirst] = React.useState(props.totalFirst);
@@ -84,18 +86,18 @@ function Merchandise_2(props){
         onPanResponderGrant: () => {
         if(first){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             pan.setOffset({
-            x: 0,
-            y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+                x: 0,
+                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
             });
         }
         if(last){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             console.log(first);
             pan.setOffset({
@@ -164,9 +166,9 @@ function Merchandise_2(props){
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
                     { useNativeDriver: true,
-                    listener: (e)=>{if(e.nativeEvent.contentOffset.y <= 0) setLast(true)}}, // use native driver for animation: ;
+                    listener: (e)=>{}}, // use native driver for animation: ;
                 )}>
-                    {show === 'Tinting' && <TintingDetail>{shopName}</TintingDetail>}
+                    {show === 'Tinting' && <TintingDetail list={tintingList}></TintingDetail>}
                     {show === 'BlackBox' && <BlackBoxDetail>{shopName}</BlackBoxDetail>}
                 </Animated.ScrollView>   
             </Animated.View> 

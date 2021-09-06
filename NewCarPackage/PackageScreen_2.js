@@ -13,7 +13,6 @@ import Row from '../components/Row';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
-import { join } from 'lodash';
 //function
 import store from '../function/store';
 import fetch from '../function/fetch';
@@ -22,22 +21,23 @@ const WIDTH = AppWindow.width;
 ///////////////////////////////
 const IntroView = styled.View`
     flex: 2;
-    border: 1px solid #ff0000;
     justify-content: center;
     align-items: center;
     padding: 5px;
 `;
 const Intro = styled.View`
-    width: 80%;
+    width: 90%;
+    height: 100%;
+    justify-content: center;
 `;
 const ContentView = styled.View`
     flex: 5;
-    border: 1px solid #00ff00;
     align-items : center;
     justify-content: space-between;
 `;
 const IntroText = styled.Text`
-    font-size: ${WIDTH*0.09}px;
+    font-size: 35px;
+    font-family: 'NotoSansKR-Bold';
 `;
 const BtnView = styled.View`
     width: 100%;
@@ -80,10 +80,12 @@ const ModalView=styled.View`
     background-color: rgba(0,0,0,0.5);
 `;
 
+//서버요청을 받는 정보
 const DATA={
     name: 'AVANTE',
     image: require('../resource/Avante.png'),
 };
+//기본 입찰정보 틀
 const BidOrderList = {
     processPage: null,
     carName: null,
@@ -101,11 +103,11 @@ function PackageScreen_2 (props) {
     
     const hideDialog = () => setExistingDialog(false);
 
-    React.useEffect( async ()=>{
-        console.log('setting Page1');
-        await fetch('BidOrder')
+    React.useEffect( ()=>{
+        fetch('BidOrder')
         .then(res=>{
-            if(res !== null && res.carName !== null) {               
+            if(res !== null && res.carName !== null) {   
+                console.log('In page 2 useEffect: ', res);         
                 getValue(res.carName);
             }
         })
@@ -196,9 +198,21 @@ function PackageScreen_2 (props) {
         .catch(e => {
             console.log(e);
         });
-        if(currentOrder === null){ //async에 아무것도 없을 때
+        if(currentOrder !== null) { //asycn에 저장된 데이터 때문에 왔을 때
+            if(currentOrder.carName === result.name){
+                props.navigation.navigate("PackageScreen_3");
+            }
+            else{
+                let newOrder = {...BidOrderList};
+                newOrder.processPage = 1;
+                newOrder.carName = result.name;
+                await store('BidOrder', newOrder);
+                props.navigation.navigate("PackageScreen_3");
+            }
+        }
+        else{ //async에 저장 없을 때
             if(result !== null){
-                let newOrder = BidOrderList;
+                let newOrder = {...BidOrderList};
                 newOrder.processPage = 1;
                 newOrder.carName = result.name;
                 await store('BidOrder', newOrder);
@@ -215,15 +229,10 @@ function PackageScreen_2 (props) {
                   );
             }
         }
-        else{
-            currentOrder.carName = result.name;
-            await store('BidOrder', currentOrder);
-            props.navigation.navigate("PackageScreen_3");
-        }
         //for check
         await fetch('BidOrder')
             .then(res => {
-                console.log(res);
+                console.log('In page 2 check: ', res);
             })
             .catch(e => {
                 console.log(e);
@@ -235,8 +244,7 @@ function PackageScreen_2 (props) {
             <TotalView TotalView color={'white'} notchColor={'white'}>
                 <IntroView>
                     <Intro>
-                        <IntroText>시공을 원하시는</IntroText>
-                        <IntroText style={{marginTop: 10}}>차량을 입력해주세요.</IntroText>
+                        <IntroText>{'시공을 원하시는\n차종을 입력해주세요.'}</IntroText>
                     </Intro>
                 </IntroView>
                 <ContentView>

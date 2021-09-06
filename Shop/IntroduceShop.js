@@ -17,6 +17,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const MapView = styled.View`
     width: 100%;
+    padding: 10px 15px;
     height: 200px;
     background-color: white;
     margin-top: 10px;
@@ -25,8 +26,7 @@ const MapView = styled.View`
 const IntroView = styled.View`
     width: 100%;
     margin-top: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 10px 15px;
     background-color: white;
 `;
 const Total = styled.ScrollView``;
@@ -34,11 +34,11 @@ const Total = styled.ScrollView``;
 function IntroduceShop(props){
     const scrollY = React.useRef(new Animated.Value(0)).current; 
     const P0 = {latitude: 37.547167222, longitude: 127.068899861};
-    const [coord, setCoord] = React.useState(P0);
+    const [coord, setCoord] = React.useState(props.coord);
 
     const isFocused = useIsFocused();
  
-    React.useEffect(() => {
+    /*React.useEffect(() => {
         if (isFocused) {
             axios({
                 method: 'GET' ,
@@ -51,7 +51,7 @@ function IntroduceShop(props){
             })
             .catch(e => console.log(e) ) ;
         }
-    }, [isFocused]);
+    }, [isFocused]);*/
 
        
     const [first, setFirst] = React.useState(props.totalFirst);
@@ -68,18 +68,18 @@ function IntroduceShop(props){
         onPanResponderGrant: () => {
         if(first){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             pan.setOffset({
-            x: 0,
-            y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+                x: 0,
+                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
             });
         }
         if(last){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             console.log(first);
             pan.setOffset({
@@ -135,16 +135,16 @@ function IntroduceShop(props){
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
                     { useNativeDriver: true,
-                    listener: (e)=>{if(e.nativeEvent.contentOffset.y <= 0) setLast(true)}}, // use native driver for animation: ;
+                    listener: (e)=>{}}, // use native driver for animation: ;
                 )}>
                     <IntroView>
-                        <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
+                        <Text>{props.introduceText}</Text>
                     </IntroView>
-                    <IntroView>
-                        <Text>{'안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!'}</Text>
-                    </IntroView>
-                    {isFocused && <MapView>
-                        <NaverMapView style={{width: '100%', height: '100%'}}
+                    {isFocused && 
+                    <MapView>
+                        <Text>{'서울 광진구 '}</Text>
+                        <NaverMapView style={{width: '100%', height: '100%', marginTop: 5}}
+                                            scrollGesturesEnabled={true}
                                             showsMyLocationButton={true}
                                             center={{...coord, zoom: 16}}>
                             <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>

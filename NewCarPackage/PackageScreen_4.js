@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text, View, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
+import {Picker} from '@react-native-picker/picker';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -16,22 +17,23 @@ const WIDTH = AppWindow.width;
 ///////////////////////////////
 const IntroView = styled.View`
     flex: 2;
-    border: 1px solid #ff0000;
     justify-content: center;
     align-items: center;
     padding: 5px;
 `;
 const Intro = styled.View`
-    width: 80%;
+    width: 90%;
+    height: 100%;
+    justify-content: center;
 `;
 const ContentView = styled.View`
     flex: 5;
-    border: 1px solid #00ff00;
     align-items : center;
     justify-content: space-between;
 `;
 const IntroText = styled.Text`
-    font-size: ${WIDTH*0.09}px;
+    font-size: 35px;
+    font-family: 'NotoSansKR-Bold';
 `;
 const BtnView = styled.View`
     width: 100%;
@@ -49,29 +51,41 @@ const Btn = styled.TouchableOpacity`
 const InputView = styled.View`
     flex: 1;
     width: 100%;
-    border: 1px solid #00ff00;
     align-items: center;
     justify-content: center;
 `;
 const Input = styled.TextInput`
     width: 95%;
-    height: 90%;
+    flex: 2;
     background-color: #e5e5e5;
     border-radius: 10px;
     color: #000000;
     padding: 10px;
 `;
+const RegionView = styled.View`
+    width: 90%;
+    flex: 1;
+    margin-top: 15px;
+`;
+const PickerView = styled.View`
+    border: 1px;
+    border-radius: 10px;
+    margin-top: 5px;
+`;
 
 function PackageScreen_4(props){
-    const [text, setText] = React.useState();
+    const [text, setText] = React.useState(null);
     const [start, setStart] = React.useState(false);
+    const [selectedLanguage, setSelectedLanguage] = React.useState(null);
 
-    React.useEffect( async ()=>{
-        console.log('setting Page3');
-        await fetch('BidOrder')
+    //useEffect 내에서 async 추천 하지 않음 promise then catch 형태로 추후 수정해야함.
+    React.useEffect( ()=>{
+        fetch('BidOrder')
         .then(res=>{
-            if(res !== null && res.require !== null){
+            if(res !== null && (res.require !== null || res.region !== null)){
+                console.log('In page 4 useEffect: ', res);
                 setText(res.require);
+                setSelectedLanguage(res.region);
                 setStart(true);
             }
             else{
@@ -90,7 +104,8 @@ function PackageScreen_4(props){
         .then(res => {
             currentOrder = {...res};
             currentOrder.processPage = 3;
-            currentOrder.require = text;
+            currentOrder.require = text !==null ? text : null;
+            currentOrder.region = selectedLanguage !==null ? selectedLanguage : null;
         })
         .catch(e => {
             console.log(e);
@@ -99,7 +114,7 @@ function PackageScreen_4(props){
         //for check
         await fetch('BidOrder')
         .then(res => {
-            console.log(res);
+            console.log('In page 4 check: ', res);
         })
         .catch(e => {
             console.log(e);
@@ -111,9 +126,7 @@ function PackageScreen_4(props){
         <TotalView TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
-                    <IntroText>업체에게 전달할</IntroText>
-                    <IntroText style={{marginTop: 10}}>별도의 요구사항을</IntroText>
-                    <IntroText style={{marginTop: 10}}>입력해주세요.</IntroText>
+                    <IntroText>{'업체에게 전달할\n별도의 요구사항을\n입력해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>
@@ -124,7 +137,28 @@ function PackageScreen_4(props){
                             onChangeText={value=>setText(value)}
                             placeholder={"예) 반드시 0월 0일에 시공을 시작했으면 좋겠습니다."}
                             placeholderTextColor="gray"/>
-                </InputView> : <ActivityIndicator size = 'large' color= {Color.main}/>}
+                    
+                    <RegionView>
+                        <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
+                        <PickerView>
+                            <Picker
+                            selectedValue={selectedLanguage}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setSelectedLanguage(itemValue)
+                            }>
+                                <Picker.Item label="없음" value={null}/>
+                                <Picker.Item label="서울" value="seoul" />
+                                <Picker.Item label="대전" value="daejeon" />
+                                <Picker.Item label="대구" value="daegu" />
+                                <Picker.Item label="부산" value="busan" />
+                                <Picker.Item label="인천" value="incheon" />
+                                <Picker.Item label="광주" value="gwangju" />
+                                <Picker.Item label="제주" value="jeju" />
+                            </Picker>
+                        </PickerView>
+                    </RegionView>
+                </InputView> 
+                : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                         <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>

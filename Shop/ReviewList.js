@@ -58,7 +58,7 @@ const ContentImg = styled.View`
     overflow: hidden;
 `;
 
-const DATA=[{
+const AfterDATA=[{
     id:1,
     name: '공진우',
     images : 'https://www.netcarshow.com/Hyundai-Kona_Electric-2021-1280-03.jpg',
@@ -85,7 +85,9 @@ const DATA=[{
 }];
 
 function ReviewList(props){
+    const [shopName, setShopName] = React.useState(props.shopName);
     const scrollY = React.useRef(new Animated.Value(0)).current; 
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
     function renderItem({item}){
         return(
             <View style={{width: WIDTH, alignItems: 'center'}}>
@@ -121,18 +123,18 @@ function ReviewList(props){
         onPanResponderGrant: () => {
         if(first){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             pan.setOffset({
-            x: 0,
-            y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+                x: 0,
+                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
             });
         }
         if(last){
             pan.setValue({
-            x: 0,
-            y: 0
+                x: 0,
+                y: 0
             })
             console.log(first);
             pan.setOffset({
@@ -184,7 +186,7 @@ function ReviewList(props){
                 paddingTop: 10,
             }}
             >
-                <Animated.FlatList data={DATA}
+                <Animated.FlatList data={props.review}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                     nestedScrollEnabled={true}
@@ -192,8 +194,10 @@ function ReviewList(props){
                     onScroll={Animated.event(
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
                         { useNativeDriver: true,
-                        listener: (e)=>{if(e.nativeEvent.contentOffset.y === 0) setLast(true)}}, // use native driver for animation: ;
+                        listener: (e)=>{console.log(e.nativeEvent.contentOffset.y)}}, // use native driver for animation: ;
                     )}
+                    onRefresh={()=>{console.log("refresh")}}
+                    refreshing={isRefreshing}
                     />
             </Animated.View>
             {(first||last)&&<Animated.View
