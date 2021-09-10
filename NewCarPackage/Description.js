@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, Image } from 'react-native';
 import { ifIphoneX } from "react-native-iphone-x-helper";
 import StatusBarHeight from '../constants/StatusBarHeight';

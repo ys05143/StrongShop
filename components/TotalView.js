@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import AppWindow from '../constants/AppWindow';
 
 const WIDTH = AppWindow.width;

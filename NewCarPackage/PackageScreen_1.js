@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, StyleSheet, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Icon  from "react-native-vector-icons/Ionicons";

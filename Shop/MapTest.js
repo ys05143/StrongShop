@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, Text,View } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import axios from 'axios';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
 //constants
 import AppWindow from '../constants/AppWindow';

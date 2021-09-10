@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Animated, View } from 'react-native';
 
 const HEADER_HEIGHT = 200;

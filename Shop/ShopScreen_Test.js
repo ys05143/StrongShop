@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, View, SafeAreaView, Button, Animated, ScrollView, StyleSheet, Image, PanResponder, } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Icon from "react-native-vector-icons/Ionicons";

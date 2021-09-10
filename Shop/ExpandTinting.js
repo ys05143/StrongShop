@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text,View } from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import Accordion from 'react-native-collapsible/Accordion';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 

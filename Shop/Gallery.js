@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator, Easing } from 'react-native';
 import axios from 'axios';
 import AppWindow from '../constants/AppWindow';

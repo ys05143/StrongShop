@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, StatusBar} from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import Icon  from "react-native-vector-icons/Ionicons";
 
 const Total = styled.View`

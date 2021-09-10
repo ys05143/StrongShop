@@ -2,7 +2,7 @@ import React from 'react';
 import { Text,Animated,PanResponder,View } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import axios from 'axios';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { useIsFocused } from '@react-navigation/native';
 //constants
 import AppWindow from '../constants/AppWindow';
@@ -16,12 +16,17 @@ const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const MapView = styled.View`
+    width: 90%;
+    height: 150px;
+    background-color: white;
+    margin-top: 5px;
+`;
+const AddressView = styled.View`
     width: 100%;
-    padding: 10px 15px;
-    height: 200px;
+    height: 250px;
     background-color: white;
     margin-top: 10px;
-    margin-bottom: 10px;
+    padding: 10px 15px;
 `;
 const IntroView = styled.View`
     width: 100%;
@@ -138,18 +143,30 @@ function IntroduceShop(props){
                     listener: (e)=>{}}, // use native driver for animation: ;
                 )}>
                     <IntroView>
-                        <Text>{props.introduceText}</Text>
+                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
+                        <View style={{width: '100%', alignItems: 'center'}}>
+                            <View style={{width: '90%', marginTop: 5}}>
+                                <Text>{props.introduceText}</Text>
+                            </View>
+                        </View>
                     </IntroView>
                     {isFocused && 
-                    <MapView>
-                        <Text>{'서울 광진구 '}</Text>
-                        <NaverMapView style={{width: '100%', height: '100%', marginTop: 5}}
-                                            scrollGesturesEnabled={true}
-                                            showsMyLocationButton={true}
-                                            center={{...coord, zoom: 16}}>
-                            <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>
-                        </NaverMapView>
-                    </MapView>}
+                    <AddressView>
+                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
+                        <View style={{width: '100%', alignItems: 'center'}}>
+                            <View style={{width: '90%', marginTop: 5}}>
+                                <Text>{props.region}</Text>
+                            </View>
+                            <MapView>
+                                <NaverMapView style={{width: '100%', height: '100%'}}
+                                                    scrollGesturesEnabled={true}
+                                                    showsMyLocationButton={true}
+                                                    center={{...coord, zoom: 16}}>
+                                    <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>
+                                </NaverMapView>
+                            </MapView>
+                        </View>
+                    </AddressView>}
                 </Animated.ScrollView>
             </Animated.View>
 

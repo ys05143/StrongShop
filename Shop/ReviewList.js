@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text,Image, FlatList,View, Animated, PanResponder } from 'react-native';
 import AppWindow from '../constants/AppWindow';
 

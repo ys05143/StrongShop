@@ -1,16 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, View, SafeAreaView, Button, Image } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from 'react-native-swiper';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import IntroduceShop from './IntroduceShop';
-import Gallery from './Gallery';
-import Merchandise from './Merchandise';
-import ReviewList from './ReviewList';
 import _ from 'lodash';
 
 const WIDTH = AppWindow.width;

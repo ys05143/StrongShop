@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, Image, StyleSheet } from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 //components
 import TotalView from '../components/TotalView';
 

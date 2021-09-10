@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { View, ScrollView, Text } from 'react-native';
 import _ from 'lodash';
 import ExpandBlackBox from './ExpandBlackBox';
@@ -23,7 +23,8 @@ const TitleView = styled.View`
     padding: 10px;
 `;
 const Title = styled.Text`
-    font-size: 25px;
+    font-size: 30px;
+    font-family: 'DoHyeon-Regular';
 `;
 const ContentView = styled.View`
     padding-left: 20px;

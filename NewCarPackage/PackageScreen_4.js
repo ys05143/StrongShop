@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, View, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, View, SafeAreaView, Button, Animated, ScrollView, StyleSheet, PanResponder } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -53,6 +53,7 @@ const DATA = {
   representImg: 'https://www.bmw.co.kr/content/dam/bmw/common/all-models/4-series/convertible/2020/highlights/bmw-4-series-convertible-st-xxl.jpg.asset.1627482997959.jpg',
   introduceText: '안녕하세요 올댓오토모빌 입니다~!!\n항상 찾아주시는 고객님 감사드리고, 최선을 다하겠습니다.\n화이팅!!!',
   coord: {latitude: 37.547167222, longitude: 127.068899861},
+  region: '서울특별시 광진구 동일로30길 32',
   gallery: [{
                 id: 1,
                 thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
@@ -243,6 +244,7 @@ const Tab = createMaterialTopTabNavigator();
 function ShopScreen_1(props){
   const [totalFirst, setTotalFirst] = React.useState(true);
   const [Pan, setPan] = React.useState(new Animated.ValueXY({x: 0, y: 0}));
+  const twinkle = new Animated.Value(0);
 
   function setInitial(){
     if(totalFirst !== true){
@@ -299,61 +301,31 @@ function ShopScreen_1(props){
     setTotalFirst(bool);
   }
 
-  /*React.useEffect(()=>{
-    setFirst(true);
-  },[]);
-
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      if(first){
-        pan.setValue({
-          x: 0,
-          y: 0
-        })
-        pan.setOffset({
-          x: 0,
-          y: first === true? 0 : -HEADER_SCROLL_DISTANCE
-        });
-      }
-      if(last){
-        pan.setValue({
-          x: 0,
-          y: 0
-        })
-        console.log(first);
-          pan.setOffset({
-            x: 0,
-            y: last === true?  -HEADER_SCROLL_DISTANCE : 0
-          });         
-      }},
-    onPanResponderMove: Animated.event([
-      null,
-      {
-        dx: pan.x,
-        dy: pan.y,
-      },
-    ],{useNativeDriver: false}),
-    onPanResponderRelease: () => {
-      if(first){
-        Animated.spring(
-          pan, // Auto-multiplexed
-          { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
-            useNativeDriver: true } // Back to zero
-        ).start();
-        setFirst(false);
-      }
-      if(last){
-        Animated.spring(
-          pan, // Auto-multiplexed
-          { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
-            useNativeDriver: true } // Back to zero
-        ).start();
-        setLast(false);
-        setFirst(true);
-      }
-    },
-  });*/
+  const twinkleHelp = Animated.loop(
+    Animated.sequence([
+      Animated.timing(
+        twinkle,
+        {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }
+      ),
+      Animated.timing(
+        twinkle,
+        {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }
+      )
+    ]),
+    {
+      iterations: -1,
+      isInteraction: false,
+      useNativeDriver: true,
+    }
+  ).start();
 
     
   return(
@@ -378,7 +350,7 @@ function ShopScreen_1(props){
               transform: [{ translateY: imageTranslateY }],
             }
           ]}>
-            <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 20}}>{DATA.shopName}</Text>
+            <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{DATA.shopName}</Text>
         </Animated.View>
     </Animated.View>
     <Animated.View
@@ -388,7 +360,9 @@ function ShopScreen_1(props){
             transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
         },
         ]}>
-        <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{}}></Icon>
+        <View style={{width: 35}}>
+          <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{}}></Icon>
+        </View>
         <Animated.View
           style={[null,{
             opacity: textOpacity,
@@ -397,6 +371,9 @@ function ShopScreen_1(props){
             <Text style={styles.title}>{DATA.shopName}</Text>
           </Intro>
         </Animated.View>
+        {!totalFirst && <Animated.View style={[{marginLeft: 15}, {opacity: twinkle}]}>
+          <Text style={{color: 'white'}}>{'<- 업체명을 터치하시면\n원래상태로 돌아갑니다.'}</Text>
+        </Animated.View>}  
     </Animated.View>
     <Animated.View
       style={{
@@ -407,13 +384,13 @@ function ShopScreen_1(props){
         marginTop: HEADER_MAX_HEIGHT,
       }}
     >
-      <Tab.Navigator style={{ paddingTop: 0}} backBehavior={'none'} screenOptions={{
-                                                                                    swipeEnabled: false, 
-                                                                                    tabBarIndicatorStyle: {backgroundColor: Color.main},
-                                                                                    tabBarActiveTintColor: Color.main,
-                                                                                    tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
+      <Tab.Navigator backBehavior={'none'} screenOptions={{
+                                                            swipeEnabled: false, 
+                                                            tabBarIndicatorStyle: {backgroundColor: Color.main},
+                                                            tabBarActiveTintColor: Color.main,
+                                                            tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
                                                                                       
-          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={DATA.introduceText} coord={DATA.coord} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={DATA.introduceText} coord={DATA.coord} region={DATA.region} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} shopName={DATA.shopName} gallery={DATA.gallery} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={DATA.shopName} merchandise={DATA.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={DATA.shopName} review={DATA.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
@@ -469,6 +446,7 @@ headerBackground: {
 topBar: {
   marginTop: 10,
   height: 40,
+  width: '100%',
   alignItems: 'center',
   position: 'absolute',
   top: 0,
@@ -478,7 +456,7 @@ topBar: {
 },
 title: {
   color: 'white',
-  fontSize: 25,
+  fontSize: 30,
   fontFamily: 'DoHyeon-Regular',
 },
 avatar: {

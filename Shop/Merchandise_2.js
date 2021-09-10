@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { ScrollView, Text,View, Animated, PanResponder } from 'react-native';
 //constants
 import Color from '../constants/Color';
@@ -39,7 +39,11 @@ const merchadiseList= [
 },
 ];
 
-const Total = styled.View``;
+const Total = styled.View`
+    width: 100%;
+    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
+    align-items: center;
+`;
 
 const Option = styled.ScrollView`
     height: 70px;
@@ -139,7 +143,7 @@ function Merchandise_2(props){
     });
 
     return(
-        <>
+        <Total>
             <Animated.View
             style={{
                 position: 'absolute',
@@ -185,7 +189,7 @@ function Merchandise_2(props){
             >
             </Animated.View>}
             
-        </>
+        </Total>
     )
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, ActivityIndicator } from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Button } from 'react-native-paper';
 //pages
 import Select from './Select';

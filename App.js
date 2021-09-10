@@ -1,6 +1,6 @@
 
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon  from "react-native-vector-icons/Ionicons";

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
