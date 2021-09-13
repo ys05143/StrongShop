@@ -35,6 +35,11 @@
 		6B3A1AA4078B4653A0F11C14 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1ED1CE2EE0634510A68C9121 /* SimpleLineIcons.ttf */; };
 		86845EC75DF34FBD823D6838 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B53D77B99D88441DACF6BDC6 /* Zocial.ttf */; };
 		572C4431AAA04C448223BA77 /* DoHyeon-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99E0020714B345B59ABF8050 /* DoHyeon-Regular.ttf */; };
+		6774855D3EE6438B94CBEB2E /* EastSeaDokdo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7FEDBC2EAC74E65A9EEB346 /* EastSeaDokdo-Regular.ttf */; };
+		1478AFD9DE304CFA979A0A86 /* Jua-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4AF1D605C344245A3EC5A29 /* Jua-Regular.ttf */; };
+		345D3D2EC9FA49BF80260079 /* Sunflower-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4996DADB2282462484F9002F /* Sunflower-Bold.ttf */; };
+		65E12DCB605743C48947801F /* Sunflower-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B693A76474068A3AB3C61 /* Sunflower-Light.ttf */; };
+		AA9C65A261024B92A2DEB48D /* Sunflower-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8985719822A3474998CA8653 /* Sunflower-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +87,11 @@
 		1ED1CE2EE0634510A68C9121 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		B53D77B99D88441DACF6BDC6 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		99E0020714B345B59ABF8050 /* DoHyeon-Regular.ttf */ = {isa = PBXFileReference; name = "DoHyeon-Regular.ttf"; path = "../assets/fonts/DoHyeon-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E7FEDBC2EAC74E65A9EEB346 /* EastSeaDokdo-Regular.ttf */ = {isa = PBXFileReference; name = "EastSeaDokdo-Regular.ttf"; path = "../assets/fonts/EastSeaDokdo-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F4AF1D605C344245A3EC5A29 /* Jua-Regular.ttf */ = {isa = PBXFileReference; name = "Jua-Regular.ttf"; path = "../assets/fonts/Jua-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4996DADB2282462484F9002F /* Sunflower-Bold.ttf */ = {isa = PBXFileReference; name = "Sunflower-Bold.ttf"; path = "../assets/fonts/Sunflower-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4B2B693A76474068A3AB3C61 /* Sunflower-Light.ttf */ = {isa = PBXFileReference; name = "Sunflower-Light.ttf"; path = "../assets/fonts/Sunflower-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8985719822A3474998CA8653 /* Sunflower-Medium.ttf */ = {isa = PBXFileReference; name = "Sunflower-Medium.ttf"; path = "../assets/fonts/Sunflower-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +207,11 @@
 				1ED1CE2EE0634510A68C9121 /* SimpleLineIcons.ttf */,
 				B53D77B99D88441DACF6BDC6 /* Zocial.ttf */,
 				99E0020714B345B59ABF8050 /* DoHyeon-Regular.ttf */,
+				E7FEDBC2EAC74E65A9EEB346 /* EastSeaDokdo-Regular.ttf */,
+				F4AF1D605C344245A3EC5A29 /* Jua-Regular.ttf */,
+				4996DADB2282462484F9002F /* Sunflower-Bold.ttf */,
+				4B2B693A76474068A3AB3C61 /* Sunflower-Light.ttf */,
+				8985719822A3474998CA8653 /* Sunflower-Medium.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -315,6 +330,11 @@
 				6B3A1AA4078B4653A0F11C14 /* SimpleLineIcons.ttf in Resources */,
 				86845EC75DF34FBD823D6838 /* Zocial.ttf in Resources */,
 				572C4431AAA04C448223BA77 /* DoHyeon-Regular.ttf in Resources */,
+				6774855D3EE6438B94CBEB2E /* EastSeaDokdo-Regular.ttf in Resources */,
+				1478AFD9DE304CFA979A0A86 /* Jua-Regular.ttf in Resources */,
+				345D3D2EC9FA49BF80260079 /* Sunflower-Bold.ttf in Resources */,
+				65E12DCB605743C48947801F /* Sunflower-Light.ttf in Resources */,
+				AA9C65A261024B92A2DEB48D /* Sunflower-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

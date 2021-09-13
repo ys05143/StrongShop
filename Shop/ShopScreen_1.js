@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, SafeAreaView, Button, Animated, ScrollView, StyleSheet, PanResponder } from 'react-native';
+import { Text, View, SafeAreaView, Button, Animated, ScrollView, StyleSheet, PanResponder, ActivityIndicator } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 //pages
@@ -123,93 +123,75 @@ const DATA = {
             }],
   merchandise: {tinting: [{
                             name: 'T70 05',
-                            penetration: 6,
-                            block: 70,
+                            text: '투과율: 6 / 차단률: 70',
                             price: 100000
                         },{
                             name: 'T70 15',
-                            penetration: 15,
-                            block: 68,
+                            text: '투과율: 15 / 차단률: 68',
                             price: 200000
                         },{
                             name: 'T70 35',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 36',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 37',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 38',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 39',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 40',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 41',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 42',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 43',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 44',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 45',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 46',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 47',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 48',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 49',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         },{
                             name: 'T70 50',
-                            penetration: 35,
-                            block: 68,
+                            text: '투과율: 35 / 차단률: 68',
                             price: 300000
                         }]},
   review: [{
@@ -242,8 +224,10 @@ const DATA = {
 const Tab = createMaterialTopTabNavigator();
 
 function ShopScreen_1(props){
+  const [isLoading, setIsLoading] = React.useState(false);
   const [totalFirst, setTotalFirst] = React.useState(true);
   const [Pan, setPan] = React.useState(new Animated.ValueXY({x: 0, y: 0}));
+  const [shopData, setShopData] = React.useState(DATA);
   const twinkle = new Animated.Value(0);
 
   function setInitial(){
@@ -301,7 +285,7 @@ function ShopScreen_1(props){
     setTotalFirst(bool);
   }
 
-  const twinkleHelp = Animated.loop(
+  const twinkleMove = Animated.loop(
     Animated.sequence([
       Animated.timing(
         twinkle,
@@ -327,12 +311,21 @@ function ShopScreen_1(props){
     }
   ).start();
 
+  React.useEffect(()=> {
+    setIsLoading(true);
+    //캐시 확인 후 필요시 서버요청
+    let newDATA = {...DATA};
+    newDATA.introduceText = '안녕하세요 바뀌었습니다.';
+    setShopData(newDATA);
+    setTimeout(()=>{setIsLoading(false)}, 2000);
+  },[])
+
     
   return(
     <TotalView>
       <Animated.View
         style={[styles.header]}>
-        <Animated.Image
+        {!isLoading && <Animated.Image
         style={[
             styles.headerBackground,
             {
@@ -341,8 +334,8 @@ function ShopScreen_1(props){
             },
         ]}
         source={{uri: DATA.representImg}}
-        />
-        <Animated.View
+        />}
+        {!isLoading && <Animated.View
           style={[
             styles.subTitleView,
             {
@@ -351,7 +344,7 @@ function ShopScreen_1(props){
             }
           ]}>
             <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{DATA.shopName}</Text>
-        </Animated.View>
+        </Animated.View>}
     </Animated.View>
     <Animated.View
         style={[
@@ -384,20 +377,21 @@ function ShopScreen_1(props){
         marginTop: HEADER_MAX_HEIGHT,
       }}
     >
-      <Tab.Navigator backBehavior={'none'} screenOptions={{
+      {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
                                                             swipeEnabled: false, 
                                                             tabBarIndicatorStyle: {backgroundColor: Color.main},
                                                             tabBarActiveTintColor: Color.main,
                                                             tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
                                                                                       
-          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={DATA.introduceText} coord={DATA.coord} region={DATA.region} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} shopName={DATA.shopName} gallery={DATA.gallery} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={DATA.shopName} merchandise={DATA.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={DATA.shopName} review={DATA.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={shopData.introduceText} coord={shopData.coord} region={shopData.region} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} shopName={shopData.shopName} gallery={shopData.gallery} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={shopData.shopName} merchandise={shopData.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+          <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={shopData.shopName} review={shopData.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           
-      </Tab.Navigator>
+      </Tab.Navigator> : 
+      <ActivityIndicator size = 'large' color= {'white'}/>}
       </Animated.View>
-  </TotalView>  
+  </TotalView>
   );
 }
 

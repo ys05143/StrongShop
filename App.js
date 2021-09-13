@@ -15,6 +15,7 @@ import ShopScreen_1 from './Shop/ShopScreen_1';
 import ShopScreen_Test from './Shop/ShopScreen_Test';
 import AnimatedTest from './Shop/AnimatedTest';
 import DetailGallery from './Shop/DetailGallery';
+import MyPageScreen from './Mypage/MypageScreen';
 import MapTest from './Shop/MapTest';
 import Temp from './Temp';
 
@@ -54,6 +55,8 @@ function App (props) {
         {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 */}
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
+        {/* 마이페이지 */}
+        {<Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{headerShown:false}}/>}
         {/* 지도test */}
         {<Stack.Screen name="MapTest" component={MapTest} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 test */}

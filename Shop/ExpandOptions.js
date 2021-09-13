@@ -16,7 +16,7 @@ const DetailView = styled.View`
     padding: 5px;
 `;
     
-function ExpandBlackBox(props){
+function ExpandOptions(props){
     //for acodian
     const [activeSections, setActiveSections] = React.useState([]);
 
@@ -54,4 +54,4 @@ function ExpandBlackBox(props){
     );
 }
 
-export default ExpandBlackBox;
+export default ExpandOptions;
