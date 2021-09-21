@@ -1,4 +1,5 @@
 # StrongShop
+commit name(9/22~)
 add : 새로운 기능 혹은 코드를 추가할 경우
 
 style : 스타일 추가 혹은 변경
