@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, ActivityIndicator } from 'react-native';
+import { Text, ActivityIndicator, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Button } from 'react-native-paper';
+import Icon  from "react-native-vector-icons/Ionicons";
 //pages
 import Select from './Select';
 import ExpandSelect from './ExpandSelect';
@@ -16,7 +17,7 @@ import store from '../function/store';
 import fetch from '../function/fetch';
 
 const WIDTH = AppWindow.width;
-
+const HEIGHT = AppWindow.height;
 ///////////////////////////////
 const IntroView = styled.View`
     flex: 2;
@@ -177,7 +178,7 @@ function PackageScreen_3(props) {
     }
 
     return(
-        <TotalView>
+        <TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
                     <IntroText>{'원하시는 시공을\n선택해주세요.'}</IntroText>
@@ -215,6 +216,9 @@ function PackageScreen_3(props) {
                     </Row>
                 </BtnView>
             </ContentView>
+            <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                <Icon name="close-outline" size={35} color={'black'} onPress={()=>{props.navigation.navigate("PackageScreen_1")}}></Icon>
+            </View>
         </TotalView>
     );
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { ifIphoneX } from "react-native-iphone-x-helper";
 import { Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import _ from 'lodash';
 //components
 import Row from '../components/Row';
@@ -19,6 +20,8 @@ import AppWindow from '../constants/AppWindow';
 //function
 import fetch from '../function/fetch';
 import store from '../function/store';
+//pages
+import MyPageScreen from '../Mypage/MypageScreen';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -79,9 +82,11 @@ const CurrentBid = styled.View`
     width: 90%;
     height: 80%;
     border-radius: 15px;
+    justify-content: center;
+    align-items: center;
     padding: 5px;
 `;
-const Bid = styled.View`
+const Bid = styled.TouchableOpacity`
     flex: 1;
     border-radius: 15px;
     background-color: #e5e5e5;
@@ -113,31 +118,49 @@ const DATA = [{
     carName: 'CARNIVAL',
     currentPrice: '1,500,000',
     remainTime: '23:59:58',
+    state: 'bid',
 },{
     id: 2,
-    carName: 'CARNIVAL',
+    carName: 'AVANTE',
     currentPrice: '1,500,000',
     remainTime: '23:59:58',
+    state: 'bid',
 },{
     id: 3,
-    carName: 'CARNIVAL',
+    carName: 'SONATA',
     currentPrice: '1,500,000',
     remainTime: '23:59:58',
+    state: 'bid',
 },{
     id: 4,
-    carName: 'CARNIVAL',
+    carName: 'SORENTO',
     currentPrice: '1,500,000',
     remainTime: '23:59:58',
+    state: 'construct',
 },{
     id: 5,
-    carName: 'CARNIVAL',
+    carName: 'AVANTE N',
     currentPrice: '1,500,000',
     remainTime: '23:59:58',
+    state: 'construct',
+},{
+    id: 6,
+    carName: 'AVANTE HYBRID SPECIAL',
+    currentPrice: '1,500,000',
+    remainTime: '23:59:58',
+    state: 'finish',
+},{
+    id: 7,
+    carName: 'MORNING',
+    currentPrice: '1,500,000',
+    remainTime: '23:59:58',
+    state: 'finish',
 }]
 
 function PackageScreen_1 (props) {
     const [existingDialog, setExistingDialog] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const hideDialog = () => setExistingDialog(false);
 
@@ -179,8 +202,27 @@ function PackageScreen_1 (props) {
             setExistingDialog(false);
         }
     }
+
+    function printTitle(state){
+        switch(state){
+            case 'bid': 
+                return '입찰중인 차량:'
+            case 'construct':
+                return '시공중인 차량:'
+            case 'finish':
+                return '시공완료된 차량:'
+        }
+    }
+
+    React.useEffect(()=> {
+        //서버로 부터 입찰한 차량들 정보 불러오기
+        setIsLoading(true);
+        //캐시 확인 후 필요시 서버요청
+        setTimeout(()=>{setIsLoading(false)}, 2000);
+      },[]);
+    
     return(
-        <TotalView TotalView color={'white'} notchColor={'white'}>
+        <TotalView color={'white'} notchColor={'white'}>
             <PaperProvider>
             <DescriptionView>
                 <Swiper autoplay={true} activeDotColor={'#000000'}>
@@ -260,12 +302,15 @@ function PackageScreen_1 (props) {
                 </Swiper>
                 <TopBar style={{position: 'absolute', marginTop: ifIphoneX()===true ? StatusBarHeight() : 5}}>
                     <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{ props.navigation.goBack() }}></Icon>
+                    <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', marginRight: 10}} onPress={()=>{props.navigation.navigate("MyPageScreen")}}>
+                        <Text style={{fontSize: 25, color: 'white', fontWeight: 'bold'}}>My</Text>
+                    </TouchableOpacity>
                 </TopBar>
             </DescriptionView>
             <ContentView>
                 <BidView>
                     <CurrentBid>
-                        <Swiper activeDotColor={Color.main} paginationStyle={{
+                        {!isLoading ? <Swiper activeDotColor={Color.main} paginationStyle={{
                         position: 'absolute',
                         top: '90%',
                         right: 0,
@@ -274,10 +319,12 @@ function PackageScreen_1 (props) {
                         }}>
                             {_.map(DATA, (item)=>{
                                 return(
-                                    <Bid key={item.id}>
+                                    <Bid key={item.id} onPress={()=>{props.navigation.navigate("PackageScreen_5", {carName: item.carName})}}>
                                         <Row style={{flex: 3}}>
-                                            <Text style={{marginVertical: 5, marginHorizontal: 10, fontSize: 17}}>입찰중인 차량:</Text>
-                                            <Text style={{marginVertical: 5, fontWeight: 'bold', fontSize: 20 }} >{item.carName}</Text>
+                                            <Text style={{marginVertical: 5, marginHorizontal: 10, fontSize: 17}}>{printTitle(item.state)}</Text>
+                                            <View style={{flex: 1}}>
+                                                <Text style={{marginVertical: 5, fontWeight: 'bold', fontSize: 20 }} >{item.carName}</Text>
+                                            </View>
                                         </Row>
                                         <Row style={{flex: 4, justifyContent: 'center', alignItems: 'center'}}>
                                             <Text style={{fontSize: 30, color: 'blue'}}>{item.currentPrice}</Text>
@@ -289,7 +336,7 @@ function PackageScreen_1 (props) {
                                     </Bid>
                                 );
                             })}
-                        </Swiper>
+                        </Swiper>: <ActivityIndicator size = 'large' color= {Color.main}/> }
                     </CurrentBid>
                 </BidView>
                 <RegisterView>

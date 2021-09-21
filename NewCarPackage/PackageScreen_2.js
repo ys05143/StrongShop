@@ -10,6 +10,7 @@ import SearchModal from './SearchModal';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
+import ModalView from '../components/ModalView';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
@@ -62,28 +63,23 @@ const SearchBar = styled.TouchableOpacity`
     justify-content: space-between;
 `;
 const ResulView = styled.View`
+    width: 90%;
+    flex: 1;
+    align-items : center;
+    justify-content: center;
+    padding: 5px;
+`;
+const Result = styled.View`
     width: 100%;
     flex: 1;
     align-items : center;
-    justify-content: center;
-    padding: 10px;
-`;
-const Result = styled.View`
-    flex: 1;
-    align-items : center;
     justify-content: space-around;
-`;
-const ModalView=styled.View`
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0,0,0,0.5);
 `;
 
 //서버요청을 받는 정보
 const DATA={
     name: 'AVANTE',
-    image: require('../resource/Avante.png'),
+    image: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 };
 //기본 입찰정보 틀
 const BidOrderList = {
@@ -146,23 +142,23 @@ function PackageScreen_2 (props) {
     }
 
     function PrintResult(){
-        if(search !== '' && search !== null){ //검색을 했을 때
-            if(result === null){
+        if(result === null){
+            if(search !== null){
                 return(
                     <ActivityIndicator size = 'large' color= {Color.main}/>
                 );
             }
             else{
-                return(
-                    <Result>
-                        <Text style={{fontSize: 50, fontWeight: 'bold'}}>{result.name}</Text>
-                        <Image source={result.image} resizeMode='cover'/>
-                    </Result>
-                );
+                return(<></>);
             }
         }
-        else {
-            return(<></>);
+        else{
+            return(
+                <Result>
+                    <Text style={{fontSize: 50, fontWeight: 'bold'}}>{result.name}</Text>
+                    <Image source={{uri: result.image}} style={{width: '100%', height: 200}}/>
+                </Result>
+            );
         }
     }
 
@@ -171,20 +167,25 @@ function PackageScreen_2 (props) {
     }
     function getValue(name){
         setSearch(name);
-        //modal로 받은 검색어로 서버에 {이름/이미지} 요청
-        /*if(txt !== ''){
-            axios({
-                method: 'GET',
-                url: '~~~name',
-            })
-            .then(res => {
-                setResult(res.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
-        }*/
-        setResult(DATA);
+        if(name !== null){
+            //modal로 받은 검색어로 서버에 {이름/이미지} 요청
+            /*if(txt !== ''){
+                axios({
+                    method: 'GET',
+                    url: '~~~name',
+                })
+                .then(res => {
+                    setResult(res.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+            }*/
+            setResult(DATA);
+        }
+        else{
+            setResult(null);
+        }
     }
 
     async function storeCarName() {
@@ -241,7 +242,7 @@ function PackageScreen_2 (props) {
 
     return(
         <PaperProvider>
-            <TotalView TotalView color={'white'} notchColor={'white'}>
+            <TotalView color={'white'} notchColor={'white'}>
                 <IntroView>
                     <Intro>
                         <IntroText>{'시공을 원하시는\n차종을 입력해주세요.'}</IntroText>
@@ -249,7 +250,7 @@ function PackageScreen_2 (props) {
                 </IntroView>
                 <ContentView>
                     <SearchBar onPress={()=>{setSearchModal(true)}}>
-                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? result.name : ''}</Text>
+                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? search : ''}</Text>
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>
@@ -262,14 +263,15 @@ function PackageScreen_2 (props) {
                         </Row>
                     </BtnView>
                 </ContentView>
+                <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                    <Icon name="close-outline" size={35} color={'black'} onPress={()=>{props.navigation.navigate("PackageScreen_1")}}></Icon>
+                </View>
             </TotalView>
             <Modal
                     animationType="slide"
                     transparent={true}
                     visible={searchModal}
-                    onRequestClose={() => {
-                    setSearchModal(!searchModal);
-                    }}
+                    onRequestClose={() => {setSearchModal(!searchModal);}}
                 >
                     <ModalView>
                         <View style={{width: '90%'}}>

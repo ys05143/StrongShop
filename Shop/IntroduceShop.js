@@ -143,7 +143,7 @@ function IntroduceShop(props){
                     listener: (e)=>{}}, // use native driver for animation: ;
                 )}>
                     <IntroView>
-                        <Text style={{fontSize: 35, fontFamily: 'EastSeaDokdo-Regular'}}>인사말</Text>
+                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
                         <View style={{width: '100%', alignItems: 'center'}}>
                             <View style={{width: '90%', marginTop: 5}}>
                                 <Text>{props.introduceText}</Text>
@@ -152,7 +152,7 @@ function IntroduceShop(props){
                     </IntroView>
                     {isFocused && 
                     <AddressView>
-                        <Text style={{fontSize: 35, fontFamily: 'EastSeaDokdo-Regular'}}>위치</Text>
+                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
                         <View style={{width: '100%', alignItems: 'center'}}>
                             <View style={{width: '90%', marginTop: 5}}>
                                 <Text>{props.region}</Text>

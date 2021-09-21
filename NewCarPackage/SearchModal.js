@@ -1,7 +1,10 @@
 import React from 'react';
-import {Text, View, StatusBar} from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
+import { Button, Searchbar } from 'react-native-paper';
 import styled from 'styled-components/native';
-import Icon  from "react-native-vector-icons/Ionicons";
+import _ from 'lodash';
+//constant
+import Color from '../constants/Color';
 
 const Total = styled.View`
     width: 100%;
@@ -12,60 +15,52 @@ const Total = styled.View`
     align-items: center;
     justify-content: space-between;
 `;
-const SearchBar = styled.TextInput`
-    background-color: #D5D5D5;
-    border-radius: 10px;
-    color: black;
-    width : 100%;
-    height: 50px;
-    padding: 5px;
-`;
-
-const Btn = styled.TouchableOpacity`
-    border-radius: 50px;
-    background-color: #B2EBF4;
-    width: 100px;
-    height: 50px;
-    align-items : center;
-    justify-content: center;
-`;
 const SearchView = styled.View`
-    width: 90%;
-    flex-direction: row;
-    align-items : center;
-    justify-content: flex-end;
+    width: 100%;
+    height: 220px;
 `;
-const IconView = styled.TouchableOpacity`
-    position: absolute;
+const Candidate = styled.TouchableOpacity`
+    width: 100%;
+    height: 45px;
+    justify-content: center;
+    padding: 5px 0px;
+    border-bottom-width: 1px;
+    border-color: lightgray;
 `;
+const DATA = ['AVANTE', 'AVANTE N', 'AVANTE HYBRID']
 
 function SearchModal(props){
     const [text, setText] = React.useState(props.search);
+
     function sendModal(){
         props.getModal(false);
     }
     function sendText(){
-        props.getValue(text);
+        props.getValue(text === '' ? null : text);
     }
     return (
         <Total>
             <SearchView>
-                <SearchBar placeholder='차종을 검색하세요.'
-                            placeholderTextColor="gray"
-                            value={text}
-                            onChangeText={value=>setText(value)}
-                            returnKeyType="done">      
-                </SearchBar>
-                <IconView>
-                    <Icon name="search-outline" size={30} style={{marginRight: 5}} ></Icon>
-                </IconView>
+                <Searchbar
+                    style={{height: 45, borderWidth: 1, borderColor: 'gray', justifyContent: 'center'}}
+                    inputStyle={{fontSize: 15, justifyContent: 'center'}}
+                    placeholder='차종을 검색하세요.'
+                    value={text}
+                    onChangeText={value=>setText(value)}
+                    onIconPress={()=>{alert(text)}}/>
+                <ScrollView style={{paddingHorizontal: 10}}>
+                   {_.map(DATA, (item)=>{
+                    return (
+                        <Candidate key={item} onPress={()=>{setText(item)}}>
+                            <Text style={{fontSize: 18}}>{item}</Text>
+                        </Candidate>)})}
+                </ScrollView>
             </SearchView>
-            <Btn onPress={()=>{sendText();
-                                sendModal();}}>
+            <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendText();
+                                                                                                                                                                        sendModal();}}>
                 <Text>완료</Text>
-            </Btn>
+            </Button>
         </Total>
-        
     );
 }
 

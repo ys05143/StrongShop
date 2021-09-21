@@ -9,8 +9,8 @@ const TitleView = styled.View`
     padding: 10px;
 `;
 const Title = styled.Text`
-    font-size: 35px;
-    font-family: 'EastSeaDokdo-Regular';
+    font-size: 30px;
+    font-family: 'DoHyeon-Regular';
 `;
 const ContentView = styled.View`
     padding-left: 20px;

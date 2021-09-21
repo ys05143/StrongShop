@@ -1,8 +1,12 @@
 import React from 'react';
-import {Text, Image, StyleSheet } from 'react-native';
+import {Text, Image, StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
+import Icon from "react-native-vector-icons/Ionicons";
 //components
 import TotalView from '../components/TotalView';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import MyPageScreen from '../Mypage/MypageScreen';
+import PackageScreen_1 from '../NewCarPackage/PackageScreen_1';
 
 const IntroView = styled.View`
     flex: 3;
@@ -53,6 +57,14 @@ const SelectTitle = styled.Text`
 function MainScreen (props) {
     return (
         <TotalView color={'white'} notchColor={'white'}>
+            <View style={{width: '100%', position: 'absolute', marginTop: 10, paddingHorizontal: 10, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', marginRight: 10}}>
+                    <Icon name="notifications-outline" size={25}></Icon>
+                </TouchableOpacity>
+                <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("MyPageScreen")}}>
+                    <Text style={{fontSize: 20}}>My</Text>
+                </TouchableOpacity>
+            </View>
             <IntroView>
                 <Intro>
                     <IntroText>{'안녕하세요.\n찾으시는 서비스를\n선택해주세요.'}</IntroText>
@@ -63,7 +75,7 @@ function MainScreen (props) {
                     <SelectTitle>케어</SelectTitle>
                     <Text style={{marginTop: 20}}>타시던 차를 관리해보세요.</Text>
                 </Select>
-                <Select>
+                <Select onPress={()=>{props.navigation.navigate("PackageScreen_1")}}>
                     <SelectTitle>신차 패키지</SelectTitle>
                     <Text style={{marginTop: 20}}>새차를 좀 더 멋지게 만들어보세요.</Text>
                 </Select>

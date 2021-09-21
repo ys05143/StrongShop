@@ -3,6 +3,8 @@ import styled from 'styled-components/native';
 import { Text, View, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
+import Icon  from "react-native-vector-icons/Ionicons";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -123,21 +125,22 @@ function PackageScreen_4(props){
     }
 
     return(
-        <TotalView TotalView color={'white'} notchColor={'white'}>
+        <KeyboardAwareScrollView>
+        <TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
                     <IntroText>{'업체에게 전달할\n별도의 요구사항을\n입력해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>
-                {start === true ? <InputView>
+                {start === true ? 
+                <InputView>
                     <Input multiline={true}
                             style={{textAlignVertical:'top'}}//only for android
                             value={text}
                             onChangeText={value=>setText(value)}
                             placeholder={"예) 반드시 0월 0일에 시공을 시작했으면 좋겠습니다."}
                             placeholderTextColor="gray"/>
-                    
                     <RegionView>
                         <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
                         <PickerView>
@@ -166,7 +169,11 @@ function PackageScreen_4(props){
                     </Row>
                 </BtnView>
             </ContentView>
+            <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                <Icon name="close-outline" size={35} color={'black'} onPress={()=>{props.navigation.navigate("PackageScreen_1")}}></Icon>
+            </View>
         </TotalView>
+        </KeyboardAwareScrollView>
     );
 }
 

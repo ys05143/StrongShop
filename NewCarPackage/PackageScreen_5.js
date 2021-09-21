@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import _ from 'lodash';
 //pages
@@ -26,7 +26,6 @@ const Intro = styled.View`
 `;
 const ContentView = styled.View`
     flex: 5;
-    border: 1px solid #00ff00;
     justify-content: space-between;
 `;
 const IntroText = styled.Text`
@@ -69,29 +68,87 @@ const Filter = styled.Text`
 const ShopList = styled.View`
     flex: 1;
     width: 100%;
-    border: 1px solid #0000ff;
-    align-items: center;
 `;
 //현재 입찰에 참여중인 업체들
 const DATA = [{
     id:1,
     name: '올댓 오토모빌',
     simpleRegion: '서울 광진',
-    bidPrice: '20,000,000',
-    bidContents: '구체 견적들',
+    price: '20,000,000',
+    contents: '구체 견적들 ex) 썬팅: T70 15, 블랙박스: 파인뷰LX5000 ...',
 },{
     id:2,
-    name: '카샵',
+    name: '카샵1',
     simpleRegion: '서울 금천',
-    bidPrice: '15,000,000',
-    bidContents: '견적',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:3,
+    name: '카샵2',
+    simpleRegion: '서울 서초',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:4,
+    name: '카샵3',
+    simpleRegion: '서울 송파',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:5,
+    name: '카샵4',
+    simpleRegion: '서울 강남',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:6,
+    name: '카샵5',
+    simpleRegion: '서울 종로',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:7,
+    name: '카샵6',
+    simpleRegion: '서울 은평',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:8,
+    name: '카샵7',
+    simpleRegion: '서울 마포',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:9,
+    name: '카샵8',
+    simpleRegion: '서울 금천',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:10,
+    name: '카샵9',
+    simpleRegion: '서울 금천',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:11,
+    name: '카샵10',
+    simpleRegion: '서울 금천',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
+},{
+    id:12,
+    name: '카샵11',
+    simpleRegion: '서울 금천',
+    price: '15,000,000',
+    contents: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
 }];
 
 function PackageScreen_5(props){
     return(
-        <TotalView TotalView color={'white'} notchColor={'white'}>
+        <TotalView color={'white'} notchColor={'white'}>
             <TitleView>
-                <Text style={{fontSize: 30}}>참여중인 업체</Text>
+                <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{props.route.params.carName}</Text>
                 <TimeView>
                     <Text style={{fontSize: 25}}>23:59:58</Text>
                 </TimeView>
@@ -99,19 +156,21 @@ function PackageScreen_5(props){
             <ContentView>
                 <Filter>-최신순</Filter>
                 <ShopList>
-                    {_.map(DATA, (item)=>{
-                        return(
-                            <Shop key={item.id} name={item.name} simpleRegion={item.simpleRegion} price={item.bidPrice}></Shop>
-                        )
-                    })}
+                    <ScrollView>
+                        {_.map(DATA, (item)=>{
+                            return(
+                                <Shop key={item.id} item={[item]}></Shop>
+                            )
+                        })}
+                    </ScrollView>
                 </ShopList>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>홈으로</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_1")}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>홈으로</Button>
                     </Row>
                 </BtnView>
             </ContentView>
-            
+
         </TotalView>
     );
 }

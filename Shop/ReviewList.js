@@ -47,6 +47,7 @@ const ContentView = styled.View`
     border-radius: 10px;
     padding: 10px;
     background-color: white;
+    justify-content: center;
 `;
 const Content = styled.Text`
     margin-top: 5px;

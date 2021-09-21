@@ -23,28 +23,8 @@ const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 ///////////////////////////////
-const IntroView = styled.View`
-    height: ${HEIGHT/3}px;
-    width: 100%;
-    padding: 5px;
-    background-color: ${Color.main};
-`;
 const Intro = styled.TouchableOpacity`
     justify-content: center;
-`;
-const ContentView = styled.View`
-    width: 100%;
-    border: 1px solid #00ff00;
-`;
-const IntroText = styled.Text`
-    font-size: ${WIDTH*0.09}px;
-    margin-left: 20px;
-    color: #ffffff;
-`;
-const TitleView = styled.View`
-  width: '90%';
-  height: 50px;
-  background-color: white;
 `;
 ///////////////////////////////////
 //업체이름으로 서버에 요청할 정보(첫화면 구성시에 사용, flatlist 사용하는 페이지에서는 해당 페이지에서 따로 서버에 추가요청)
@@ -354,7 +334,7 @@ function ShopScreen_1(props){
         },
         ]}>
         <View style={{width: 35}}>
-          <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{}}></Icon>
+          <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
         </View>
         <Animated.View
           style={[null,{
@@ -438,8 +418,7 @@ headerBackground: {
   resizeMode: 'cover',
 },
 topBar: {
-  marginTop: 10,
-  height: 40,
+  height: HEADER_MIN_HEIGHT,
   width: '100%',
   alignItems: 'center',
   position: 'absolute',
