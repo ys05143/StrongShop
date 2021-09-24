@@ -38,7 +38,7 @@ function Shop(props) {
                         <Text style={{fontSize: 12, marginBottom: 3, marginLeft: 10, color: 'gray'}}>{section.simpleRegion}</Text>
                         <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black' style={{marginLeft: 5}}></MaterialIcons>
                     </NameView>
-                    <Text style={{fontSize: 15}}>{section.price}</Text>
+                    <Text style={{fontSize: 15}}>{section.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
                 </ShopView>
             </View>
         );

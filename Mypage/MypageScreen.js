@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, TextInput, ColorPropType } from 'react-native';
+import { Text, View, Image, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Avatar, Badge, Switch } from 'react-native-paper';
@@ -46,8 +46,12 @@ const ProfileName = styled.TextInput`
 const InfoView = styled.View`
     width: 100%;
     margin-top: 10px;
-    flex: 1;
     background-color: white;
+`;
+const RecordView = styled.View`
+    width: 100%;
+    background-color: white;
+    margin-top: 10px;
 `;
 const InfoOptions = styled.View`
     width: 100%;
@@ -64,6 +68,14 @@ const PhoneNum = styled.View`
     background-color: #e5e5e5;
     flex-direction: row;
 `;
+const Record = styled.View`
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0px 10px;
+    flex-direction: row;
+    justify-content: space-between;
+`;
 
 const DATA = {
     profileImg: require('../resource/character4.png'),
@@ -75,8 +87,30 @@ function MyPageScreen(props){
     const [nameInput, setNameInput] = React.useState(DATA.name);
     const [phoneNumInput, setphoneNumInput] = React.useState(DATA.phoneNum);
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-
+    
+    const regex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/; // 전화번호 형식 체크
+    const check_010 = /^010-(\d)/;//010으로 번호 시작하는지 체크
+    
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    React.useEffect(()=>{
+        //세자리 콤마 정규식 -> this.number.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        let value = phoneNumInput.replace(/[^0-9\-]/g, '');
+        if (/^(\d{3})(\d)/.test(value)) {
+            setphoneNumInput(value.replace(/^(\d{3})(\d)/, '$1-$2'));
+        }
+        if(check_010.test(value))
+        {
+            if (/^(\d{3}-\d{4})(\d)/.test(value)) {
+                setphoneNumInput(value.replace(/^(\d{3}-\d{4})(\d)/, '$1-$2'));
+            }
+        }
+        else{
+            if (/^(\d{3}-\d{3})(\d)/.test(value)) {
+                setphoneNumInput(value.replace(/^(\d{3}-\d{3})(\d)/, '$1-$2'));
+            }
+        }
+    }, [phoneNumInput])
     
     return(
         <TotalView>
@@ -112,7 +146,8 @@ function MyPageScreen(props){
                                     value={phoneNumInput}
                                     onChangeText={value=>setphoneNumInput(value)}
                                     returnKeyType="done"
-                                    maxLength={11}/>
+                                    maxLength={13}
+                                    onSubmitEditing={() => {regex.test(phoneNumInput) ? alert('형식 맞음') : alert('형식 틀림')}}/>
                         <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}}>
                             <Text style={{color: 'white'}}>인증</Text>
                         </TouchableOpacity>
@@ -122,11 +157,17 @@ function MyPageScreen(props){
                     <Text>로그인 연동</Text>
                     <Image source={require('../resource/kakaolink_btn_small_ov.png')} style={{width: 30, height: 30}}/>
                 </InfoOptions>
-                <InfoOptions style={{paddingRight: 10}}>
+                <InfoOptions style={{paddingRight: 10, marginBottom: 15}}>
                     <Text>푸시 알림 동의</Text>
                     <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color={Color.main}/>
                 </InfoOptions>
             </InfoView>
+            <RecordView>
+                <Record>
+                    <Text>과거 시공 기록</Text>
+                    <Icon name="chevron-forward-outline" size={20} color={'black'} onPress={()=>{props.navigation.navigate('RecordScreen')}}></Icon>
+                </Record>
+            </RecordView>
         </TotalView>
     );
 }

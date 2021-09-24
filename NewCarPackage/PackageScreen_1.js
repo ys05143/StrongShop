@@ -116,43 +116,43 @@ const DescribeView = styled.View`
 const DATA = [{
     id: 1,
     carName: 'CARNIVAL',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'bid',
 },{
     id: 2,
     carName: 'AVANTE',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'bid',
 },{
     id: 3,
     carName: 'SONATA',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'bid',
 },{
     id: 4,
     carName: 'SORENTO',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'construct',
 },{
     id: 5,
     carName: 'AVANTE N',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'construct',
 },{
     id: 6,
     carName: 'AVANTE HYBRID SPECIAL',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'finish',
 },{
     id: 7,
     carName: 'MORNING',
-    currentPrice: '1,500,000',
+    currentPrice: 20000000,
     remainTime: '23:59:58',
     state: 'finish',
 }]
@@ -327,7 +327,7 @@ function PackageScreen_1 (props) {
                                             </View>
                                         </Row>
                                         <Row style={{flex: 4, justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={{fontSize: 30, color: 'blue'}}>{item.currentPrice}</Text>
+                                            <Text style={{fontSize: 30, color: 'blue'}}>{item.currentPrice.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
                                             <Icon name="caret-down-outline" size={30} color={'blue'}></Icon>
                                         </Row>
                                         <Row style={{flex: 4,justifyContent: 'center', alignItems: 'center'}}>
