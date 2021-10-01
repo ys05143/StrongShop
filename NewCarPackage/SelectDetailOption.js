@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, Modal, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon  from "react-native-vector-icons/Ionicons";
@@ -10,35 +11,28 @@ import ModalView from '../components/ModalView';
 import Description from './Description';
 //constant
 import AppWindow from '../constants/AppWindow';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const HEIGHT = AppWindow.height;
 
 //onPress={()=>{ sendChoose(!isChoose); setIsChoose(!isChoose);}}
 const SelectView = styled.View`
     width: 100%;
-    height: 60px;
+    height: 35px;
     flex-direction: row;
-    padding: 5px;
+    padding-left: 10px;
     align-items: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
 `;
 const SelectName = styled.Text`
     margin-left: 5px;
     margin-right: 5px;
-    font-size: 20px;
-`;
-const SelectResult = styled.View`
-    height: 30px;
-    justify-content: center;
+    font-size: 18px;
 `;
 const DetailModal = styled.View`
     width: 90%;
     height: ${HEIGHT*2/5+40}px;
 `;
 
-function Select (props){
+function SelectDetailOption (props){
     const [isChoose, setIsChoose] = React.useState(props.choose);
     const [modal, setModal] = React.useState(false);
 
@@ -51,11 +45,11 @@ function Select (props){
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
                 <TouchableOpacity>
-                    <Icon onPress={()=>{ sendChoose(!isChoose);
-                                                setIsChoose(!isChoose)}} name={isChoose===false?"square-outline": "checkbox"} size={25} color= 'gray'></Icon>
+                <Icon onPress={()=>{ sendChoose(!isChoose);
+                                    setIsChoose(!isChoose)}} name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
                 </TouchableOpacity>
                 <SelectName>{props.name}</SelectName>
-                <Icon name="help-circle-outline" size={20} style={{color: 'gray'}} onPress={()=>{setModal(true)}}></Icon>
+                <Icon name="help-circle-outline" size={18} style={{color: 'gray'}} onPress={()=>{setModal(true)}}></Icon>
             </Row>
         </SelectView>
 
@@ -80,4 +74,4 @@ function Select (props){
     )
 }
 
-export default Select;
+export default SelectDetailOption;

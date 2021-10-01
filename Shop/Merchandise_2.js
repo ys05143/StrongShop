@@ -5,7 +5,7 @@ import { ScrollView, Text,View, Animated, PanResponder, ActivityIndicator } from
 //constants
 import Color from '../constants/Color';
 //pages
-import OptionDetail from './OptionDetail';
+import ProductDetail from './ProductDetail';
 import AppWindow from '../constants/AppWindow';
 
 const WIDTH = AppWindow.width;
@@ -202,12 +202,12 @@ function Merchandise_2(props){
                     listener: (e)=>{}}, // use native driver for animation: ;
                 )}>
                     {isLoading && <ActivityIndicator size = 'large' color= {Color.main}/>}
-                    {(show === 'Tinting' && !isLoading) && <OptionDetail list={tintingList} title={'틴팅'}></OptionDetail>}
-                    {(show === 'BlackBox' && !isLoading) && <OptionDetail list ={blackboxList} title={'블랙박스'}></OptionDetail>}
-                    {(show === 'GlassCoating' && !isLoading) && <OptionDetail list ={glassCoatingList} title={'유리막코팅'}></OptionDetail>}
-                    {(show === 'UnderCoating' && !isLoading) && <OptionDetail list ={underCoatingList} title={'하부코팅'}></OptionDetail>}
-                    {(show === 'PPF' && !isLoading) && <OptionDetail list ={ppfList} title={'PPF'}></OptionDetail>}
-                    {(show === 'UnderDeafening' && !isLoading) && <OptionDetail list ={underDeafeningList} title={'하부방음'}></OptionDetail>}
+                    {(show === 'Tinting' && !isLoading) && <ProductDetail list={tintingList} title={'틴팅'}/>}
+                    {(show === 'BlackBox' && !isLoading) && <ProductDetail list ={blackboxList} title={'블랙박스'}/>}
+                    {(show === 'GlassCoating' && !isLoading) && <ProductDetail list ={glassCoatingList} title={'유리막코팅'}/>}
+                    {(show === 'UnderCoating' && !isLoading) && <ProductDetail list ={underCoatingList} title={'하부코팅'}/>}
+                    {(show === 'PPF' && !isLoading) && <ProductDetail list ={ppfList} title={'PPF'}/>}
+                    {(show === 'UnderDeafening' && !isLoading) && <ProductDetail list ={underDeafeningList} title={'하부방음'}/>}
                 </Animated.ScrollView>   
             </Animated.View> 
 

@@ -124,6 +124,12 @@ function PackageScreen_4(props){
         //완료를 누르면 저장하던 BidOrder를 서버에 전달한 후 remove 해야한다.  
     }
 
+    function cancelRequire(){
+        //지금 까지의 입력 싹 다 취소
+        // props.navigation.goBack();
+        props.navigation.navigate("PackageScreen_3");
+    }
+
     return(
         <KeyboardAwareScrollView>
         <TotalView color={'white'} notchColor={'white'}>
@@ -164,7 +170,7 @@ function PackageScreen_4(props){
                 : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {cancelRequire}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
                         <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>완료</Button>
                     </Row>
                 </BtnView>

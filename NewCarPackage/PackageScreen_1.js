@@ -327,7 +327,7 @@ function PackageScreen_1 (props) {
                                             </View>
                                         </Row>
                                         <Row style={{flex: 4, justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={{fontSize: 30, color: 'blue'}}>{item.currentPrice.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
+                                            <Text style={{fontSize: 30, color: 'blue'}}>{item.currentPrice}</Text>
                                             <Icon name="caret-down-outline" size={30} color={'blue'}></Icon>
                                         </Row>
                                         <Row style={{flex: 4,justifyContent: 'center', alignItems: 'center'}}>

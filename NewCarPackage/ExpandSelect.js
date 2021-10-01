@@ -19,7 +19,6 @@ const HEIGHT = AppWindow.height;
 const SelectView = styled.View`
     width: ${WIDTH}px;
     height: 60px;
-    border-bottom-width: 1px;
     flex-direction: row;
     padding: 5px;
     align-items: center;
@@ -36,6 +35,11 @@ const SelectResult = styled.View`
 const DetailModal = styled.View`
     width: 90%;
     height: ${HEIGHT*2/5+40}px;
+`;
+const IconView = styled.View`
+    background-color: red;
+    align-items: center;
+    justify-content: ceter;
 `;
     
 function ExpandSelect(props){
@@ -55,10 +59,10 @@ function ExpandSelect(props){
             <SelectView>
                 <Row style={{flex: 1, alignItems: 'center'}}>
                     <TouchableOpacity>
-                        <MaterialIcons onPress={()=>{ sendChoose(!isChoose);
-                                                    setIsChoose(!isChoose);}} name={isChoose===false?"check-box-outline-blank": "check-box"} size={35} color= 'gray'></MaterialIcons>
+                    <Icon onPress={()=>{ sendChoose(!isChoose);
+                                                setIsChoose(!isChoose)}} name={isChoose===false?"square-outline": "checkbox"} size={25} color={'gray'}></Icon>
                     </TouchableOpacity>
-                    <SelectName>{props.children}</SelectName>
+                    <SelectName>{props.name}</SelectName>
                     <Icon name="help-circle-outline" size={20} style={{color: 'gray', marginRight: 10}} onPress={()=>{setModal(true)}}></Icon>
                     <SelectResult>
                         <Text style={{color: 'gray'}}>세부사항</Text>

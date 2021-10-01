@@ -240,6 +240,12 @@ function PackageScreen_2 (props) {
             });
     }
 
+    function cancelCarName(){
+        //지금 까지의 입력 싹 다 취소
+        // props.navigation.goBack();
+        props.navigation.navigate("PackageScreen_1");
+    }
+
     return(
         <PaperProvider>
             <TotalView color={'white'} notchColor={'white'}>
@@ -258,7 +264,7 @@ function PackageScreen_2 (props) {
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_1")}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {cancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
                             <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                         </Row>
                     </BtnView>

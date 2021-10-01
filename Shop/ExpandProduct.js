@@ -16,7 +16,7 @@ const DetailView = styled.View`
     padding: 5px;
 `;
     
-function ExpandOptions(props){
+function ExpandProduct(props){
     //for acodian
     const [activeSections, setActiveSections] = React.useState([]);
 
@@ -54,4 +54,4 @@ function ExpandOptions(props){
     );
 }
 
-export default ExpandOptions;
+export default ExpandProduct;

@@ -18,6 +18,10 @@ import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
 import RecordScreen from './Mypage/RecordScreen';
 import MapTest from './Shop/MapTest';
+import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
+import PackageScreen_3_2_2 from './NewCarPackage/PackageScreen_3_2_2';
+import PackageScreen_3_3 from './NewCarPackage/PackageScreen3_3';
+import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
 import Temp from './Temp';
 
 const Button = styled.TouchableOpacity`
@@ -66,6 +70,14 @@ function App (props) {
         {<Stack.Screen name="ShopScreen_Test" component={ShopScreen_Test} options={{headerShown:false}}/>}
         {/* 애니메이션 test */}
         {<Stack.Screen name="AnimatedTest" component={AnimatedTest} options={{headerShown:false}}/>}
+        {/* 신차패키지 3 ver 2.0 */}
+        {<Stack.Screen name="PackageScreen_3_2" component={PackageScreen_3_2} options={{headerShown:false}}/>}
+        {/* 신차패키지 3 ver 2.0 */}
+        {<Stack.Screen name="PackageScreen_3_2_2" component={PackageScreen_3_2_2} options={{headerShown:false}}/>}
+        {/* 신차패키지 3 ver 3.0 */}
+        {<Stack.Screen name="PackageScreen_3_3" component={PackageScreen_3_3} options={{headerShown:false}}/>}
+        {/* DetailOption 고르기 */}
+        {<Stack.Screen name="DetailOptionScreen" component={DetailOptionScreen} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

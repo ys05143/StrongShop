@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { View } from 'react-native';
 import _ from 'lodash';
-import ExpandOptions from './ExpandOptions';
+import ExpandProduct from './ExpandProduct';
 
 const TitleView = styled.View`
     width: 100%;
@@ -19,7 +19,7 @@ const ContentView = styled.View`
 `;
 
 
-function OptionDetail(props){
+function ProductDetail(props){
 
     return (
         <View style={{backgroundColor: 'white'}}>
@@ -29,7 +29,7 @@ function OptionDetail(props){
             <ContentView>
                 {_.map(props.list , (item) => {
                     return(
-                        <ExpandOptions item={[item]} key={item.name}></ExpandOptions>
+                        <ExpandProduct item={[item]} key={item.name}></ExpandProduct>
                     );
                 })}
             </ContentView>
@@ -37,4 +37,4 @@ function OptionDetail(props){
     );
 }
 
-export default OptionDetail;
+export default ProductDetail;
