@@ -170,13 +170,13 @@ export default function( props ) {
                         (
                             <Swiper 
                                 autoplay={true} 
-                                style={{ margin: 10}}
+                                style={{ marginVertical: 10 }}
                                 renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
                                 >
                                 {
                                     data.map(item=>{
                                         return(
-                                            <Card style={{ flex: 1 }} onPress={()=>{ alert('click')}}>
+                                            <Card key={item.id} style={{ flex: 1 }} onPress={()=>{ alert('click')}}>
                                                 <TextRow style={{ flex: 1}}>
                                                     <View style={{ flex: 3 }}>
                                                         <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    

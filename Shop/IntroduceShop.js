@@ -175,7 +175,7 @@ function IntroduceShop(props){
                 position: 'absolute',
                 transform: [{ translateY: pan.y }],
                 width: '100%',
-                backgroundColor: 'tranparent',
+                backgroundColor: 'transparent',
                 height: 2*HEIGHT,
                 }}
                 {...panResponder.panHandlers}

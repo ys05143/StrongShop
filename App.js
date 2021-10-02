@@ -22,6 +22,7 @@ import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
 import PackageScreen_3_2_2 from './NewCarPackage/PackageScreen_3_2_2';
 import PackageScreen_3_3 from './NewCarPackage/PackageScreen3_3';
 import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
+import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
 
 const Button = styled.TouchableOpacity`
@@ -78,6 +79,8 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_3_3" component={PackageScreen_3_3} options={{headerShown:false}}/>}
         {/* DetailOption 고르기 */}
         {<Stack.Screen name="DetailOptionScreen" component={DetailOptionScreen} options={{headerShown:false}}/>}
+        {/* 업체페이지 Test Ver */}
+        {<Stack.Screen name="Test_ShopScreen" component={Test_ShopScreen} options={{headerShown:false}}/>}
 
       </Stack.Navigator>
     </NavigationContainer>

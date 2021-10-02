@@ -18,6 +18,7 @@ function Temp(props){
             <Button title={"MyPageScreen"} onPress={()=>{props.navigation.navigate("MyPageScreen")}}/>
             <Button title={"PackageScreen_3_2"} onPress={()=>{props.navigation.navigate("PackageScreen_3_2")}}/>
             <Button title={"PackageScreen_3_3"} onPress={()=>{props.navigation.navigate("PackageScreen_3_3")}}/>
+            <Button title={"Test_ShopScreen"} onPress={()=>{props.navigation.navigate("Test_ShopScreen")}}/>
         </SafeAreaView>
     )
 }

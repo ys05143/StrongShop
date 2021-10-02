@@ -33,8 +33,14 @@ const DetailModal = styled.View`
 `;
 
 function SelectDetailOption (props){
+    const [touchable, setTouchable] = React.useState(props.touchable);
     const [isChoose, setIsChoose] = React.useState(props.choose);
     const [modal, setModal] = React.useState(false);
+
+    React.useEffect(()=>{
+        setTouchable(props.touchable);
+        if(props.touchable === false) { setIsChoose(false); sendChoose(false);}
+    },[props.touchable])
 
     function sendChoose(bool){
         props.getChoose(bool);
@@ -45,8 +51,8 @@ function SelectDetailOption (props){
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
                 <TouchableOpacity>
-                <Icon onPress={()=>{ sendChoose(!isChoose);
-                                    setIsChoose(!isChoose)}} name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                <Icon onPress={()=>{ if(touchable) {sendChoose(!isChoose);
+                                    setIsChoose(!isChoose)}}} name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
                 </TouchableOpacity>
                 <SelectName>{props.name}</SelectName>
                 <Icon name="help-circle-outline" size={18} style={{color: 'gray'}} onPress={()=>{setModal(true)}}></Icon>
