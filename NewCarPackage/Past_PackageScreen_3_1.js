@@ -21,7 +21,6 @@ const HEIGHT = AppWindow.height;
 ///////////////////////////////
 const IntroView = styled.View`
     flex: 2;
-    border-bottom-width: 1px;
     justify-content: center;
     align-items: center;
     padding: 5px;
@@ -68,9 +67,10 @@ const InitialResult = {
     underdeafening: false,
 }
 
-function PackageScreen_3(props) {
+function Past_PackageScreen_3_1(props) {
     
     const [result, setResult] = React.useState(InitialResult);
+    //서버와 통신 전에 항상 start 조작하기
     const [start, setStart] = React.useState(false);
 
     const [TintingChoose, setTintingChoose] = React.useState(false);
@@ -218,7 +218,7 @@ function PackageScreen_3(props) {
                 </AllSelectView> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {cancelOptions()}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {cancelOptions();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
                         <Button mode={"contained"} onPress={() => {storeOptions();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                     </Row>
                 </BtnView>
@@ -230,4 +230,4 @@ function PackageScreen_3(props) {
     );
 }
 
-export default PackageScreen_3;
+export default Past_PackageScreen_3_1;

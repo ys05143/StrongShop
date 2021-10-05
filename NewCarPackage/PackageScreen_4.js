@@ -71,14 +71,15 @@ const RegionView = styled.View`
 `;
 const PickerView = styled.View`
     border: 1px;
-    border-radius: 10px;
+    border-radius: 1px;
     margin-top: 5px;
 `;
 
 function PackageScreen_4(props){
     const [text, setText] = React.useState(null);
+    //서버와 통신 전에 항상 start 조작하기
     const [start, setStart] = React.useState(false);
-    const [selectedLanguage, setSelectedLanguage] = React.useState(null);
+    const [selectedRegion, setSelectedRegion] = React.useState(null);
 
     //useEffect 내에서 async 추천 하지 않음 promise then catch 형태로 추후 수정해야함.
     React.useEffect( ()=>{
@@ -87,7 +88,7 @@ function PackageScreen_4(props){
             if(res !== null && (res.require !== null || res.region !== null)){
                 console.log('In page 4 useEffect: ', res);
                 setText(res.require);
-                setSelectedLanguage(res.region);
+                setSelectedRegion(res.region);
                 setStart(true);
             }
             else{
@@ -107,7 +108,7 @@ function PackageScreen_4(props){
             currentOrder = {...res};
             currentOrder.processPage = 3;
             currentOrder.require = text !==null ? text : null;
-            currentOrder.region = selectedLanguage !==null ? selectedLanguage : null;
+            currentOrder.region = selectedRegion !==null ? selectedRegion : null;
         })
         .catch(e => {
             console.log(e);
@@ -121,11 +122,13 @@ function PackageScreen_4(props){
         .catch(e => {
             console.log(e);
         });
-        //완료를 누르면 저장하던 BidOrder를 서버에 전달한 후 remove 해야한다.  
+        //완료를 누르면 저장하던 BidOrder를 서버에 전달한 후 asyncStorage에서 remove 해야한다.  
     }
 
     function cancelRequire(){
         //지금 까지의 입력 싹 다 취소
+        setText(null);
+        setSelectedRegion(null);
         // props.navigation.goBack();
         props.navigation.navigate("PackageScreen_3");
     }
@@ -151,10 +154,8 @@ function PackageScreen_4(props){
                         <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
                         <PickerView>
                             <Picker
-                            selectedValue={selectedLanguage}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setSelectedLanguage(itemValue)
-                            }>
+                            selectedValue={selectedRegion}
+                            onValueChange={(itemValue, itemIndex) => setSelectedRegion(itemValue)}>
                                 <Picker.Item label="없음" value={null}/>
                                 <Picker.Item label="서울" value="seoul" />
                                 <Picker.Item label="대전" value="daejeon" />
@@ -170,7 +171,7 @@ function PackageScreen_4(props){
                 : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {cancelRequire}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {cancelRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
                         <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>완료</Button>
                     </Row>
                 </BtnView>

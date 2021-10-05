@@ -145,7 +145,7 @@ const merchadiseList= [
         name: '언더코팅',
     }];
 
-function PackageScreen_3_3(props) {
+function PackageScreen_3(props) {
     
     const [result, setResult] = React.useState(InitialResult);
     const [start, setStart] = React.useState(false);
@@ -473,4 +473,4 @@ function PackageScreen_3_3(props) {
     );
 }
 
-export default PackageScreen_3_3;
+export default PackageScreen_3;

@@ -8,19 +8,18 @@ import { DefaultTheme, DataTable, Provider as PaperProvider } from 'react-native
 import MainScreen from './Main/MainScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
-import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
+import PackageScreen_3 from './NewCarPackage/PackageScreen3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import ShopScreen_1 from './Shop/ShopScreen_1';
-import ShopScreen_Test from './Shop/ShopScreen_Test';
 import AnimatedTest from './Shop/AnimatedTest';
 import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
 import RecordScreen from './Mypage/RecordScreen';
-import MapTest from './Shop/MapTest';
-import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
-import PackageScreen_3_2_2 from './NewCarPackage/PackageScreen_3_2_2';
-import PackageScreen_3_3 from './NewCarPackage/PackageScreen3_3';
+import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
+import Past_PackageScreen_3_1 from './NewCarPackage/Past_PackageScreen_3_1';
+import Past_PackageScreen_3_2 from './NewCarPackage/Past_PackageScreen_3_2';
+import Past_PackageScreen_3_2_2 from './NewCarPackage/Past_PackageScreen_3_2_2';
 import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
 import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
@@ -51,7 +50,7 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_1" component={PackageScreen_1} options={{headerShown:false}}/>}
         {/* 신차패키지 2 */}
         {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 */}
+        {/* 신차패키지 3 ver 3.0*/}
         {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>}
         {/* 신차패키지 4 */}
         {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
@@ -65,18 +64,16 @@ function App (props) {
         {<Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{headerShown:false}}/>}
         {/* 과거 기록 페이지 */}
         {<Stack.Screen name="RecordScreen" component={RecordScreen} options={{headerShown:false}}/>}
-        {/* 지도test */}
-        {<Stack.Screen name="MapTest" component={MapTest} options={{headerShown:false}}/>}
-        {/* 업체 작업갤러리 상세 test */}
-        {<Stack.Screen name="ShopScreen_Test" component={ShopScreen_Test} options={{headerShown:false}}/>}
+        {/* 리뷰 등록 페이지 */}
+        {<Stack.Screen name="RegisterReviewScreen" component={RegisterReviewScreen} options={{headerShown:false}}/>}
         {/* 애니메이션 test */}
         {<Stack.Screen name="AnimatedTest" component={AnimatedTest} options={{headerShown:false}}/>}
         {/* 신차패키지 3 ver 2.0 */}
-        {<Stack.Screen name="PackageScreen_3_2" component={PackageScreen_3_2} options={{headerShown:false}}/>}
+        {<Stack.Screen name="Past_PackageScreen_3_2" component={Past_PackageScreen_3_2} options={{headerShown:false}}/>}
         {/* 신차패키지 3 ver 2.0 */}
-        {<Stack.Screen name="PackageScreen_3_2_2" component={PackageScreen_3_2_2} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 ver 3.0 */}
-        {<Stack.Screen name="PackageScreen_3_3" component={PackageScreen_3_3} options={{headerShown:false}}/>}
+        {<Stack.Screen name="Past_PackageScreen_3_2_2" component={Past_PackageScreen_3_2_2} options={{headerShown:false}}/>}
+        {/* 신차패키지 3 ver 1.0 */}
+        {<Stack.Screen name="Past_PackageScreen_3_1" component={Past_PackageScreen_3_1} options={{headerShown:false}}/>}
         {/* DetailOption 고르기 */}
         {<Stack.Screen name="DetailOptionScreen" component={DetailOptionScreen} options={{headerShown:false}}/>}
         {/* 업체페이지 Test Ver */}

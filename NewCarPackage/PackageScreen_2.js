@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
-import { Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import { Button, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 //pages
@@ -94,52 +94,19 @@ function PackageScreen_2 (props) {
     const [search, setSearch] = React.useState(null); //modal로 부터 받은 차량 검색어
     const [searchModal, setSearchModal] = React.useState(false);
     const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
-    const [existingDialog, setExistingDialog] = React.useState(false);
-    const [start, setStart] = React.useState(false);
-    
-    const hideDialog = () => setExistingDialog(false);
 
     React.useEffect( ()=>{
         fetch('BidOrder')
         .then(res=>{
             if(res !== null && res.carName !== null) {   
                 console.log('In page 2 useEffect: ', res);         
-                getValue(res.carName);
+                getData(res.carName);
             }
         })
         .catch(e=>{
             console.log(e);
         });
     },[]);
-
-    async function CancelExisting(){
-        await AsyncStorage.removeItem('BidOrder', ()=>{
-            setSearch(null);
-            setResult(null);
-            setExistingDialog(false);
-        });
-    }
-    async function OKExisting(){
-        
-        await fetch('BidOrder')
-        .then(res=>{
-            if(res.processPage === 1){
-                setExistingDialog(false);
-            }
-            else if(res.processPage === 2){
-                props.navigation.navigate("PackageScreen_3");
-                setExistingDialog(false);
-            }
-            else if(res.processPage === 3){
-                props.navigation.navigate("PackageScreen_4");
-                setExistingDialog(false);
-            }
-        })
-        .catch(e=>{
-            console.log(e);
-            setExistingDialog(false);
-        });
-    }
 
     function PrintResult(){
         if(result === null){
@@ -165,7 +132,7 @@ function PackageScreen_2 (props) {
     function getSearchModal(close){
         setSearchModal(close);
     }
-    function getValue(name){
+    function getData(name){
         setSearch(name);
         if(name !== null){
             //modal로 받은 검색어로 서버에 {이름/이미지} 요청
@@ -242,6 +209,8 @@ function PackageScreen_2 (props) {
 
     function cancelCarName(){
         //지금 까지의 입력 싹 다 취소
+        setSearch(null);
+        setResult(null);
         // props.navigation.goBack();
         props.navigation.navigate("PackageScreen_1");
     }
@@ -282,23 +251,11 @@ function PackageScreen_2 (props) {
                     <ModalView>
                         <View style={{width: '90%'}}>
                             <SearchModal getModal={getSearchModal}
-                                        getValue={getValue}
+                                        getData={getData}
                                         search={search}/>
                         </View>
                     </ModalView>
             </Modal>
-            <Portal>
-                <Dialog visible={existingDialog} onDismiss={hideDialog}>
-                    <Dialog.Content>
-                        <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button mode="outlined" onPress={() => {CancelExisting()}}>Cancel</Button>
-                        <Button mode="outlined" onPress={() => {OKExisting()}}>Ok</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-            
         </PaperProvider>
     );
 }

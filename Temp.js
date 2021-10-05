@@ -12,13 +12,10 @@ function Temp(props){
             <Button title={"PackageScreen_4"} onPress={()=>{props.navigation.navigate("PackageScreen_4")}}/>
             <Button title={"PackageScreen_5"} onPress={()=>{props.navigation.navigate("PackageScreen_5")}}/>
             <Button title={"ShopScreen_1"} onPress={()=>{props.navigation.navigate("ShopScreen_1")}}/>
-            <Button title={"MapTest"} onPress={()=>{props.navigation.navigate("MapTest")}}/>
-            <Button title={"ShopScreen_Test"} onPress={()=>{props.navigation.navigate("ShopScreen_Test")}}/>
             <Button title={"AnimatedTest"} onPress={()=>{props.navigation.navigate("AnimatedTest")}}/>
             <Button title={"MyPageScreen"} onPress={()=>{props.navigation.navigate("MyPageScreen")}}/>
-            <Button title={"PackageScreen_3_2"} onPress={()=>{props.navigation.navigate("PackageScreen_3_2")}}/>
-            <Button title={"PackageScreen_3_3"} onPress={()=>{props.navigation.navigate("PackageScreen_3_3")}}/>
             <Button title={"Test_ShopScreen"} onPress={()=>{props.navigation.navigate("Test_ShopScreen")}}/>
+            <Button title={"RegisterReviewScreen"} onPress={()=>{props.navigation.navigate("RegisterReviewScreen")}}/>
         </SafeAreaView>
     )
 }

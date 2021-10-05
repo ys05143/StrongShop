@@ -36,7 +36,7 @@ function SearchModal(props){
         props.getModal(false);
     }
     function sendText(){
-        props.getValue(text === '' ? null : text);
+        props.getData(text === '' ? null : text);
     }
     return (
         <Total>

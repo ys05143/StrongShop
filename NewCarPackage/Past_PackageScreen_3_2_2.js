@@ -58,69 +58,40 @@ const AllSelectView = styled.View`
     background-color: #e5e5e5;
     border-radius: 25px;
 `;
-const InitialResult = {
-    tinting: false,
-    detailTinting: null,
-    ppf: false,
-    detailPpf: null,
-    blackbox: false,
-    detailBalackbox: null,
-    battery: false,
-    detailBattery: null,
-    afterblow: false,
-    detailAfterblow: null,
-    //추가옵션
-    soundproof: false,
-    detailSoundproof: null,
-    wrapping: false,
-    detailwrapping: null,
-    glasscoating: false,
-    undercoating: false,
-    etc: null,
-}
 
-function PackageScreen_3_2(props) {
-    
-    const [result, setResult] = React.useState(InitialResult);
+function Past_PackageScreen_3_2_2(props) {
+    const [result, setResult] = React.useState(props.route.params.optionList);
     const [start, setStart] = React.useState(false);
 
-    const [TintingChoose, setTintingChoose] = React.useState(false);
-    function getTintingChoose(bool){
-        setTintingChoose(bool);
+    const [SoundproofChoose, setSoundproofChoose] = React.useState(false);
+    function getSoundproofChoose(bool){
+        setSoundproofChoose(bool);
         const newData = {...result};
-        newData.tinting=bool;
+        newData.soundproof=bool;
         setResult(newData);
     }
 
-    const [PPFChoose, setPPFChoose] = React.useState(false);
-    function getPPFChoose(bool){
-        setPPFChoose(bool);
+    const [WrappingChoose, setWrappingChoose] = React.useState(false);
+    function getWrappingChoose(bool){
+        setWrappingChoose(bool);
         const newData = {...result};
-        newData.ppf=bool;
+        newData.wrapping=bool;
         setResult(newData);
     }
 
-    const [BlackBoxChoose, setBlackBoxChoose] = React.useState(false);
-    function getBlackBoxChoose(bool){
-        setBlackBoxChoose(bool);
+    const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
+    function getGlassCoatingChoose(bool){
+        setGlassCoatingChoose(bool);
         const newData = {...result};
-        newData.blackbox=bool;
+        newData.glasscoating=bool;
         setResult(newData);
     }
 
-    const [BatteryChoose, setBatteryChoose] = React.useState(false);
-    function getBatteryChoose(bool){
-        setBatteryChoose(bool);
+    const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
+    function getUnderCoatingChoose(bool){
+        setUnderCoatingChoose(bool);
         const newData = {...result};
-        newData.battery=bool;
-        setResult(newData);
-    }
-
-    const [Afterblow, setAfterblow] = React.useState(false);
-    function getAfterblow(bool){
-        setAfterblow(bool);
-        const newData = {...result};
-        newData.afterblow=bool;
+        newData.undercoating=bool;
         setResult(newData);
     }
 
@@ -135,8 +106,9 @@ function PackageScreen_3_2(props) {
         //         setTintingChoose(res.options.tinting);
         //         setPPFChoose(res.options.ppf);
         //         setBlackBoxChoose(res.options.blackbox);
-        //         setBatteryChoose(res.options.battery);
-        //         setAfterblow(res.options.afterblow);
+        //         setGlassCoatingChoose(res.options.glasscoating);
+        //         setUnderCoatingChoose(res.options.undercoating);
+        //         setUnderDeafeningChoose(res.options.underdeafening);
         //         setStart(true);
         //     }
         //     else{
@@ -149,58 +121,55 @@ function PackageScreen_3_2(props) {
         setStart(true);
     },[])
 
-    // async function storeOptions(){
-    //     let currentOrder;
-    //     await fetch('BidOrder')
-    //     .then(res => {
-    //         currentOrder = {...res};
-    //         if(currentOrder.processPage !== 3) currentOrder.processPage = 2;
-    //         currentOrder.options = result;
-    //     })
-    //     .catch(e => {
-    //         console.log(e);
-    //     });
-    //     await store('BidOrder', currentOrder);
-    //     props.navigation.navigate("PackageScreen_4");
-    //     //for check
-    //     await fetch('BidOrder')
-    //     .then(res => {
-    //         console.log('In page 3 check: ', res);
-    //     })
-    //     .catch(e => {
-    //         console.log(e);
-    //     });
-    // }
+    async function storeOptions(){
+        let currentOrder;
+        await fetch('BidOrder')
+        .then(res => {
+            currentOrder = {...res};
+            if(currentOrder.processPage !== 3) currentOrder.processPage = 2;
+            currentOrder.options = result;
+        })
+        .catch(e => {
+            console.log(e);
+        });
+        await store('BidOrder', currentOrder);
+        props.navigation.navigate("PackageScreen_4");
+        //for check
+        await fetch('BidOrder')
+        .then(res => {
+            console.log('In page 3 check: ', res);
+        })
+        .catch(e => {
+            console.log(e);
+        });
+    }
 
     return(
         <TotalView color={'white'} notchColor={'white'}>
             <IntroView>
                 <Intro>
-                    <IntroText>{'원하시는 시공을\n선택해주세요.'}</IntroText>
+                    <IntroText>{'추가 시공을\n선택해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>
                 {start === true ? <AllSelectView>
-                    <Select getChoose={getTintingChoose} 
-                            choose={TintingChoose} 
-                            name={'틴팅'}/>
-                    <Select getChoose={getPPFChoose} 
-                            choose={PPFChoose} 
-                            name={'PPF'}/>
-                    <Select getChoose={getBlackBoxChoose} 
-                            choose={BlackBoxChoose} 
-                            name={'블랙박스'}/>
-                    <Select getChoose={getBatteryChoose}
-                            choose={BatteryChoose} 
-                            name={'보조배터리'}/>
-                    <Select getChoose={getAfterblow}  
-                            choose={Afterblow} 
-                            name={'애프터블로우'}/>
+                    <Select getChoose={getSoundproofChoose} 
+                            choose={SoundproofChoose} 
+                            name={'방음'}/>
+                    <Select getChoose={getWrappingChoose} 
+                            choose={WrappingChoose} 
+                            name={'랩핑'}/>
+                    <Select getChoose={getGlassCoatingChoose}
+                            choose={GlassCoatingChoose} 
+                            name={'유리막코팅'}/>
+                    <Select getChoose={getUnderCoatingChoose}  
+                            choose={UnderCoatingChoose} 
+                            name={'언더코팅'}/>
                 </AllSelectView> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                         <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3_2_2", {optionList: result});}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("DetailOptionScreen", {optionList: result});}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                     </Row>
                 </BtnView>
             </ContentView>
@@ -211,4 +180,4 @@ function PackageScreen_3_2(props) {
     );
 }
 
-export default PackageScreen_3_2;
+export default Past_PackageScreen_3_2_2;
