@@ -8,7 +8,7 @@ import { DefaultTheme, DataTable, Provider as PaperProvider } from 'react-native
 import MainScreen from './Main/MainScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
-import PackageScreen_3 from './NewCarPackage/PackageScreen3';
+import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import ShopScreen_1 from './Shop/ShopScreen_1';
