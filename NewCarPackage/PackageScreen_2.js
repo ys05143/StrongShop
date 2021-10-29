@@ -15,8 +15,7 @@ import ModalView from '../components/ModalView';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
 //function
-import store from '../function/store';
-import fetch from '../function/fetch';
+import storage from '../function/storage';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -90,34 +89,54 @@ const BidOrderList = {
     region: null,
 };
 
-function PackageScreen_2 (props) {
+function PackageScreen_2 (props, {navigation}) {
     const [search, setSearch] = React.useState(null); //modal로 부터 받은 차량 검색어
     const [searchModal, setSearchModal] = React.useState(false);
     const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
+    const [isLoading, setIsLoading] = React.useState(true); //로딩중...
 
-    React.useEffect( ()=>{
-        fetch('BidOrder')
-        .then(res=>{
-            if(res !== null && res.carName !== null) {   
-                console.log('In page 2 useEffect: ', res);         
-                getData(res.carName);
+    React.useEffect(() => {
+        setIsLoading(true);
+        storage.fetch('BidOrder')
+        .then(response => {
+            if(response != null){
+                if(response.carName !== null){
+                    console.log('In page 2 useEffect: ', response);         
+                    getData(response.carName);
+                }
+                else{
+                    console.log('Async error: there is not carName');
+                    AsyncStorage.removeItem('BidOrder')
+                    .then(() => {
+                        console.log('remove bidOrder Async');
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                }
+            }
+            else{
+                setSearch(null);
+                setResult(null);
+                setIsLoading(false);
             }
         })
-        .catch(e=>{
-            console.log(e);
-        });
-    },[]);
+        .catch(error=>{
+            console.log(error);
+        })
+    }, [navigation]);
 
     function PrintResult(){
         if(result === null){
-            if(search !== null){
-                return(
-                    <ActivityIndicator size = 'large' color= {Color.main}/>
-                );
-            }
-            else{
-                return(<></>);
-            }
+            // if(search !== null){
+            //     return(
+            //         <ActivityIndicator size = 'large' color= {Color.main}/>
+            //     );
+            // }
+            // else{
+            //     return(<></>);
+            // }
+            return(<></>);
         }
         else{
             return(
@@ -133,6 +152,7 @@ function PackageScreen_2 (props) {
         setSearchModal(close);
     }
     function getData(name){
+        setIsLoading(true);
         setSearch(name);
         if(name !== null){
             //modal로 받은 검색어로 서버에 {이름/이미지} 요청
@@ -153,40 +173,12 @@ function PackageScreen_2 (props) {
         else{
             setResult(null);
         }
+        setIsLoading(false);
     }
 
     async function storeCarName() {
-        let currentOrder = null;
-        await fetch('BidOrder')
-        .then(res => {
-            if(res !== null){
-                currentOrder = {...res};
-            }
-        })
-        .catch(e => {
-            console.log(e);
-        });
-        if(currentOrder !== null) { //asycn에 저장된 데이터 때문에 왔을 때
-            if(currentOrder.carName === result.name){
-                props.navigation.navigate("PackageScreen_3");
-            }
-            else{
-                let newOrder = {...BidOrderList};
-                newOrder.processPage = 1;
-                newOrder.carName = result.name;
-                await store('BidOrder', newOrder);
-                props.navigation.navigate("PackageScreen_3");
-            }
-        }
-        else{ //async에 저장 없을 때
-            if(result !== null){
-                let newOrder = {...BidOrderList};
-                newOrder.processPage = 1;
-                newOrder.carName = result.name;
-                await store('BidOrder', newOrder);
-                props.navigation.navigate("PackageScreen_3");
-            }
-            else{
+        try{
+            if(result === null){
                 Alert.alert(
                     '경고',
                     '차량을 입력해주세요.',
@@ -196,15 +188,32 @@ function PackageScreen_2 (props) {
                     { cancelable: false }
                   );
             }
+            else{
+                let newOrder = null;
+                const response = await storage.fetch('BidOrder');
+                if(response !== null){
+                    newOrder = {...response};
+                    newOrder.carName = result.name;
+                    if(newOrder.processPage <= 1) newOrder.processPage = 1;
+                    await storage.store('BidOrder', newOrder);
+                    props.navigation.navigate("PackageScreen_3");
+                }
+                else{
+                    newOrder = {...BidOrderList}; 
+                    newOrder.carName = result.name;
+                    newOrder.processPage = 1;
+                    await storage.store('BidOrder', newOrder);
+                    props.navigation.navigate("PackageScreen_3");
+                }
+            }
+            //just check
+            const check = await storage.fetch('BidOrder');
+            console.log('In page 2 check: ', check);
         }
-        //for check
-        await fetch('BidOrder')
-            .then(res => {
-                console.log('In page 2 check: ', res);
-            })
-            .catch(e => {
-                console.log(e);
-            });
+        catch(error){
+            console.log(error);
+            cancelCarName();
+        }
     }
 
     function cancelCarName(){
@@ -212,7 +221,25 @@ function PackageScreen_2 (props) {
         setSearch(null);
         setResult(null);
         // props.navigation.goBack();
-        props.navigation.navigate("PackageScreen_1");
+        props.navigation.navigate("MainScreen");
+    }
+
+    function askCancelCarName(){
+        Alert.alert(
+            '경고',
+            '입력을 취소하시겠습니까?',
+            [
+              {text: 'OK', onPress: () => {
+                //지금 까지의 입력 싹 다 취소
+                setSearch(null);
+                setResult(null);
+                // props.navigation.goBack();
+                props.navigation.navigate("MainScreen");
+              }},
+              {text: '취소', onPress: () => {}}
+            ],
+            { cancelable: true }
+        );
     }
 
     return(
@@ -229,17 +256,17 @@ function PackageScreen_2 (props) {
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>
-                        <PrintResult/>
+                        {!isLoading ? <PrintResult/> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {cancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
                             <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                         </Row>
                     </BtnView>
                 </ContentView>
                 <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                    <Icon name="close-outline" size={35} color={'black'} onPress={()=>{props.navigation.navigate("PackageScreen_1")}}></Icon>
+                    <Icon name="close-outline" size={35} color={'black'} onPress={()=>{askCancelCarName();}}></Icon>
                 </View>
             </TotalView>
             <Modal

@@ -3,20 +3,19 @@ import { View, Text, ScrollView, Image } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button } from 'react-native-paper';
-import ImagePicker from 'react-native-image-crop-picker';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import _ from 'lodash';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const InfoView = styled.View`
     width: 100%;
     height: 150px;
     background-color: lightgray;
     border-radius: 10px;
+    padding: 5px 10px;
 `;
 const AddImgView = styled.TouchableOpacity`
     width: 100px;
@@ -52,7 +51,7 @@ const Input = styled.TextInput`
     padding: 10px;
 `;
 function RegisterReviewScreen(props) {
-    const [shopName, setShopName] = React.useState('올댓오토모빌');
+    const [shopName, setShopName] = React.useState(props.route.params.shopName);
     const [img, setImg] = React.useState([]);
     const [text, setText] = React.useState(null);
 
@@ -75,6 +74,8 @@ function RegisterReviewScreen(props) {
         })
         .then(images => {
             setImg(images);
+            console.log(images);
+            //path => uri:"file://"+item.path or uri: item.path
         })
         .catch(error => {
             console.log(error);
@@ -90,7 +91,11 @@ function RegisterReviewScreen(props) {
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{shopName}</Text>
             </View>
             <View style={{alignItems: 'center', paddingHorizontal: 10}}>
-                <InfoView/>
+                <InfoView>
+                    <ScrollView>
+                        <Text style={{fontSize: 15}}>{props.route.params.contents}</Text>
+                    </ScrollView>
+                </InfoView>
             </View>
             <View style={{height: 120, paddingVertical: 10}}>
                 <ScrollView horizontal={true}>
@@ -101,7 +106,7 @@ function RegisterReviewScreen(props) {
                         _.map(img, (item, index)=>{
                         return( 
                             <AddImg key={index}>
-                                <Image style={{height:'100%',width:'100%'}} source={{uri:"file://"+item.path}}/>
+                                <Image style={{height:'100%',width:'100%'}} source={{uri:item.path}}/>
                             </AddImg>);
                         })}
                 </ScrollView>
@@ -109,7 +114,7 @@ function RegisterReviewScreen(props) {
             <TextView>
                 <Text style={{fontSize: 20}}>후기를 작성해주세요.</Text>
                 <Input multiline={true}
-                            style={{textAlignVertical:'top'}}//only for android
+                            style={{textAlignVertical:'top', borderRadius: 5}}//only for android
                             value={text}
                             onChangeText={value=>setText(value)}
                             placeholder={"여기에 작성해주헤요"}
@@ -118,7 +123,7 @@ function RegisterReviewScreen(props) {
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                     <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
-                    <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
+                    <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
                 </Row>
             </BtnView>
         </TotalView>

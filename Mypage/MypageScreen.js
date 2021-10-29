@@ -16,7 +16,7 @@ const TopBar = styled.View`
     border-bottom-width: 1px;
     border-color: lightgray;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background-color: white;
 `;
@@ -50,6 +50,7 @@ const InfoView = styled.View`
 `;
 const RecordView = styled.View`
     width: 100%;
+    height: 55px;
     background-color: white;
     margin-top: 10px;
 `;
@@ -68,12 +69,12 @@ const PhoneNum = styled.View`
     background-color: #e5e5e5;
     flex-direction: row;
 `;
-const Record = styled.View`
+const Record = styled.TouchableOpacity`
     width: 100%;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    height: 100%;    
     padding: 0px 10px;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
 `;
 
@@ -115,9 +116,15 @@ function MyPageScreen(props){
     return(
         <TotalView>
             <TopBar>
-                <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                <View style={{width: '100%', position: 'absolute'}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                </View>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
-                <Text style={{fontSize: 15}} onPress={()=>{alert('save')}}>저장</Text>
+                <View style={{width: '100%', position: 'absolute', alignItems: 'flex-end'}}>
+                    <TouchableOpacity>
+                        <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{alert('save')}}>저장</Text>
+                    </TouchableOpacity>
+                </View>
             </TopBar>
             <ProfileView>
                 <ProfileImg>
@@ -163,9 +170,9 @@ function MyPageScreen(props){
                 </InfoOptions>
             </InfoView>
             <RecordView>
-                <Record>
+                <Record onPress={()=>{props.navigation.navigate('RecordScreen')}}>
                     <Text>과거 시공 기록</Text>
-                    <Icon name="chevron-forward-outline" size={20} color={'black'} onPress={()=>{props.navigation.navigate('RecordScreen')}}></Icon>
+                    <Icon name="chevron-forward-outline" size={20} color={'black'}></Icon>
                 </Record>
             </RecordView>
         </TotalView>

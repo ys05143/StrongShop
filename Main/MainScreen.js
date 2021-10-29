@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Appbar , Title , Text , Card, Divider , Avatar , IconButton } from 'react-native-paper';
+import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native';
 import Swiper from 'react-native-swiper';
 //constants
 import Color from '../constants/Color';
+//function
+import storage from '../function/storage';
 
 const Row = styled.View`
     flex-direction: row;
@@ -105,16 +108,81 @@ const data = [
 ]
 
 export default function( props ) {
-    const [changeView,setChangeView] = React.useState(true) ;
+    const [changeView,setChangeView] = React.useState(true);
+    const [existingDialog, setExistingDialog] = React.useState(false);
+    const [currentOrder, setCurrentOrder] = React.useState(null);
 
     const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
+
+    const hideDialog = () => setExistingDialog(false);
+
+    async function CheckAsync(){
+        try{
+            const response = await storage.fetch('BidOrder');
+            if(response !== null){
+                console.log('async has orderData: ', response);
+                setCurrentOrder(response);
+                setExistingDialog(true);
+            }
+            else{
+                console.log('async has null')
+                props.navigation.navigate("PackageScreen_2");
+                setExistingDialog(false);
+            }
+        }
+        catch (error){
+            console.log(error);
+        }
+        // .then(res=>{
+        //     if(res !== null){
+        //         console.log('In page 1 has storage: ', res);
+        //         setCurrentOrder(res);
+        //         setExistingDialog(true);
+        //     }
+        //     else{
+        //         props.navigation.navigate("PackageScreen_2");
+        //         setExistingDialog(false);
+        //     }
+        // })
+        // .catch(e=>{
+        //     console.log(e);
+        // });
+    }
+
+    async function CancelExisting(){
+        try{
+            console.log("cancel BidOrder")
+            await AsyncStorage.removeItem('BidOrder', ()=>{
+                props.navigation.navigate("PackageScreen_2");
+                setExistingDialog(false);
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    
+    async function OKExisting(){
+        if(currentOrder.processPage === 1){
+            props.navigation.navigate("PackageScreen_2");
+            setExistingDialog(false);
+        }
+        else if(currentOrder.processPage === 2){
+            props.navigation.navigate("PackageScreen_3");
+            setExistingDialog(false);
+        }
+        else if(currentOrder.processPage === 3){
+            props.navigation.navigate("PackageScreen_4");
+            setExistingDialog(false);
+        }
+    }
 
     return(
         <>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.Content title=''/>
                 <Appbar.Action icon="bell-outline" onPress={() => {}} />
-                <Appbar.Action icon="account-circle" onPress={() => {}} />
+                <Appbar.Action icon="account-circle" onPress={() => {props.navigation.navigate('MyPageScreen')}} />
             </Appbar.Header> 
 
             <View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20}}>
@@ -122,7 +190,7 @@ export default function( props ) {
             </View>
 
             <Row>
-                <MenuButton>
+                <MenuButton onPress={()=>{CheckAsync();}}>
                     <TextRow>
                         <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
                         <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
@@ -200,6 +268,20 @@ export default function( props ) {
                     
                     
             </View>
+
+            <PaperProvider>
+                <Portal>
+                    <Dialog visible={existingDialog} onDismiss={hideDialog}>
+                        <Dialog.Content>
+                            <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button mode="outlined" onPress={() => {CancelExisting()}}>Cancel</Button>
+                            <Button mode="outlined" onPress={() => {OKExisting()}}>Ok</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
+            </PaperProvider>
             
         </>
     );
