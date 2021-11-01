@@ -705,10 +705,10 @@
     "@babel/helper-validator-identifier" "^7.14.8"
     "to-fast-properties" "^2.0.0"
 
-"@baronha/react-native-multiple-image-picker@^0.4.5":
-  "integrity" "sha512-rgYvMDjPnQlW+gl4v/Bkz5VH9Z1ahjPSMcoFbA1fEcTuc8x7JzTBjeHNn6xiK1CVhxR4l52vPDo0JgI7mHdzPA=="
-  "resolved" "https://registry.npmjs.org/@baronha/react-native-multiple-image-picker/-/react-native-multiple-image-picker-0.4.5.tgz"
-  "version" "0.4.5"
+"@baronha/react-native-multiple-image-picker@^0.4.8":
+  "integrity" "sha512-vgkBT+rBhR3nHTQLAKZWbpxo3VezC8tEnwp2m/LPD2fkrPivqBbTCbWgBnas5KzT+HhTmtiYxd36DndJctVuLg=="
+  "resolved" "https://registry.npmjs.org/@baronha/react-native-multiple-image-picker/-/react-native-multiple-image-picker-0.4.8.tgz"
+  "version" "0.4.8"
 
 "@bcoe/v8-coverage@^0.2.3":
   "integrity" "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="
