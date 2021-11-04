@@ -126,28 +126,6 @@ function PackageScreen_2 (props, {navigation}) {
         })
     }, [navigation]);
 
-    function PrintResult(){
-        if(result === null){
-            // if(search !== null){
-            //     return(
-            //         <ActivityIndicator size = 'large' color= {Color.main}/>
-            //     );
-            // }
-            // else{
-            //     return(<></>);
-            // }
-            return(<></>);
-        }
-        else{
-            return(
-                <Result>
-                    <Text style={{fontSize: 50, fontWeight: 'bold'}}>{result.name}</Text>
-                    <Image source={{uri: result.image}} style={{width: '100%', height: 200}}/>
-                </Result>
-            );
-        }
-    }
-
     function getSearchModal(close){
         setSearchModal(close);
     }
@@ -220,7 +198,14 @@ function PackageScreen_2 (props, {navigation}) {
         //지금 까지의 입력 싹 다 취소
         setSearch(null);
         setResult(null);
-        // props.navigation.goBack();
+        AsyncStorage.removeItem('BidOrder')
+                    .then(() => {
+                        console.log('remove bidOrder Async');
+                        props.navigation.navigate("MainScreen");
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
         props.navigation.navigate("MainScreen");
     }
 
@@ -229,14 +214,20 @@ function PackageScreen_2 (props, {navigation}) {
             '경고',
             '입력을 취소하시겠습니까?',
             [
-              {text: 'OK', onPress: () => {
+              {text: '네', onPress: () => {
                 //지금 까지의 입력 싹 다 취소
                 setSearch(null);
                 setResult(null);
-                // props.navigation.goBack();
-                props.navigation.navigate("MainScreen");
+                AsyncStorage.removeItem('BidOrder')
+                    .then(() => {
+                        console.log('remove bidOrder Async');
+                        props.navigation.navigate("MainScreen");
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
               }},
-              {text: '취소', onPress: () => {}}
+              {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
@@ -244,7 +235,7 @@ function PackageScreen_2 (props, {navigation}) {
 
     return(
         <PaperProvider>
-            <TotalView color={'white'} notchColor={'white'}>
+            <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
                 <IntroView>
                     <Intro>
                         <IntroText>{'시공을 원하시는\n차종을 입력해주세요.'}</IntroText>
@@ -256,7 +247,7 @@ function PackageScreen_2 (props, {navigation}) {
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>
-                        {!isLoading ? <PrintResult/> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
+                        {!isLoading ? <Result/> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>

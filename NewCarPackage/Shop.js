@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -25,7 +25,7 @@ const DetailView = styled.View`
     padding-right: 5px;
 `;
 
-function Shop(props) {
+function Shop(props, {navigation}) {
     //for acodian
     const [activeSections, setActiveSections] = React.useState([]);
 
@@ -34,7 +34,9 @@ function Shop(props) {
             <View style={{width: '100%', alignItems: 'center'}}>
                 <ShopView>
                     <NameView> 
-                        <Text style={{fontSize: 20}}>{section.name}</Text>
+                        <TouchableOpacity onPress={()=>{props.navigation.navigate("ShopScreen_1");}}>
+                            <Text style={{fontSize: 20}}>{section.name}</Text>
+                        </TouchableOpacity>
                         <Text style={{fontSize: 12, marginBottom: 3, marginLeft: 10, color: 'gray'}}>{section.simpleRegion}</Text>
                         <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black' style={{marginLeft: 5}}></MaterialIcons>
                     </NameView>
@@ -66,6 +68,7 @@ function Shop(props) {
         renderContent={_renderContent}
         onChange={_updateSections}
         underlayColor='transparent'
+        touchableComponent={TouchableOpacity}
         />
     );
 }

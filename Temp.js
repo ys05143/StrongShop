@@ -14,6 +14,8 @@ function Temp(props){
             <Button title={"ShopScreen_1"} onPress={()=>{props.navigation.navigate("ShopScreen_1")}}/>
             <Button title={"AnimatedTest"} onPress={()=>{props.navigation.navigate("AnimatedTest")}}/>
             <Button title={"MyPageScreen"} onPress={()=>{props.navigation.navigate("MyPageScreen")}}/>
+            <Button title={"ProgressScreen"} onPress={()=>{props.navigation.navigate("ProgressScreen")}}/>
+            
             <Button title={"Test_ShopScreen"} onPress={()=>{props.navigation.navigate("Test_ShopScreen")}}/>
             <Button title={"RegisterReviewScreen"} onPress={()=>{props.navigation.navigate("RegisterReviewScreen")}}/>
         </SafeAreaView>

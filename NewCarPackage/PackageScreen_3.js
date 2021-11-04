@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert } from 'react-native';
+import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList } from 'react-native';
 import styled from 'styled-components/native';
 import { Button } from 'react-native-paper';
 import Icon  from "react-native-vector-icons/Ionicons";
 import Swiper from 'react-native-swiper';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //pages
@@ -66,7 +67,7 @@ const AllSelectView = styled.View`
     padding: 20px 20px;
 `;
 const SelectInSwiper = styled.View`
-    flex: 1;
+    width: ${WIDTH*0.9-40}px;
     background-color: white;
     padding: 5px;
 `;
@@ -74,10 +75,11 @@ const SelectInSwiper = styled.View`
 const OptionName = styled.TouchableOpacity`
     margin-left: 5px;
     margin-right: 5px;
-    border-radius: 25px;
+    border-radius: 50px;
     justify-content: center;
     align-items: center;
     padding: 10px;
+    height: 50px;
 `;
 
 const InputView = styled.TextInput`
@@ -101,7 +103,7 @@ const InitialOptions = {
         ETC: "",
     },
     blackbox: false,
-    detailBalackbox: {
+    detailBlackbox: {
         FINETECH: false,
         INAVI: false,
         ANY: false,
@@ -125,7 +127,7 @@ const InitialOptions = {
     },
     wrapping: false,
     detailWrapping: {
-        ETC: "",
+        DESIGN: "",
     },
     glasscoating: false,
     undercoating: false,
@@ -133,31 +135,31 @@ const InitialOptions = {
 const merchadiseList= [
     {
         id: 0,
-        name: '틴팅',
+        data: ['틴팅'],
     },{
         id: 1,
-        name: 'PPF',
+        data: ['PPF'],
     },{
         id: 2,
-        name: '블랙박스',
+        data: ['블랙박스'],
     },{
         id: 3,
-        name: '보조배터리',
+        data: ['보조배터리'],
     },{
         id: 4,
-        name: '애프터블로우',
+        data: ['애프터블로우'],
     },{
         id: 5,
-        name: '방음',
+        data: ['방음'],
     },{
         id: 6,
-        name: '랩핑',
+        data: ['랩핑'],
     },{
         id: 7,
-        name: '유리막코팅',
+        data: ['유리막코팅'],
     },{
         id: 8,
-        name: '언더코팅',
+        data: ['언더코팅'],
     }];
 
 function PackageScreen_3(props) {
@@ -244,28 +246,28 @@ function PackageScreen_3(props) {
     function getBlackboxANY(bool){
         setBlackboxANY(bool);
         const newData = {...result};
-        newData.detailBalackbox.ANY = bool;
+        newData.detailBlackbox.ANY = bool;
         setResult(newData);
     }
     const [BlackboxETC, setBlackboxETC] = React.useState("");
     function getBlackboxETC(str){
         setBlackboxETC(str);
         const newData = {...result};
-        newData.detailBalackbox.ETC = str;
+        newData.detailBlackbox.ETC = str;
         setResult(newData);
     }
     const [FINETECH, setFINETECH] = React.useState(false);
     function getFINETECH(bool){
         setFINETECH(bool);
         const newData = {...result};
-        newData.detailBalackbox.FINETECH = bool;
+        newData.detailBlackbox.FINETECH = bool;
         setResult(newData);
     }
     const [INAVI, setINAVI] = React.useState(false);
     function getINAVI(bool){
         setINAVI(bool);
         const newData = {...result};
-        newData.detailBalackbox.INAVI = bool;
+        newData.detailBlackbox.INAVI = bool;
         setResult(newData);
     }
 
@@ -346,7 +348,7 @@ function PackageScreen_3(props) {
     function getWrappingETC(str){
         setWrappingETC(str);
         const newData = {...result};
-        newData.detailWrapping.ETC = str;
+        newData.detailWrapping.DESIGN = str;
         setResult(newData);
     }
 
@@ -383,10 +385,10 @@ function PackageScreen_3(props) {
                 setPPFChoose(result.options.ppf);
                 setPPFETC(result.options.detailPpf.ETC);
                 setBlackboxChoose(result.options.blackbox);
-                setBlackboxANY(result.options.detailBalackbox.ANY);
-                setBlackboxETC(result.options.detailBalackbox.ETC);
-                setFINETECH(result.options.detailBalackbox.FINETECH);
-                setINAVI(result.options.detailBalackbox.INAVI);
+                setBlackboxANY(result.options.detailBlackbox.ANY);
+                setBlackboxETC(result.options.detailBlackbox.ETC);
+                setFINETECH(result.options.detailBlackbox.FINETECH);
+                setINAVI(result.options.detailBlackbox.INAVI);
                 setBatteryChoose(result.options.battery);
                 setBatteryANY(result.options.detailBattery.ANY);
                 setBatteryETC(result.options.detailBattery.ETC);
@@ -397,7 +399,7 @@ function PackageScreen_3(props) {
                 setSoundproofANY(result.options.detailSoundproof.ANY);
                 setSoundproofETC(result.options.detailSoundproof.ETC);
                 setWrappingChoose(result.options.wrapping);
-                setWrappingETC(result.options.detailWrapping.ETC);
+                setWrappingETC(result.options.detailWrapping.DESIGN);
                 setGlassCoatingChoose(result.options.glasscoating);
                 setUnderCoatingChoose(result.options.undercoating);
             }
@@ -415,10 +417,6 @@ function PackageScreen_3(props) {
               );
         })
     },[]);
-
-    React.useEffect(()=>{
-        scrollX.current.scrollTo({x: 10*currentIndex*currentIndex});
-    },[currentIndex]);
 
     async function storeCarName() {
         try{
@@ -471,13 +469,13 @@ function PackageScreen_3(props) {
     function askCancelOptions(){
         Alert.alert(
             '경고',
-            '현재 페이지의 입력을 취소하시겠습니까?\n이 페이지에 입력된 내용은 저장되지 않습니다.',
+            '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
             [
-              {text: 'OK', onPress: () => {
+              {text: '네', onPress: () => {
                 setResult(InitialOptions);
                 props.navigation.navigate("MainScreen");
               }},
-              {text: '취소', onPress: () => {}}
+              {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
@@ -493,38 +491,34 @@ function PackageScreen_3(props) {
     }
 
     return(
-        <KeyboardAwareScrollView>
-        <TotalView color={'white'} notchColor={'white'}>
+        <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <IntroView>
                 <Intro>
                     <IntroText>{'원하시는 시공을\n선택해주세요.'}</IntroText>
                 </Intro>
             </IntroView>
             <ContentView>
-                <ScrollView style={{flexDirection: 'row', height: 70, backgroundColor: 'white'}} 
-                                        horizontal={true} 
-                                        contentContainerStyle={{alignItems: 'center'}} 
-                                        ref={scrollX}>
-                    {_.map(merchadiseList, (item) => {
+                <SectionList
+                    style={{width: '100%'}}
+                    ref={scrollX}
+                    horizontal={true}
+                    sections={merchadiseList}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({item, section} ) => {
                         return(
-                            <OptionName  key={item.id} style={{backgroundColor: item.id === currentIndex ? Color.main : 'white'}}  onPress={()=>{swiper.current.scrollBy(item.id-currentIndex, true);}}>
-                                <Text style={{color: item.id === currentIndex? 'white' : 'black'}}>{item.name}</Text>
-                            </OptionName>
-                        );}
-                    )}
-                </ScrollView>
+                        <OptionName style={{backgroundColor: section.id === currentIndex ? Color.main : 'white'}} onPress={()=>{swiper.current.scrollToIndex({"index": section.id, "prevIndex": section.id-1}, true); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
+                            <Text style={{color: section.id === currentIndex? 'white' : 'black'}}>{item}</Text>
+                        </OptionName>
+                        )
+                    }}
+                />
                 <AllSelectView>
                     {!isLoading ? 
-                    <Swiper showsButtons={true} 
-                    buttonWrapperStyle={{alignItems: 'flex-end', paddingVertical: 10}} 
-                    paginationStyle={{bottom: 10}}
-                    activeDotColor={Color.main}
-                    prevButton={<SwiperButton name="arrow-back-outline"/>}
-                    nextButton={<SwiperButton name="arrow-forward-outline"/>}
-                    loop={false}
-                    scrollEnabled={false}
+                    <SwiperFlatList 
+                    index={0}
                     ref={swiper}
-                    onIndexChanged={(index)=>{setCurrentIndex(index)}}>
+                    onChangeIndex={(index)=>{setCurrentIndex(index.index); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: index.index, viewPosition: 0.5})}}>
                         <SelectInSwiper>    
                             <Select4Screen3_3 getChoose={getTintingChoose} 
                                                 choose={TintingChoose} 
@@ -640,7 +634,7 @@ function PackageScreen_3(props) {
                                                 choose={WrappingChoose} 
                                                 name={'랩핑'}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
+                                <Text style={{fontSize: 18, color: 'black'}}>디자인</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={WrappingETC}
                                         onChangeText={(value)=>{getWrappingETC(value);}}/>
@@ -656,11 +650,11 @@ function PackageScreen_3(props) {
                                                 choose={UnderCoatingChoose} 
                                                 name={'언더코팅'}/>
                         </SelectInSwiper>
-                    </Swiper>  : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
+                    </SwiperFlatList>  : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                 </AllSelectView>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
                         <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
                     </Row>
                 </BtnView>

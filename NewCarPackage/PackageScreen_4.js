@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, ActivityIndicator, Alert, Modal } from 'react-native';
+import { Text, View, ActivityIndicator, Alert, Modal, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _ from 'lodash';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -69,21 +70,57 @@ const Input = styled.TextInput`
     padding: 10px;
 `;
 const RegionView = styled.View`
-    width: 90%;
+    width: 95%;
     flex: 1;
-    margin-top: 15px;
+    margin-top: 20px;
 `;
-const PickerView = styled.View`
+const PickerView = styled.TouchableOpacity`
     border: 1px;
     border-radius: 1px;
     margin-top: 5px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+`;
+const PickItem = styled.TouchableOpacity`
+    border-bottom-width: 1px;
+    width: 95%;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    border-color: gray;
 `;
 
+const REGION =[
+    {
+        value: '서울',
+        key: 'seoul',
+    },{
+        value: '인천',
+        key: 'incheon',
+    },{
+        value: '대전',
+        key: 'daejeon',
+    },{
+        value: '대구',
+        key: 'daegu',
+    },{
+        value: '부산',
+        key: 'busan',
+    },{
+        value: '광주',
+        key: 'gwangju',
+    },{
+        value: '제주',
+        key: 'jeju',
+    },];
 function PackageScreen_4(props){
     const [text, setText] = React.useState(null);
     //서버와 통신 전에 항상 start 조작하기
     const [searchModal, setSearchModal] = React.useState(false);
     const [selectedRegion, setSelectedRegion] = React.useState(null);
+    const [displayRegion, setDisplayRegion] = React.useState('서울');
+    const [regionModal, setRegionModal] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSending, setIsSending] = React.useState(false);
 
@@ -128,7 +165,7 @@ function PackageScreen_4(props){
                 newOrder = {...response};
                 newOrder.processPage = 3;
                 newOrder.require = text !==null ? text : null;
-                newOrder.region = selectedRegion !==null ? selectedRegion : null;
+                newOrder.region = selectedRegion;
                 await storage.store('BidOrder', newOrder);
             }
             else{ 
@@ -143,6 +180,7 @@ function PackageScreen_4(props){
             }
             const check = await storage.fetch('BidOrder');
             if(check !== null){
+                console.log(check);
                 setSearchModal(true);
             }
             else{
@@ -156,17 +194,6 @@ function PackageScreen_4(props){
                   );
             }
             console.log('In page 4 check: ', check);
-            console.log(JSON.stringify(check));
-            // await AsyncStorage.removeItem('BidOrder', ()=>{
-            //     Alert.alert(
-            //         '완료',
-            //         '견적 등록을 완료했습니다.',
-            //         [
-            //           {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen"); setIsSending(false);}},
-            //         ],
-            //         { cancelable: false }
-            //       );
-            // });
         }
         catch(error){
             console.log(error);
@@ -184,14 +211,14 @@ function PackageScreen_4(props){
     function askCancelRequire(){
         Alert.alert(
             '경고',
-            '현재 페이지의 입력을 취소하시겠습니까?\n현재 페이지에 입력된 내용은 저장되지 않습니다.',
+            '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
             [
-              {text: 'OK', onPress: () => {
+              {text: '네', onPress: () => {
                 setText(null);
                 setSelectedRegion(null);
                 props.navigation.navigate("MainScreen");
               }},
-              {text: '취소', onPress: () => {}}
+              {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
@@ -204,8 +231,8 @@ function PackageScreen_4(props){
 
     return(
         <>
-        <KeyboardAwareScrollView>
-        <TotalView color={'white'} notchColor={'white'}>
+        <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <IntroView>
                 <Intro>
                     <IntroText>{'업체에게 전달할\n별도의 요구사항을\n입력해주세요.'}</IntroText>
@@ -222,8 +249,8 @@ function PackageScreen_4(props){
                             placeholderTextColor="gray"/>
                     <RegionView>
                         <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
-                        <PickerView>
-                            <Picker
+                        <PickerView onPress={()=>{setRegionModal(true)}}>
+                            {/* <Picker
                             selectedValue={selectedRegion}
                             onValueChange={(itemValue, itemIndex) => {setSelectedRegion(itemValue);}}>
                                 <Picker.Item label="없음" value={null}/>
@@ -234,20 +261,21 @@ function PackageScreen_4(props){
                                 <Picker.Item label="인천" value="incheon" />
                                 <Picker.Item label="광주" value="gwangju" />
                                 <Picker.Item label="제주" value="jeju" />
-                            </Picker>
+                            </Picker> */}
+                            <Text>{displayRegion}</Text>
                         </PickerView>
                     </RegionView>
                 </InputView> 
                 : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
                         <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>완료</Button>
                     </Row>
                 </BtnView>
             </ContentView>
             <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                <Icon name="close-outline" size={35} color={'black'} onPress={()=>{storeRequire();}}></Icon>
+                <Icon name="close-outline" size={35} color={'black'} onPress={()=>{askCancelRequire();}}></Icon>
             </View>
         </TotalView>
         {isSending && <View style={{width: WIDTH, height: HEIGHT, position: 'absolute', alignItems: 'center', justifyContent: 'center', backgroundColor: sendingColor}}>
@@ -263,10 +291,40 @@ function PackageScreen_4(props){
         >
             <ModalView>
                 <View style={{width: '90%'}}>
-                                <Receipt getModal={getSearchModal}/>
-                            </View>
+                    <Receipt getModal={getSearchModal} navigation={props.navigation}/>
+                </View>
             </ModalView>
-    </Modal>
+        </Modal>
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={regionModal}
+            onRequestClose={() => {setRegionModal(!regionModal);}}
+        >
+            <ModalView>
+                <View style={{width: '90%', height: 350, backgroundColor: 'white'}}>
+                    <ScrollView contentContainerStyle={{alignItems: 'center'}}
+                                persistentScrollbar={true}
+                                showsVerticalScrollIndicator={true}>
+                        {_.map(REGION, (item)=>{
+                            return(
+                                <PickItem key={item.key} onPress={()=>{setSelectedRegion(item.key); console.log(selectedRegion); setDisplayRegion(item.value); setRegionModal(false);}}>
+                                    <Text>{item.value}</Text>
+                                </PickItem>
+                            )
+                        })}
+                    </ScrollView>
+                    <View style={{height: 70, justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{width: 100}}>
+                            <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{setRegionModal(false);}}>
+                                <Text>완료</Text>
+                            </Button>
+                        </View>
+                    </View>
+                </View>
+            </ModalView>
+        </Modal>
     </>
     );
 }

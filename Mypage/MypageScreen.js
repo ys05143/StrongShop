@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, TextInput } from 'react-native';
+import { Text, View, Image, TextInput, TouchableOpacity, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Avatar, Badge, Switch } from 'react-native-paper';
@@ -7,7 +7,6 @@ import { Avatar, Badge, Switch } from 'react-native-paper';
 import TotalView from '../components/TotalView';
 //constant
 import Color from '../constants/Color';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const TopBar = styled.View`
     height: 60px;
@@ -16,7 +15,7 @@ const TopBar = styled.View`
     border-bottom-width: 1px;
     border-color: lightgray;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background-color: white;
 `;
@@ -114,17 +113,15 @@ function MyPageScreen(props){
     }, [phoneNumInput])
     
     return(
-        <TotalView>
+        <TotalView notchColor={'white'}>
             <TopBar>
-                <View style={{width: '100%', position: 'absolute'}}>
+                <TouchableOpacity>
                     <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
-                </View>
+                </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
-                <View style={{width: '100%', position: 'absolute', alignItems: 'flex-end'}}>
-                    <TouchableOpacity>
-                        <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{alert('save')}}>저장</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity>
+                    <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{alert('save')}}>저장</Text>
+                </TouchableOpacity>
             </TopBar>
             <ProfileView>
                 <ProfileImg>
@@ -147,7 +144,7 @@ function MyPageScreen(props){
                 <InfoOptions>
                     <Text>휴대전화</Text>
                     <PhoneNum>
-                        <TextInput style={{width: 190}}
+                        <TextInput style={{width: 190, paddingLeft: 5}}
                                     keyboardType={'number-pad'}
                                     placeholder={'01012341234'}
                                     value={phoneNumInput}

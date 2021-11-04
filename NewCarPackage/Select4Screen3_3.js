@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, Modal, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Text, Modal, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon  from "react-native-vector-icons/Ionicons";

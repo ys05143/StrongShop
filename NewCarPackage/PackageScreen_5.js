@@ -146,7 +146,7 @@ const DATA = [{
 
 function PackageScreen_5(props){
     return(
-        <TotalView color={'white'} notchColor={'white'}>
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TitleView>
                 <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{props.route.params.carName}</Text>
                 <TimeView>
@@ -159,7 +159,7 @@ function PackageScreen_5(props){
                     <ScrollView>
                         {_.map(DATA, (item)=>{
                             return(
-                                <Shop key={item.id} item={[item]}></Shop>
+                                <Shop key={item.id} item={[item]} navigation={props.navigation}></Shop>
                             )
                         })}
                     </ScrollView>

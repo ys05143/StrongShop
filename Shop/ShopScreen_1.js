@@ -302,7 +302,7 @@ function ShopScreen_1(props){
 
     
   return(
-    <TotalView>
+    <TotalView notchColor={Color.main}>
       <Animated.View
         style={[styles.header]}>
         {!isLoading && <Animated.Image
@@ -325,39 +325,39 @@ function ShopScreen_1(props){
           ]}>
             <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{DATA.shopName}</Text>
         </Animated.View>}
-    </Animated.View>
-    <Animated.View
+      </Animated.View>
+      <Animated.View
         style={[
         styles.topBar,
         {
             transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
         },
         ]}>
-        <View style={{width: 35}}>
-          <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
-        </View>
-        <Animated.View
-          style={[null,{
-            opacity: textOpacity,
-          }]}>
-          <Intro onPress={()=>{setInitial();}}>
-            <Text style={styles.title}>{DATA.shopName}</Text>
-          </Intro>
-        </Animated.View>
-        {!totalFirst && <Animated.View style={[{marginLeft: 15}, {opacity: twinkle}]}>
-          <Text style={{color: 'white'}}>{'<- 업체명을 터치하시면\n원래상태로 돌아갑니다.'}</Text>
+          <View style={{width: 35}}>
+            <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
+          </View>
+          <Animated.View
+            style={[null,{
+              opacity: textOpacity,
+            }]}>
+            <Intro onPress={()=>{setInitial();}}>
+              <Text style={styles.title}>{DATA.shopName}</Text>
+            </Intro>
+          </Animated.View>
+          {!totalFirst && <Animated.View style={[{marginLeft: 15}, {opacity: twinkle}]}>
+            <Text style={{color: 'white'}}>{'<- 업체명을 터치하시면\n원래상태로 돌아갑니다.'}</Text>
         </Animated.View>}  
-    </Animated.View>
-    <Animated.View
-      style={{
-        position: 'absolute',
-        width: '100%',
-        transform: [{ translateY: Pan.y }],
-        height: HEIGHT-HEADER_MIN_HEIGHT,
-        marginTop: HEADER_MAX_HEIGHT,
-      }}
-    >
-      {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
+      </Animated.View>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          transform: [{ translateY: Pan.y }],
+          height: HEIGHT-HEADER_MIN_HEIGHT,
+          marginTop: HEADER_MAX_HEIGHT,
+        }}
+      >
+        {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
                                                             swipeEnabled: false, 
                                                             tabBarIndicatorStyle: {backgroundColor: Color.main},
                                                             tabBarActiveTintColor: Color.main,
@@ -368,10 +368,10 @@ function ShopScreen_1(props){
           <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={shopData.shopName} merchandise={shopData.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={shopData.shopName} review={shopData.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
           
-      </Tab.Navigator> : 
-      <ActivityIndicator size = 'large' color= {'white'}/>}
+        </Tab.Navigator> : 
+        <ActivityIndicator size = 'large' color= {'white'}/>}
       </Animated.View>
-  </TotalView>
+    </TotalView>
   );
 }
 

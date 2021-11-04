@@ -17,6 +17,8 @@ import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
+import ProgressScreen from './Mypage/ProgressScreen';
+
 import Past_PackageScreen_3_1 from './NewCarPackage/Past_PackageScreen_3_1';
 import Past_PackageScreen_3_2 from './NewCarPackage/Past_PackageScreen_3_2';
 import Past_PackageScreen_3_2_2 from './NewCarPackage/Past_PackageScreen_3_2_2';
@@ -66,6 +68,9 @@ function App (props) {
         {<Stack.Screen name="RecordScreen" component={RecordScreen} options={{headerShown:false}}/>}
         {/* 리뷰 등록 페이지 */}
         {<Stack.Screen name="RegisterReviewScreen" component={RegisterReviewScreen} options={{headerShown:false}}/>}
+        {/* 시공중 페이지 */}
+        {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
+
         {/* 애니메이션 test */}
         {<Stack.Screen name="AnimatedTest" component={AnimatedTest} options={{headerShown:false}}/>}
         {/* 신차패키지 3 ver 2.0 */}
@@ -78,6 +83,7 @@ function App (props) {
         {<Stack.Screen name="DetailOptionScreen" component={DetailOptionScreen} options={{headerShown:false}}/>}
         {/* 업체페이지 Test Ver */}
         {<Stack.Screen name="Test_ShopScreen" component={Test_ShopScreen} options={{headerShown:false}}/>}
+
 
       </Stack.Navigator>
     </NavigationContainer>

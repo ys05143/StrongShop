@@ -1,13 +1,12 @@
 import React from 'react'
 import styled from 'styled-components/native';
-import { Text, View, FlatList } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Card, Provider as PaperProvider } from 'react-native-paper';
 import _ from 'lodash';
 import moment from 'moment';
 //component
 import TotalView from '../components/TotalView';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
 const TopBar = styled.View`
@@ -17,7 +16,7 @@ const TopBar = styled.View`
     border-bottom-width: 1px;
     border-color: lightgray;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background-color: white;
 `;
@@ -35,7 +34,7 @@ const DATA = [
         date: '20170120',
         shopName: '올댓카니발',
         price: 3000000,
-        contents: "블랙박스 파인테크 300만원",
+        finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
         id: 2,
@@ -44,7 +43,7 @@ const DATA = [
         date: '20180318',
         shopName: '올댓오토모빌',
         price: 5000000,
-        contents: "블랙박스 파인테크 300만원",
+        finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
         id: 3,
@@ -53,7 +52,7 @@ const DATA = [
         date: '20200604',
         shopName: '카샵',
         price: 2000000,
-        contents: "블랙박스 파인테크 300만원",
+        finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
         id: 4,
@@ -62,14 +61,14 @@ const DATA = [
         date: '20211126',
         shopName: '올댓카니발',
         price: 1500000,
-        contents: "블랙박스 파인테크 300만원",
+        finalReceipt: "블랙박스 파인테크 300만원",
     }
 ]
 
 function RecordScreen(props) {
 
-    function gotoRegisterReview(shopName, contents){
-        props.navigation.navigate("RegisterReviewScreen", {shopName: shopName, contents: contents});
+    function gotoRegisterReview(shopName, finalReceipt){
+        props.navigation.navigate("RegisterReviewScreen", {shopName: shopName, finalReceipt: finalReceipt});
     }
     function renderItem({item}){
         return(
@@ -84,7 +83,7 @@ function RecordScreen(props) {
                                     subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                     subtitle={item.carName} 
                                     right={(props) => <TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
-                                                                        onPress={()=>{gotoRegisterReview(item.shopName, item.contents);}}>
+                                                                        onPress={()=>{gotoRegisterReview(item.shopName, item.finalReceipt);}}>
                                                             <Text>리뷰쓰기</Text>           
                                                         </TouchableOpacity>}/> 
                         <Card.Content>
@@ -100,12 +99,13 @@ function RecordScreen(props) {
     }
 
     return(
-        <TotalView color={'white'} notchColor={'white'}>
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <View style={{width: '100%', position: 'absolute'}}>
+                <TouchableOpacity>
                     <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
-                </View>
+                </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
+                <View style={{width: 15}}/>
             </TopBar>
             <FlatList  data={DATA}
                     renderItem={renderItem}

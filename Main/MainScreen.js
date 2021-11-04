@@ -81,33 +81,53 @@ const data = [
         id: 1,
         carImage: 'https://picsum.photos/0' ,
         carName: '아반떼' ,
-        status: 1 , // 입찰 중
+        status: 1 , // 출고지 지정
         time: Date() ,
+        companyName: '카샵',
     } ,
     {
         id: 2,
         carImage: 'https://picsum.photos/0' ,
         carName: '소나타' ,
-        status: 2 , // 업체 선정
+        status: 2 , // 신차검수
         time: Date() ,
+        companyName: '올댓오토모빌',
     } ,
     {
         id: 3,
         carImage: 'https://picsum.photos/100' ,
         carName: '티볼리' ,
-        status: 3 , // 출고지 지정
+        status: 3 , // 시공중
         time: Date() ,
+        companyName: '카컴온',
     } ,
     {
         id: 4,
         carImage: 'https://picsum.photos/200' ,
         carName: '코나' ,
-        status: 4 , // 신차검수
+        status: 4 , // 시공완료
         time: Date() ,
+        companyName: '레츠드릴',
+    } ,
+    {
+        id: 5,
+        carImage: 'https://picsum.photos/200' ,
+        carName: 'K3' ,
+        status: 5 , // 입찰중
+        time: Date() ,
+        companyName: '상수카샵',
+    } ,
+    {
+        id: 6,
+        carImage: 'https://picsum.photos/200' ,
+        carName: 'K5' ,
+        status: 6 , // 업체선정
+        time: Date() ,
+        companyName: '대구카닥터',
     }
 ]
 
-export default function( props ) {
+function MainScreen( props ) {
     const [changeView,setChangeView] = React.useState(true);
     const [existingDialog, setExistingDialog] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
@@ -177,6 +197,11 @@ export default function( props ) {
         }
     }
 
+    function StatusMove(state, carName, companyName){
+        if(state === 5 || state === 6) props.navigation.navigate("PackageScreen_5",{carName: carName});
+        else if(state ===1 || state === 2 || state === 3 || state === 4) props.navigation.navigate("ProgressScreen", {state: state, companyName: companyName});
+    }
+
     return(
         <>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
@@ -222,10 +247,10 @@ export default function( props ) {
                                 {
                                 data.map(item=>{
                                     return(
-                                        <Card key={item.id} style={styles.card} onPress={()=>{}}>
+                                        <Card key={item.id} style={styles.card} onPress={()=>{StatusMove(item.status, item.carName, item.companyName)}}>
                                         <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            subtitle={item.status == 1 ? '입찰중' : item.status ==2 ? '업체선정' : item.status ==3 ? '출고지 지정' : item.status ==4 ? '신차검수' : ''} />
+                                            subtitle={item.status == 1 ? '출고지 지정' : item.status ==2 ? '신차검수' : item.status ==3 ? '시공' : item.status == 4 ? '시공 완료' : item.status == 5 ? '입찰 중' :item.status == 6 ? '업체 선정' : ''} />
                                         <Card.Content>
                                         <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
                                         </Card.Content>
@@ -244,7 +269,7 @@ export default function( props ) {
                                 {
                                     data.map(item=>{
                                         return(
-                                            <Card key={item.id} style={{ flex: 1 }} onPress={()=>{ alert('click')}}>
+                                            <Card key={item.id} style={{ flex: 1 }} onPress={()=>{StatusMove(item.status, item.carName, item.companyName)}}>
                                                 <TextRow style={{ flex: 1}}>
                                                     <View style={{ flex: 3 }}>
                                                         <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    
@@ -276,8 +301,8 @@ export default function( props ) {
                             <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
                         </Dialog.Content>
                         <Dialog.Actions>
-                            <Button mode="outlined" onPress={() => {CancelExisting()}}>Cancel</Button>
-                            <Button mode="outlined" onPress={() => {OKExisting()}}>Ok</Button>
+                            <Button mode="contained" color={Color.main} style={{width: 70}} onPress={() => {OKExisting()}}>네</Button>
+                            <Button mode="contained" color={Color.main} style={{marginLeft: 10, width: 70}} onPress={() => {CancelExisting()}}>아니요</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
@@ -286,3 +311,5 @@ export default function( props ) {
         </>
     );
 }
+
+export default MainScreen;

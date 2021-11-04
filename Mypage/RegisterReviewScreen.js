@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
-import { Button } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import _ from 'lodash';
 import TotalView from '../components/TotalView';
@@ -50,6 +50,7 @@ const Input = styled.TextInput`
     color: #000000;
     padding: 10px;
 `;
+
 function RegisterReviewScreen(props) {
     const [shopName, setShopName] = React.useState(props.route.params.shopName);
     const [img, setImg] = React.useState([]);
@@ -83,17 +84,21 @@ function RegisterReviewScreen(props) {
     }
 
     return(
-        <TotalView>
-            <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', position: 'absolute'}}>
-                <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{ props.navigation.goBack() }}></Icon>
-            </View>
-            <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center'}}>
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
+            <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{shopName}</Text>
             </View>
-            <View style={{alignItems: 'center', paddingHorizontal: 10}}>
+            <TouchableOpacity style={{height: AppWindow.TopBar, justifyContent: 'center', position: 'absolute'}}  onPress={()=>{ props.navigation.goBack() }}>
+                <Icon name="chevron-back-outline" size={35} color={'black'}></Icon>
+            </TouchableOpacity>
+            <View style={{alignItems: 'center', paddingHorizontal: 10, marginTop: 5}}>
                 <InfoView>
                     <ScrollView>
-                        <Text style={{fontSize: 15}}>{props.route.params.contents}</Text>
+                        <Row style={{alignItems: 'center'}}>
+                            <Icon name={'ellipse'} style={{marginRight: 5}}/>
+                            <Title>시공내역</Title>
+                        </Row>
+                        <Text style={{fontSize: 15}}>{props.route.params.finalReceipt}</Text>
                     </ScrollView>
                 </InfoView>
             </View>
@@ -117,7 +122,7 @@ function RegisterReviewScreen(props) {
                             style={{textAlignVertical:'top', borderRadius: 5}}//only for android
                             value={text}
                             onChangeText={value=>setText(value)}
-                            placeholder={"여기에 작성해주헤요"}
+                            placeholder={"솔직한 후기를 작성해주헤요"}
                             placeholderTextColor="gray"/>
             </TextView>
             <BtnView>
