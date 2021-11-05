@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { DefaultTheme, DataTable, Provider as PaperProvider } from 'react-native-paper';
 import MainScreen from './Main/MainScreen';
+import LoginScreen from './Main/LoginScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
@@ -48,6 +49,8 @@ function App (props) {
         {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>}
         {/* 메인화면 */}
         {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>}
+        {/* 메인화면 */}
+        {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
         {/* 신차패키지 1 */}
         {<Stack.Screen name="PackageScreen_1" component={PackageScreen_1} options={{headerShown:false}}/>}
         {/* 신차패키지 2 */}
