@@ -208,10 +208,10 @@ function Receipt(props){
                     </View>}
                 </View>
                 {receipt !== null && receipt.region !== null &&
-                <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}>
+                <View style={{width: '100%', marginBottom: 10, alignItems: 'center', flexDirection: 'row'}}>
                     <Icon name="chevron-forward-outline" size={20}></Icon>
                     <Text style={{fontSize: 20, marginRight: 10}}>시공 지역</Text>
-                    <Text style={{fontSize: 15, marginRight: 250}}>{receipt === null ? '': translate('region', receipt.region)}</Text>
+                    <Chip style={{margin: 3}}>{receipt === null ? '': translate('region', receipt.region)}</Chip>
                 </View>}
                 
                 {receipt !== null && receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>

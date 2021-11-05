@@ -118,7 +118,7 @@ function PackageScreen_4(props){
     const [text, setText] = React.useState(null);
     //서버와 통신 전에 항상 start 조작하기
     const [searchModal, setSearchModal] = React.useState(false);
-    const [selectedRegion, setSelectedRegion] = React.useState(null);
+    const [selectedRegion, setSelectedRegion] = React.useState('seoul');
     const [displayRegion, setDisplayRegion] = React.useState('서울');
     const [regionModal, setRegionModal] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
