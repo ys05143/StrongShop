@@ -39,12 +39,12 @@ function LoginScreen(props){
                 <View style={{borderWidth: 2, borderColor: 'white', width: '80%', height: 50, borderRadius: 10, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{color: 'white'}}>로그인</Text>
                 </View>
-                {/* <TouchableOpacity style={{width: '100%', height: 50}}>
+                <TouchableOpacity style={{width: '100%', height: 50}} onPress={signInWithKakao}>
                     <Image source={require('../resource/kakao_login_large_wide.png')} style={{width: '100%', height: '100%'}} resizeMode={'contain'}/>
                 </TouchableOpacity>
                 <View>
                     <Text style={{color: 'white'}}>{result !== null? result: 'there is no token'}</Text>
-                </View> */}
+                </View>
             </View>
         </TotalView>
     )
