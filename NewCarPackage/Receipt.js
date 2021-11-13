@@ -4,10 +4,15 @@ import { Button, Chip } from 'react-native-paper';
 import styled from 'styled-components/native';
 import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 //constant
 import Color from '../constants/Color';
 import storage from '../function/storage';
+import checkJwt from '../function/checkJwt';
 import Icon  from "react-native-vector-icons/Ionicons";
+//server
+import server from '../server';
 
 const Total = styled.View`
     width: 100%;
@@ -33,34 +38,113 @@ const DetailOptions = styled.View`
 
 function Receipt(props){
     const [receipt, setReceipt] = React.useState(null);
-    async function finishOrder(){
-        await AsyncStorage.removeItem('BidOrder', ()=>{
+    const [region, setRegion] = React.useState(null);
+
+    async function finishOrder(){ // 서버에 오더 전송
+        try{
+            // if(receipt !== null){
+            //     const auth = await checkJwt();
+            //     if(auth !== null){
+            //         const response = await axios({
+            //             method: 'POST',
+            //             url : `${server.url}/api/orders` ,
+            //             data : {
+            //                 details: JSON.stringify(receipt),
+            //                 region: region,
+            //             },
+            //             headers : {Auth: auth},
+            //         });
+            //         console.log(response);
+    
+            //         await AsyncStorage.removeItem('BidOrder', ()=>{
+            //             Alert.alert(
+            //                 '완료',
+            //                 '견적 등록을 완료했습니다.',
+            //                 [
+            //                     {text: 'OK', onPress: () => {
+            //                             console.log("remove async Bid")
+            //                             props.navigation.navigate("MainScreen");
+            //                         }
+            //                     },
+            //                 ],
+            //                 { cancelable: false }
+            //             );
+            //         });
+            //         sendModal(false);
+            //     }
+            //     else{
+            //         Alert.alert(
+            //             '실패',
+            //             '로그인이 필요합니다.',
+            //             [
+            //                 {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
+            //             ],
+            //             { cancelable: false }
+            //         );
+            //     }
+            // }
+            // else{
+            //     Alert.alert(
+            //         '실패',
+            //         '작성한 견적이 없습니다.',
+            //         [
+            //             {text: 'OK', onPress: () => {}},
+            //         ],
+            //         { cancelable: false }
+            //     );
+            // } 
+            
+            //for test
+            await AsyncStorage.removeItem('BidOrder', ()=>{
+                Alert.alert(
+                    '완료',
+                    '견적 등록을 완료했습니다.',
+                    [
+                        {text: 'OK', onPress: () => {
+                                console.log("remove async Bid")
+                                props.navigation.navigate("MainScreen");
+                            }
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            });
+            sendModal(false);
+        }
+        catch{
             Alert.alert(
-                '완료',
-                '견적 등록을 완료했습니다.',
+                '오류',
+                '견적 등록을 실패했습니다.',
                 [
-                    {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen");}},
+                    {text: 'OK', onPress: () => {}},
                 ],
                 { cancelable: false }
-                );
-        });
-        props.getModal(false);
+            );
+        }
+        
     }
 
     function sendModal(){
         props.getModal(false);
     }
+
+    const isFocused = useIsFocused();
     React.useEffect( ()=>{
-        storage.fetch('BidOrder')
-        .then(res =>{
-            setReceipt(res);
-            if(res !== null){
-                console.log(res);
-            }
-        })
-        .catch(e => {
-            console.log(error);
-        })
+        //console.log(isFocused);
+        if(isFocused){
+            storage.fetch('BidOrder')
+            .then(res =>{
+                setReceipt(res);
+                setRegion(res.region);
+                if(res !== null){
+                    //console.log(res);
+                    console.log(JSON.stringify(res));
+                }
+            })
+            .catch(e => {
+                console.log(error);
+            })
+        }
     },[]);
     
     function translate(option,item){
@@ -116,90 +200,89 @@ function Receipt(props){
     }
     return (
         <Total>
-            <SearchView>
+            { receipt !== null && <SearchView>
                 <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
                 </View>
                 <View style={{width: '100%', marginBottom: 10}}>
-                    
-                    {receipt !== null && receipt.options.tinting === true &&
+                    {receipt.options.tinting === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>틴팅</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailTinting'], (key,item)=>{ if(key) return(translate('tinting',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('tinting',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailTinting'], (key,item)=>{ if(key) return(translate('tinting',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('tinting',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.ppf === true &&
+                    {receipt.options.ppf === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>PPF</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailPpf'], (key,item)=>{ if(key) return(translate('ppf',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('ppf',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailPpf'], (key,item)=>{ if(key) return(translate('ppf',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('ppf',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.blackbox === true &&
+                    {receipt.options.blackbox === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>블랙박스</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailBlackbox'], (key,item)=>{ if(key) return(translate('blackbox',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('blackbox',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailBlackbox'], (key,item)=>{ if(key) return(translate('blackbox',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('blackbox',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.battery === true &&
+                    {receipt.options.battery === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>보조배터리</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailBattery'], (key,item)=>{ if(key) return(translate('battery',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('battery',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailBattery'], (key,item)=>{ if(key) return(translate('battery',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('battery',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.afterblow === true &&
+                    {receipt.options.afterblow === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>애프터블로우</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailAfterblow'], (key,item)=>{ if(key) return(translate('afterblow',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('afterblow',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailAfterblow'], (key,item)=>{ if(key) return(translate('afterblow',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('afterblow',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.soundproof === true &&
+                    {receipt.options.soundproof === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>방음</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailSoundproof'], (key,item)=>{ if(key) return(translate('soundproof',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('soundproof',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailSoundproof'], (key,item)=>{ if(key) return(translate('soundproof',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('soundproof',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.wrapping === true &&
+                    {receipt.options.wrapping === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>랩핑</Text>
                         </View>
                         <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailWrapping'], (key,item)=>{ if(key) return(translate('wrapping',item) !== "" ?<Chip key={key} style={{margin: 3}}>{translate('wrapping',item)}</Chip>: null)})}
+                            {_.map(receipt.options['detailWrapping'], (key,item)=>{ if(key) return(translate('wrapping',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('wrapping',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
-                    {receipt !== null && receipt.options.glasscoating === true &&
+                    {receipt.options.glasscoating === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
                             <Text style={{fontSize: 20}}>유리막코팅</Text>
                         </View>
                     </View>}
-                    {receipt !== null && receipt.options.undercoating === true &&
+                    {receipt.options.undercoating === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
                             <Icon name="chevron-forward-outline" size={20}></Icon>
@@ -207,14 +290,14 @@ function Receipt(props){
                         </View>
                     </View>}
                 </View>
-                {receipt !== null && receipt.region !== null &&
+                {receipt.region !== null &&
                 <View style={{width: '100%', marginBottom: 10, alignItems: 'center', flexDirection: 'row'}}>
                     <Icon name="chevron-forward-outline" size={20}></Icon>
                     <Text style={{fontSize: 20, marginRight: 10}}>시공 지역</Text>
                     <Chip style={{margin: 3}}>{receipt === null ? '': translate('region', receipt.region)}</Chip>
                 </View>}
                 
-                {receipt !== null && receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>
+                {receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>
                     <Text style={{fontSize: 20 }}>기타 요구사항</Text>
                     <View style={{padding: 10}}>
                         <View style={{width: '100%', backgroundColor: '#e5e5e5', padding: 5, borderRadius: 5}}>
@@ -222,7 +305,7 @@ function Receipt(props){
                         </View>
                     </View>
                 </View>}
-            </SearchView>
+            </SearchView>}
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendModal();}}>
                     <Text>수정</Text>

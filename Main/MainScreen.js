@@ -2,12 +2,17 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native';
+import { ScrollView, Alert } from 'react-native';
 import Swiper from 'react-native-swiper';
+import { useIsFocused } from '@react-navigation/native';
 //constants
 import Color from '../constants/Color';
 //function
 import storage from '../function/storage';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const Row = styled.View`
     flex-direction: row;
@@ -76,52 +81,52 @@ const styles = {
 
 
 // 당신의 차량 DATA
-const data = [
+const DATA = [
     {
-        id: 1,
+        orderId: 1,
         carImage: 'https://picsum.photos/0' ,
         carName: '아반떼' ,
-        status: 1 , // 출고지 지정
+        state: 3 , // 출고지 지정
         time: Date() ,
         companyName: '카샵',
     } ,
     {
-        id: 2,
+        orderId: 2,
         carImage: 'https://picsum.photos/0' ,
         carName: '소나타' ,
-        status: 2 , // 신차검수
+        state: 4 , // 신차검수
         time: Date() ,
         companyName: '올댓오토모빌',
     } ,
     {
-        id: 3,
+        orderId: 3,
         carImage: 'https://picsum.photos/100' ,
         carName: '티볼리' ,
-        status: 3 , // 시공중
+        state: 5 , // 시공중
         time: Date() ,
         companyName: '카컴온',
     } ,
     {
-        id: 4,
+        orderId: 4,
         carImage: 'https://picsum.photos/200' ,
         carName: '코나' ,
-        status: 4 , // 시공완료
+        state: 6 , // 시공완료
         time: Date() ,
         companyName: '레츠드릴',
     } ,
     {
-        id: 5,
+        orderId: 5,
         carImage: 'https://picsum.photos/200' ,
         carName: 'K3' ,
-        status: 5 , // 입찰중
+        state: 1 , // 입찰중
         time: Date() ,
         companyName: '상수카샵',
     } ,
     {
-        id: 6,
+        orderId: 6,
         carImage: 'https://picsum.photos/200' ,
         carName: 'K5' ,
-        status: 6 , // 업체선정
+        state: 2 , // 업체선정
         time: Date() ,
         companyName: '대구카닥터',
     }
@@ -131,8 +136,14 @@ function MainScreen( props ) {
     const [changeView,setChangeView] = React.useState(true);
     const [existingDialog, setExistingDialog] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
+    const [myOrderList, setMyOrderList] = React.useState([]);
 
     const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
+
+    const isFocused = useIsFocused();
+    React.useEffect(()=>{
+        if(isFocused) getData();
+    },[isFocused]);
 
     const hideDialog = () => setExistingDialog(false);
 
@@ -153,20 +164,6 @@ function MainScreen( props ) {
         catch (error){
             console.log(error);
         }
-        // .then(res=>{
-        //     if(res !== null){
-        //         console.log('In page 1 has storage: ', res);
-        //         setCurrentOrder(res);
-        //         setExistingDialog(true);
-        //     }
-        //     else{
-        //         props.navigation.navigate("PackageScreen_2");
-        //         setExistingDialog(false);
-        //     }
-        // })
-        // .catch(e=>{
-        //     console.log(e);
-        // });
     }
 
     async function CancelExisting(){
@@ -197,16 +194,77 @@ function MainScreen( props ) {
         }
     }
 
-    function StatusMove(state, carName, companyName){
-        if(state === 5 || state === 6) props.navigation.navigate("PackageScreen_5",{carName: carName});
-        else if(state ===1 || state === 2 || state === 3 || state === 4) props.navigation.navigate("ProgressScreen", {state: state, companyName: companyName});
+    function StateMove(orderId, state, carName, companyName){
+        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId});
+        else if(state === 3 || state === 4 || state === 5 || state === 6) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state, companyName: companyName});
+    }
+
+    async function getData(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const myOrderResponse = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/orders/user`,
+                    headers : {Auth: auth},
+                });
+                let rawData = myOrderResponse.data.data;
+                if(rawData){
+                    rawData.map(item => {
+                        item['details'] = JSON.parse(item.details) ;
+                    })
+                    //console.log(rawData);
+                    let newData = [];
+                    rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time})});
+                    setMyOrderList(newData);
+                }
+                else{
+                    console.log('my orderList is empty');
+                    setMyOrderList([]);
+                }
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '로그인이 필요합니다.',
+                    [
+                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
+                    ],
+                    { cancelable: false }
+                );
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                '무응답',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );
+        }}
+        
+    }
+    
+    function translateState(state){
+        const item = {
+            'BIDDING' : 1,
+            'BIDDING_COMPLETE' : 2,
+            'DESIGNATING_SHIPMENT_LOCATION' : 3,
+            'CAR_EXAMINATION' : 4,
+            'CONSTRUCTING' : 5,
+            'CONTSTRUCTION_COMPLETED' : 6,
+        }
+        return item[state];
     }
 
     return(
         <>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.Content title=''/>
-                <Appbar.Action icon="bell-outline" onPress={() => {}} />
+                <Appbar.Action icon="bell-outline" onPress={() => {getData();}} />
                 <Appbar.Action icon="account-circle" onPress={() => {props.navigation.navigate('MyPageScreen')}} />
             </Appbar.Header> 
 
@@ -242,15 +300,16 @@ function MainScreen( props ) {
             </TextRow>
             <View style={{ height: 250 , borderBottomWidth: 3 , borderBottomColor: 'lightgray' }}>
                     {
+                        //요청받아서 없으면 빈 리스트 넘겨줌.
                         changeView ? (
                             <ScrollView horizontal={true} style={styles.scrollview}>
                                 {
-                                data.map(item=>{
+                                myOrderList.map(item=>{
                                     return(
-                                        <Card key={item.id} style={styles.card} onPress={()=>{StatusMove(item.status, item.carName, item.companyName)}}>
+                                        <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
                                         <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            subtitle={item.status == 1 ? '출고지 지정' : item.status ==2 ? '신차검수' : item.status ==3 ? '시공' : item.status == 4 ? '시공 완료' : item.status == 5 ? '입찰 중' :item.status == 6 ? '업체 선정' : ''} />
+                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '시공 중' : item.state == 6 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
                                         <Card.Content>
                                         <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
                                         </Card.Content>
@@ -267,16 +326,16 @@ function MainScreen( props ) {
                                 renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
                                 >
                                 {
-                                    data.map(item=>{
+                                    myOrderList.map(item=>{
                                         return(
-                                            <Card key={item.id} style={{ flex: 1 }} onPress={()=>{StatusMove(item.status, item.carName, item.companyName)}}>
+                                            <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
                                                 <TextRow style={{ flex: 1}}>
                                                     <View style={{ flex: 3 }}>
                                                         <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    
                                                     </View>
                                                     <View style={{ flex: 2 }}>
                                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                                            subtitle={item.status == 1 ? '입찰중' : item.status ==2 ? '업체선정' : item.status ==3 ? '출고지 지정' : item.status ==4 ? '신차검수' : ''} />
+                                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '시공 중' : item.state == 6 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
                                                         <Card.Content>
                                                         <Text style={{ fontSize: 20 , padding: 10 }}>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
                                                         </Card.Content>

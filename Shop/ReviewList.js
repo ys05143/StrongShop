@@ -60,25 +60,25 @@ const ContentImg = styled.View`
 `;
 
 const AfterDATA=[{
-    id:1,
+    reviewId:1,
     name: '공진우',
     images : 'https://www.netcarshow.com/Hyundai-Kona_Electric-2021-1280-03.jpg',
     text: '너무 친절하게 잘 해주셨습니다.',
     profileImg: require('../resource/character1.png'),
 },{
-    id:2,
+    reviewId:2,
     name: '김영우',
     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
     text: '그냥 그래요',
     profileImg: null,
 },{
-    id:3,
+    reviewId:3,
     name: '이승진',
     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
     text: '다음차도 여기서 하고싶어요!',
     profileImg: require('../resource/character3.png'),
 },{
-    id:4,
+    reviewId:4,
     name: '허지훈',
     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
     text: '불친절한 직원이 있습니다.',
@@ -92,7 +92,7 @@ function ReviewList(props){
     function renderItem({item}){
         return(
             <View style={{width: WIDTH, alignItems: 'center'}}>
-            <ReviewView key={item.id}>
+            <ReviewView key={item.reviewId}>
                 <NameView>
                     <ProfileImg>
                         <Image  source={item.profileImg===null ? require('../resource/default_profile.png') : item.profileImg} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
@@ -189,7 +189,7 @@ function ReviewList(props){
             >
                 <Animated.FlatList data={props.review}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.reviewId}
                     nestedScrollEnabled={true}
                     scrollEnabled={true}
                     onScroll={Animated.event(

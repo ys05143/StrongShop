@@ -206,17 +206,21 @@ const merchadiseList= [
         data: ['언더코팅'],
     }];
 
-function PackageScreen_3(props) {
+function BeforeModify3(props) {
     
-    //const [result, setResult] = React.useState({...InitialOptions});
+    const [result, setResult] = React.useState({...InitialOptions});
     const [isLoading, setIsLoading] = React.useState(false);
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const scrollX = React.useRef();
     const swiper = React.useRef();
 
+    //let result = {...InitialOptions};
+
     const [TintingChoose, setTintingChoose] = React.useState(false);
     function getTintingChoose(bool){
         setTintingChoose(bool);
+        let newData = {...result};
+        newData.tinting=bool;
         if(bool === false){
             getLUMA(false);
             getSOLAR(false);
@@ -225,10 +229,13 @@ function PackageScreen_3(props) {
             getTintingANY(false);
             getTintingETC('');
         }
+        setResult(newData);
     }
     const [TintingANY, setTintingANY] = React.useState(false);
     function getTintingANY(bool){
         setTintingANY(bool);
+        let newData = {...result};
+        newData.detailTinting.ANY = bool;
         if(bool === true){
             getLUMA(false);
             getSOLAR(false);
@@ -236,189 +243,265 @@ function PackageScreen_3(props) {
             getRAYNO(false);
             getTintingETC('');
         }
+        setResult(newData);
     }
     const [TintingETC, setTintingETC] = React.useState('');
     function getTintingETC(str){ 
         setTintingETC(str);
+        let newData = {...result};
+        newData.detailTinting.ETC = str;
         if(str !== ''){
             getTintingANY(false);
         }
+        setResult(newData);
     }
     const [LUMA, setLUMA] = React.useState(false);
     function getLUMA(bool){
         setLUMA(bool);
+        let newData = {...result};
+        newData.detailTinting.LUMA = bool;
         if(bool === true){
             getTintingANY(false);
         }
+        setResult(newData);
     }
     const [SOLAR, setSOLAR] = React.useState(false);
     function getSOLAR(bool){
         setSOLAR(bool);
+        let newData = {...result};
+        newData.detailTinting.SOLAR = bool;
         if(bool === true){
             getTintingANY(false);
         }
+        setResult(newData);
     }
     const [RAINBOW, setRAINBOW] = React.useState(false);
     function getRAINBOW(bool){
         setRAINBOW(bool);
+        let newData = {...result};
+        newData.detailTinting.RAINBOW = bool;
         if(bool === true){
             getTintingANY(false);
         }
+        setResult(newData);
     }
     const [RAYNO, setRAYNO] = React.useState(false);
     function getRAYNO(bool){
         setRAYNO(bool);
+        let newData = {...result};
+        newData.detailTinting.RAYNO = bool;
         if(bool === true){
             getTintingANY(false);
         }
+        setResult(newData);
     }
  
     const [PPFChoose, setPPFChoose] = React.useState(false);
     function getPPFChoose(bool){
         setPPFChoose(bool);
+        let newData = {...result};
+        newData.ppf=bool;
         if(bool === false){
             getPPFETC('');
         }
+        setResult(newData);
     }
     const [PPFETC, setPPFETC] = React.useState('');
     function getPPFETC(str){ 
         setPPFETC(str);
+        let newData = {...result};
+        newData.detailPpf.ETC = str;
+        setResult(newData);
     }
 
     const [BlackboxChoose, setBlackboxChoose] = React.useState(false);
     function getBlackboxChoose(bool){
         setBlackboxChoose(bool);
+        let newData = {...result};
+        newData.blackbox=bool;
         if(bool === false){
             getFINETECH(false);
             getINAVI(false);
             getBlackboxANY(false);
             getBlackboxETC('');
         }
+        setResult(newData);
     }
     const [BlackboxANY, setBlackboxANY] = React.useState(false);
     function getBlackboxANY(bool){
         setBlackboxANY(bool);
+        let newData = {...result};
+        newData.detailBlackbox.ANY = bool;
         if(bool === true){
             getFINETECH(false);
             getINAVI(false);
             getBlackboxETC('');
         }
+        setResult(newData);
     }
     const [BlackboxETC, setBlackboxETC] = React.useState('');
     function getBlackboxETC(str){
         setBlackboxETC(str);
+        let newData = {...result};
+        newData.detailBlackbox.ETC = str;
         if(str !== ''){
             getBlackboxANY(false);
         }
+        setResult(newData);
     }
     const [FINETECH, setFINETECH] = React.useState(false);
     function getFINETECH(bool){
         setFINETECH(bool);
+        let newData = {...result};
+        newData.detailBlackbox.FINETECH = bool;
         if(bool === true){
             getBlackboxANY(false);
         }
+        setResult(newData);
     }
     const [INAVI, setINAVI] = React.useState(false);
     function getINAVI(bool){
         setINAVI(bool);
+        let newData = {...result};
+        newData.detailBlackbox.INAVI = bool;
         if(bool === true){
             getBlackboxANY(false);
         }
+        setResult(newData);
     }
 
     const [BatteryChoose, setBatteryChoose] = React.useState(false);
     function getBatteryChoose(bool){
         setBatteryChoose(bool);
+        let newData = {...result};
+        newData.battery=bool;
         if(bool === false){
             getBatteryANY(false);
             getBatteryETC('');
         }
+        setResult(newData);
     }
     const [BatteryANY, setBatteryANY] = React.useState(false);
     function getBatteryANY(bool){
         setBatteryANY(bool);
+        let newData = {...result};
+        newData.detailBattery.ANY = bool;
         if(bool === true){
             getBatteryETC('');
         }
+        setResult(newData);
     }
     const [BatteryETC, setBatteryETC] = React.useState('');
     function getBatteryETC(str){
         setBatteryETC(str);
+        let newData = {...result};
+        newData.detailBattery.ETC = str;
         if(str !== ''){
             getBatteryANY(false);
         }
+        setResult(newData);
     }
 
     const [AfterblowChoose, setAfterblowChoose] = React.useState(false);
     function getAfterblowChoose(bool){
         setAfterblowChoose(bool);
+        let newData = {...result};
+        newData.afterblow=bool;
         if(bool === false){
             getAfterblowANY(false);
             getAfterblowETC('');
         }
+        setResult(newData);
     }
     const [AfterblowANY, setAfterblowANY] = React.useState(false);
     function getAfterblowANY(bool){
         setAfterblowANY(bool);
+        let newData = {...result};
+        newData.detailAfterblow.ANY = bool;
         if(bool === true){
             getAfterblowETC('');
         }
+        setResult(newData);
     }
     const [AfterblowETC, setAfterblowETC] = React.useState('');
     function getAfterblowETC(str){
         setAfterblowETC(str);
+        let newData = {...result};
+        newData.detailAfterblow.ETC = str;
         if(str !== ''){
             setAfterblowANY(false);
         }
+        setResult(newData);
     }
 
     const [SoundproofChoose, setSoundproofChoose] = React.useState(false);
     function getSoundproofChoose(bool){
         setSoundproofChoose(bool);
+        let newData = {...result};
+        newData.soundproof=bool;
         if(bool === false){
             getSoundproofANY(false);
             getSoundproofETC('');
         }
+        setResult(newData);
     }
     const [SoundproofANY, setSoundproofANY] = React.useState(false);
     function getSoundproofANY(bool){
         setSoundproofANY(bool);
+        let newData = {...result};
+        newData.detailSoundproof.ANY = bool;
         if(bool === true){;
             getSoundproofETC('');
         }
+        setResult(newData);
     }
     const [SoundproofETC, setSoundproofETC] = React.useState('');
     function getSoundproofETC(str){
         setSoundproofETC(str);
+        let newData = {...result};
+        newData.detailSoundproof.ETC = str;
         if(str !== ''){
             setSoundproofANY(false);
         }
+        setResult(newData);
     }
 
     const [WrappingChoose, setWrappingChoose] = React.useState(false);
     function getWrappingChoose(bool){
         setWrappingChoose(bool);
+        let newData = {...result};
+        newData.wrapping=bool;
         if(bool === false){
             getWrappingETC('');
         }
+        setResult(newData);
     }
     const [WrappingETC, setWrappingETC] = React.useState('');
     function getWrappingETC(str){
         setWrappingETC(str);
+        let newData = {...result};
+        newData.detailWrapping.DESIGN = str;
+        setResult(newData);
     }
 
     const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
     function getGlassCoatingChoose(bool){
         setGlassCoatingChoose(bool);
+        let newData = {...result};
+        newData.glasscoating=bool;
+        setResult(newData);
     }
 
     const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
     function getUnderCoatingChoose(bool){
         setUnderCoatingChoose(bool);
+        let newData = {...result};
+        newData.undercoating=bool;
+        setResult(newData);
     }
     
     async function makeTotal(){
-        let finalresult = {...InitialOptions};
+        let finalresult={...InitialOptions};
         finalresult.tinting= TintingChoose;
         finalresult.detailTinting.ANY = TintingANY;
         finalresult.detailTinting.ETC = TintingETC;
@@ -450,7 +533,7 @@ function PackageScreen_3(props) {
         finalresult.detailSoundproof.ETC = SoundproofETC;
 
         finalresult.wrapping = WrappingChoose;
-        finalresult.detailWrapping.DESIGN = WrappingETC;
+        finalresult.detailWrapping = WrappingETC;
 
         finalresult.glasscoating = GlassCoatingChoose;
 
@@ -462,11 +545,13 @@ function PackageScreen_3(props) {
 
     React.useEffect(()=>{
         setIsLoading(true);
+        console.log('initial',InitialOptions);
         storage.fetch('BidOrder')
         .then(res => {
             console.log(res);
             if(res.options !== null){
                 console.log("In page 3 useEffect: ", res.options);
+                setResult(res.options);
                 setTintingChoose(res.options.tinting);
                 setTintingANY(res.options.detailTinting.ANY);
                 setTintingETC(res.options.detailTinting.ETC);
@@ -498,34 +583,38 @@ function PackageScreen_3(props) {
             }
             else{
                 console.log('no result');
-                // setTintingChoose(false);
-                // setTintingANY(false);
-                // setTintingETC('');
-                // setLUMA(false);
-                // setSOLAR(false);
-                // setRAINBOW(false);
-                // setRAYNO(false);
-                // setPPFChoose(false);
-                // setPPFETC('');
-                // setBlackboxChoose(false);
-                // setBlackboxANY(false);
-                // setBlackboxETC('');
-                // setFINETECH(false);
-                // setINAVI(false);
-                // setBatteryChoose(false);
-                // setBatteryANY(false);
-                // setBatteryETC('');
-                // setAfterblowChoose(false);
-                // setAfterblowANY(false);
-                // setAfterblowETC('');
-                // setSoundproofChoose(false);
-                // setSoundproofANY(false);
-                // setSoundproofETC('');
-                // setWrappingChoose(false);
-                // setWrappingETC('');
-                // setGlassCoatingChoose(false);
-                // setUnderCoatingChoose(false);
+                setResult({...InitialOptions});
+                setTintingChoose(false);
+                setTintingANY(false);
+                setTintingETC('');
+                setLUMA(false);
+                setSOLAR(false);
+                setRAINBOW(false);
+                setRAYNO(false);
+                setPPFChoose(false);
+                setPPFETC('');
+                setBlackboxChoose(false);
+                setBlackboxANY(false);
+                setBlackboxETC('');
+                setFINETECH(false);
+                setINAVI(false);
+                setBatteryChoose(false);
+                setBatteryANY(false);
+                setBatteryETC('');
+                setAfterblowChoose(false);
+                setAfterblowANY(false);
+                setAfterblowETC('');
+                setSoundproofChoose(false);
+                setSoundproofANY(false);
+                setSoundproofETC('');
+                setWrappingChoose(false);
+                setWrappingETC('');
+                setGlassCoatingChoose(false);
+                setUnderCoatingChoose(false);
                 setIsLoading(false);
+                console.log('start result',result);
+                console.log('ETC', TintingETC);
+                console.log('Initial ETC', InitialOptions.detailTinting.ETC);
             }
         })
         .catch(error => {
@@ -543,8 +632,8 @@ function PackageScreen_3(props) {
 
     async function storeCarName() {
         try{
-            let finalOptions = await makeTotal()
-            if(_.isEqual(finalOptions, compareOptions)){
+            console.log(result);
+            if(_.isEqual(result, compareOptions)){
                 Alert.alert(
                     '경고',
                     '시공을 입력해주세요.',
@@ -559,8 +648,9 @@ function PackageScreen_3(props) {
                 const response = await storage.fetch('BidOrder');
                 if(response !== null){ //정상적인 루트로 왔다면 fetch가 반드시 성공.
                     newOrder = {...response};
+                    newOrder.options = {...result};
                     if(newOrder.processPage <= 2) newOrder.processPage = 2;
-                    newOrder.options = finalOptions;
+                    newOrder.options = await makeTotal();
                     await storage.store('BidOrder', newOrder);
                     props.navigation.navigate("PackageScreen_4");
                 }
@@ -586,6 +676,7 @@ function PackageScreen_3(props) {
     }
 
     function cancelOptions(){
+        setResult({...InitialOptions});
         //나머지 모든 체크도 false 시켜야함
         props.navigation.navigate("MainScreen");
     }
@@ -595,6 +686,7 @@ function PackageScreen_3(props) {
             '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
             [
               {text: '네', onPress: () => {
+                setResult({...InitialOptions});
                 props.navigation.navigate("MainScreen");
               }},
               {text: '아니요', onPress: () => {}}
@@ -803,4 +895,4 @@ function PackageScreen_3(props) {
     );
 }
 
-export default PackageScreen_3;
+export default BeforeModify3;

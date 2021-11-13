@@ -28,8 +28,8 @@ const TextRow = styled.View`
 // 당신의 차량 DATA
 const DATA = [
     {
-        id: 1,
-        carImage: 'https://picsum.photos/0' ,
+        orderId: 1,
+        shopImage: 'https://picsum.photos/0' ,
         carName: '카니발' ,
         date: '20170120',
         shopName: '올댓카니발',
@@ -37,8 +37,8 @@ const DATA = [
         finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        id: 2,
-        carImage: 'https://picsum.photos/0' ,
+        orderId: 2,
+        shopImage: 'https://picsum.photos/0' ,
         carName: '소나타' ,
         date: '20180318',
         shopName: '올댓오토모빌',
@@ -46,8 +46,8 @@ const DATA = [
         finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        id: 3,
-        carImage: 'https://picsum.photos/100' ,
+        orderId: 3,
+        shopImage: 'https://picsum.photos/100' ,
         carName: '티볼리' ,
         date: '20200604',
         shopName: '카샵',
@@ -55,8 +55,8 @@ const DATA = [
         finalReceipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        id: 4,
-        carImage: 'https://picsum.photos/200' ,
+        orderId: 4,
+        shopImage: 'https://picsum.photos/200' ,
         carName: '카니발' ,
         date: '20211126',
         shopName: '올댓카니발',
@@ -67,15 +67,15 @@ const DATA = [
 
 function RecordScreen(props) {
 
-    function gotoRegisterReview(shopName, finalReceipt){
-        props.navigation.navigate("RegisterReviewScreen", {shopName: shopName, finalReceipt: finalReceipt});
+    function gotoRegisterReview(orderId, userName, shopName, finalReceipt){
+        props.navigation.navigate("RegisterReviewScreen", {orderId: orderId, userName: userName, shopName: shopName, finalReceipt: finalReceipt});
     }
     function renderItem({item}){
         return(
             <Card style={{flex: 1}}>
                 <TextRow style={{flex: 1}}>
                     <View style={{flex: 2}}>
-                        <Card.Cover source={{uri: item.carImage}} style={{flex: 1}}/>    
+                        <Card.Cover source={{uri: item.shopImage}} style={{flex: 1}}/>    
                     </View>
                     <View style={{flex: 3}}>
                         <Card.Title title={item.shopName} 
@@ -83,7 +83,7 @@ function RecordScreen(props) {
                                     subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                     subtitle={item.carName} 
                                     right={(props) => <TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
-                                                                        onPress={()=>{gotoRegisterReview(item.shopName, item.finalReceipt);}}>
+                                                                        onPress={()=>{gotoRegisterReview(item.orderId, item.userName, item.shopName, item.finalReceipt);}}>
                                                             <Text>리뷰쓰기</Text>           
                                                         </TouchableOpacity>}/> 
                         <Card.Content>
@@ -109,7 +109,7 @@ function RecordScreen(props) {
             </TopBar>
             <FlatList  data={DATA}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}/>
+                    keyExtractor={(item) => item.orderId}/>
         </TotalView>
     );
 }

@@ -78,13 +78,13 @@ const Record = styled.TouchableOpacity`
 `;
 
 const DATA = {
-    profileImg: require('../resource/character4.png'),
-    name: '허지훈',
+    profileImg: 'https://picsum.photos/0',
+    userName: '허지훈',
     phoneNum: '01012345678',
 }
 
 function MyPageScreen(props){
-    const [nameInput, setNameInput] = React.useState(DATA.name);
+    const [nameInput, setNameInput] = React.useState(DATA.userName);
     const [phoneNumInput, setphoneNumInput] = React.useState(DATA.phoneNum);
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     
@@ -127,7 +127,7 @@ function MyPageScreen(props){
                 <ProfileImg>
                     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: 50}}>
                         {DATA.profileImg === null ? <Avatar.Icon size={68} icon="account" style={{backgroundColor: 'white'}}/> :
-                                                    <Image source={DATA.profileImg} style={{height:'100%',width:'100%',}} resizeMode='contain'/>}
+                                                    <Image source={{uri: DATA.profileImg}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>}
                     </View>
                     <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'lightgray', position: 'absolute'}}>
                         <Icon name="pencil-sharp" color={'gray'}></Icon>

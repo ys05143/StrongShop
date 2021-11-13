@@ -146,7 +146,10 @@ function PackageScreen_2 (props, {navigation}) {
                     console.log(e);
                 });
             }*/
-            setResult(DATA);
+            setResult({
+                name: name,
+                image: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+            });
         }
         else{
             setResult(null);
@@ -186,7 +189,7 @@ function PackageScreen_2 (props, {navigation}) {
             }
             //just check
             const check = await storage.fetch('BidOrder');
-            console.log('In page 2 check: ', check);
+            //console.log('In page 2 check: ', check);
         }
         catch(error){
             console.log(error);

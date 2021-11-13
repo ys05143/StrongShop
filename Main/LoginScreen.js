@@ -1,16 +1,22 @@
 import React from 'react' ;
-import styled from 'styled-components';
-import { Title , Button , Text, TextInput } from 'react-native-paper';
+import styled from 'styled-components/native';
+import { Title , Button , Text, } from 'react-native-paper';
 import axios from 'axios';
-import { ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, TextInput } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import IMP from 'iamport-react-native';
+import Icon  from "react-native-vector-icons/Ionicons";
+//functoin
+import storage from '../function/storage';
 //component
 import TotalView from '../components/TotalView';
 //constants
 import Color from '../constants/Color';
+//server
+import server from '../server';
 
 const View = styled.View`
     flex : 1 ;
@@ -54,12 +60,10 @@ const styles = {
 
 }
 
-function LoginScreen({getMain}) {
+function LoginScreen(props) {
     const snapPoints = React.useMemo(() => ['80%'], []);
-    const [businessNumber,setBusinessNumber] = React.useState('');
-    const [openDate,setOpenDate] = React.useState('');
-    const [bossName,setBossName] = React.useState('');
-    const [bottomPage,setBottomPage] = React.useState(1);
+    const [userName,setUserName] = React.useState("");
+    const [userNameFocus,setUserNameFocus] = React.useState(false);
     const [dtoData,setDtoData] = React.useState(null);
 
     const bottomSheetModalRef = React.useRef(null);
@@ -75,14 +79,14 @@ function LoginScreen({getMain}) {
     function requestAccessToken(accessToken) {
         axios({
             method : 'GET' ,
-            url : `${server.url}/api/login/company/kakao` ,
+            url : `${server.url}/api/login/user/kakao` ,
             headers : {
                 Authorization : accessToken
             } ,
         })
         .then( async (res) =>  {
             // 캐시삭제
-            AsyncStorage.clear();
+            //AsyncStorage.clear();
             // 회원가입 필요
             if ( res.data.statusCode == 201 ) {
                 // 추가정보를 사용자로부터 받음.
@@ -93,11 +97,13 @@ function LoginScreen({getMain}) {
             else if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
                 // jwt token cache
-                await store('auth',{ auth : auth });
+                await storage.store('auth',{ auth : auth });
                 // cache 성공 시 -> 메인화면
-                await fetch('auth')
+                await storage.fetch('auth')
                 .then( res => {
-                    if ( res != null ) getMain(true);
+                    if ( res != null ) ;
+                    //로그인 화면 지우기
+                    props.navigation.goBack(); 
                 })
                 .catch ( e => { 
                     //
@@ -115,21 +121,23 @@ function LoginScreen({getMain}) {
         // 서버에게 dtoData 전달
         axios({
             method: 'POST',
-            url : `${server.url}/api/login/company/kakao` ,
+            url : `${server.url}/api/login/user/kakao` ,
             data : {
                 ...dtoData ,
-                businessNumber: businessNumber
+                phoneNumber: '01012341234' ,
+                name: '허지훈',
             }
         })
         .then(async(res) =>{
-            console.log('가입성공:',res);
+
             // 가입성공
             if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
                 // jwt token cache
                 try {
-                    await store('auth',{auth : auth});
-                    getMain(true);
+                    await storage.store('auth',{auth : auth});
+                    // 로그인 화면 제거
+                    props.navigation.goBack();
                 }
                 // cache 성공 시 -> 메인화면
                 catch {
@@ -175,81 +183,23 @@ function LoginScreen({getMain}) {
        }
     }
 
-    // 사업자등록번호 인증
-    const verify = () => {
-
-        // 입력양식 체크
-        // if ( !/[0-9]{10}/.test(businessNumber) && !/[0-9]{8}/.test(openDate) ) {
-        //     Alert.alert('입력양식을 확인해주세요.');
-        //     return;
-        // }
-    
-        // Test ( 사업자 인증 성공 후 )
-        setBottomPage(2);
-        // 서버에게 dtoData 전달
-        // axios({
-        //     method: 'POST',
-        //     url : `${server.url}/api/login/company/kakao` ,
-        //     data : {
-        //         ...dtoData ,
-        //         businessNumber: businessNumber
-        //     }
-        // })
-        // .then(async(res) =>{
-        //     // 가입성공
-        //     if ( res.data.statusCode == 200 ) {
-        //         console.log(res);
-        //         const auth = res.headers.auth;
-        //         console.log(auth);
-        //         // jwt token cache
-        //         try {
-        //             await store('auth',{ auth : auth } );
-        //             getMain(true);
-        //         }
-        //         // cache 성공 시 -> 메인화면
-        //         catch {
-        //             // cache 저장 에러
-        //             console.log('cache 에러');
-        //         }
-        //     }   
-
-        // })
-        // .catch(e => {
-        //     //
-            
-        // })
-
-        
-
-        // 사업자등록 인증
-        // axios({
-        //     method: 'post' ,
-        //     url :  'https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=Te7HPGFjEojhi4%2B4sRjikWXlBCD1Bg%2FAVQzCa9A4gUihNPh%2FRxaFkxk2IJ670MBNRDarlpFsPX67kda7XMXaLA%3D%3D' ,
-        //     data : {
-        //         businesses : [
-        //             {
-        //                 b_no : businessNumber ,
-        //                 start_dt : openDate ,
-        //                 p_nm : bossName ,
-        //                 p_nm2 : '' ,
-        //                 b_nm : '' ,
-        //                 corp_no : '' ,
-        //                 b_sector : '' ,
-        //                 b_type : '' ,
-        //             }
-        //         ]
-        //     }
-        // })
-        // .then( res =>   { 
-
-        //     if(res.data.data[0].valid === '01')  {
-        //         setBottomPage(2);
-        //     }
-        //     else Alert.alert('유효하지 않은 사업자등록증입니다.','다시 한번 확인해주세요.');
-        // }) 
-        // .catch(e => Alert.alert('필수사항을 입력해주세요.') ) ;
-
-    } ;
+    async function logOut(){
+        await AsyncStorage.removeItem('auth', ()=>{
+            Alert.alert(
+                '로그아웃',
+                '로그아웃 하였습니다.',
+                [
+                    {text: 'OK', onPress: async() => {
+                            const allKey = await AsyncStorage.getAllKeys();
+                            console.log(allKey);
+                            //props.navigation.navigate("MainScreen");
+                        }
+                    },
+                ],
+                { cancelable: false }
+            );
+        });
+    }
 
     return(
         <BottomSheetModalProvider>
@@ -273,70 +223,32 @@ function LoginScreen({getMain}) {
                     // enablePanDownToClose={false}
                 >
                 <KeyboardAwareScrollView>
-                    {/* {
-                        bottomPage == 1 && (
-                        <>
-                        // <Button style={styles.guideButton} color='black' icon='information-outline'>이용가이드</Button>
-                        <Title style={styles.title}>나만의 샵을 등록해요. (1/2)</Title>
-                        
-                        <Text style={styles.description}>사업자등록번호</Text>
-                        <TextInput theme={{  color: { primary : Color.main }  }}
-                            value={businessNumber}
-                            onChangeText={value=>{setBusinessNumber(value)}}
-                            keyboardType='number-pad'
-                            placeholder='10자리를 입력하세요 (-없이) '
-                        />
-                        
-                        <Text style={styles.description}>개업일자</Text>
-                        <TextInput theme={{ color: { primary : Color.main }  }}
-                            value={openDate}
-                            onChangeText={value=>{setOpenDate(value)}}
-                            keyboardType='number-pad'
-                            placeholder='YYYYMMDD (예) 2021년 9월 27일 -> 20210927'
-                        />
-                        <Text style={styles.description}>대표자성명</Text>
-                        <TextInput theme={{ color: { primary : Color.main , background: 'white' }  }}
-                            value={bossName}
-                            onChangeText={value=>{setBossName(value)}}
-                            placeholder='홍길동'
-                        />
-                        <Button style={{ marginTop: 10 , height: 50 , justifyContent: 'center' }} 
-                            onPress={() => {verify()}}
-                            mode={businessNumber.length&&openDate.length&&bossName.length ? 'contained' : 'outlined'}  
-                            color={Color.main}>
-                            다음
-                        </Button>
-                        </>
-                        )
-                    }
-                    {
-                        bottomPage == 2 && (
-                            <>
-                            <Title style={styles.title}> {bossName}님으로 인증할게요.(2/2)</Title>
-                            <View style={{ width: '100%' , height: 700 }}>
-                            <IMP.Certification
-                            userCode={'iamport'}  // 가맹점 식별코드
-                            // tierCode={'AAA'}      // 티어 코드: agency 기능 사용자에 한함
-                            data = {{
-                                merchant_uid: `mid_${new Date().getTime()}`,
-                                company: '',
-                                carrier: '',
-                                name: '',
-                                phone: '',
-                                min_age: '',
-                            }
-                            }
-                            loading={<ActivityIndicator />} // 로딩 컴포넌트
-                            callback={phoneAuth}   // 본인인증 종료 후 콜백
-                        />  
-                        </View>
-                        </>
-                        )
-                    } */}
-                    
+                    <>
+                        <Title style={styles.title}> {userName}님으로 인증할게요.(2/2)</Title>
+                        <View style={{ width: '100%' , height: 700 }}>
+                            <Button onPress={requestSignIn}>테스트</Button>
+                        {/* <IMP.Certification
+                        userCode={'iamport'}  // 가맹점 식별코드
+                        // tierCode={'AAA'}      // 티어 코드: agency 기능 사용자에 한함
+                        data = {{
+                            merchant_uid: `mid_${new Date().getTime()}`,
+                            company: '',
+                            carrier: '',
+                            name: '',
+                            phone: '',
+                            min_age: '',
+                        }
+                        }
+                        loading={<ActivityIndicator />} // 로딩 컴포넌트
+                        callback={phoneAuth}   // 본인인증 종료 후 콜백
+                    />   */}
+                    </View>
+                </>
                     </KeyboardAwareScrollView>
                 </BottomSheetModal> 
             </View>
+            <Icon name={'chevron-back-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginLeft: 10}} color={'white'} onPress={()=>{props.navigation.goBack();}}/>
+            <Icon name={'power-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginRight: 10, alignSelf: 'flex-end'}} color={'white'} onPress={()=>{logOut();}}/>
         </TotalView>
         </BottomSheetModalProvider>
     );

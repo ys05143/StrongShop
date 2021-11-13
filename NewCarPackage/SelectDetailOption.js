@@ -41,6 +41,10 @@ function SelectDetailOption (props){
         if(props.touchable === false) { setIsChoose(false); sendChoose(false);}
     },[props.touchable])
 
+    React.useEffect(()=>{
+        setIsChoose(props.choose);
+    },[props.choose]);
+    
     function sendChoose(bool){
         props.getChoose(bool);
     }
