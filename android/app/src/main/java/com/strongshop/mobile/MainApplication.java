@@ -11,6 +11,8 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.facebook.react.bridge.JSIModulePackage;
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,6 +37,11 @@ public class MainApplication extends Application implements ReactApplication {
         protected String getJSMainModuleName() {
           return "index";
         }
+
+          @Override
+          protected JSIModulePackage getJSIModulePackage() {
+              return new ReanimatedJSIModulePackage();
+          }
       };
 
   @Override
