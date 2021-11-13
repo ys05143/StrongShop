@@ -95,13 +95,14 @@ const progress = [
 //서버로 부터 받은 데이터
 const DATA=[
     {
-        state: 4
+        orderId: 1,
+        state: 6
     },{
         address: '서울 광진구 능동로 120'
     },{
-        images: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
+        inspectionImages: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
     },{
-        images: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
+        constructionImages: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
     },{
         address: '서울 광진구 능동로 120',
         finalReceipt: '틴팅: 루마썬팅\n블랙박스: 파인테크\nPPF: \n보조배터리: \n애프터블로우: \n방수: \n랩핑: \n유리막코팅: \n언더코팅\n'
@@ -110,8 +111,8 @@ const DATA=[
 
 
 function ProgressScreen( props ) {
+    const[orderId, setOrderId] = React.useState(props.route.params.orderId);
     const[state,setState] = React.useState(props.route.params.state);
-    const[pictures,setPictures] = React.useState(null);
     const[refresh,setRefresh] = React.useState(false);
     const[visible,setVisible] = React.useState(false);
     const[selectedImage, setSelectedImage] = React.useState(null);
@@ -163,7 +164,7 @@ function ProgressScreen( props ) {
             '출고를 확정하시겠습니까?',
             [
               {text: '네', onPress: () => {
-                props.navigation.navigate("RegisterReviewScreen",{shopName: shopName, finalReceipt: DATA[4].finalReceipt});
+                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, shopName: shopName, finalReceipt: DATA[4].finalReceipt});
               }},
               {text: '아니요', onPress: () => {}}
             ],
@@ -193,18 +194,18 @@ function ProgressScreen( props ) {
                     <Badge size={12} style={{position: 'absolute'}}/>
                 </View>
                 </Appbar.Header>  
-                <ProgressBar style={styles.progress} progress={state/4} color='red'  
+                <ProgressBar style={styles.progress} progress={(state-3)/4} color='red'  
                     theme = {{ animation : { scale : 5 }  }}
                 />
                 <Title style={styles.title}>시공 진행상황</Title>
                 <Title style={{ marginLeft: 20 , color : 'gray' ,marginBottom: 10}}>
                     {
-                        state == 1 ? TEXT.first : state == 2 ? TEXT.second : state == 3 ? TEXT.third : TEXT.fourth 
+                        state == 3 ? TEXT.first : state == 4 ? TEXT.second : state == 5 ? TEXT.third : TEXT.fourth 
                     }
                 </Title>
             </View>
             <SwiperView>
-                <Swiper horizontal={true} index={state-1}
+                <Swiper horizontal={true} index={state-3}
                     showsButtons={true}
                     showsHorizontalScrollIndicator={true}
                     showsPagination={false}
@@ -215,8 +216,8 @@ function ProgressScreen( props ) {
                     // renderPagination = { (index,total) => <Title style={{ alignSelf: 'center'}}>{ index+1}/{total}</Title>}
 
                 >  
-                    {state >= 1 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 1 ? 'red' : 'black'}}>
+                    {state >= 3 && <SwiperView>
+                        <Title style={{ padding: 10 , color : state === 3 ? 'red' : 'black'}}>
                         {'1단계: '}{progress[1].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
@@ -225,13 +226,13 @@ function ProgressScreen( props ) {
                         </View>
                     </SwiperView>}
                     
-                    {state >= 2 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 2 ? 'red' : 'black'}}>
+                    {state >= 4 && <SwiperView>
+                        <Title style={{ padding: 10 , color : state === 4 ? 'red' : 'black'}}>
                         {'2단계: '}{progress[2].title}
                         </Title>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
-                                data={DATA[2].images}
+                                data={DATA[2].inspectionImages}
                                 scrollEnabled={true}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item}
@@ -240,13 +241,13 @@ function ProgressScreen( props ) {
                         </View>
                     </SwiperView>}
 
-                    {state >= 3 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 3 ? 'red' : 'black'}}>
+                    {state >= 5 && <SwiperView>
+                        <Title style={{ padding: 10 , color : state === 5 ? 'red' : 'black'}}>
                         {'3단계: '}{progress[3].title}
                         </Title>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
-                                data={DATA[3].images}
+                                data={DATA[3].constructionImages}
                                 scrollEnabled={true}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item}
@@ -255,8 +256,8 @@ function ProgressScreen( props ) {
                         </View>
                     </SwiperView>}
 
-                    {state >= 4 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 4 ? 'red' : 'black'}}>
+                    {state >= 5 && <SwiperView>
+                        <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
                         {'4단계: '}{progress[4].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>

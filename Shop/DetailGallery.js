@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from 'react-native-swiper';
 import TotalView from '../components/TotalView';
@@ -28,9 +28,6 @@ function DetailGallery(props){
     const [contents, setContents]=React.useState(props.route.params.contents);
     return(
         <TotalView>
-            <View style={{width: '100%', height: TOPBAR, justifyContent: 'center', position: 'absolute'}}>
-            <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{ props.navigation.goBack() }}></Icon>
-            </View>
             <View style={{width: '100%', height: TOPBAR, justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>게시물</Text>
             </View>
@@ -47,6 +44,9 @@ function DetailGallery(props){
                         </View>
                     );})}
             </Swiper>
+            <TouchableOpacity style={{height: TOPBAR, justifyContent: 'center', position: 'absolute'}}>
+                <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{ props.navigation.goBack() }}></Icon>
+            </TouchableOpacity>
         </TotalView>
     );
 }

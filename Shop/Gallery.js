@@ -13,163 +13,72 @@ const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-//shopName 의 gallery의 contents를 받아와야함 
-const DATA = [{
-    id: 1,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
-},{
-    id: 2,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 3,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
-},{
-    id: 4,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 5,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
-},{
-    id: 6,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 7,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
-},{
-    id: 8,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 9,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: "avante"},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'}],
-},{
-    id: 10,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 11,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 12,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 13,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 14,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 15,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 16,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 17,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 18,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 19,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 20,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 21,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-},{
-    id: 22,
-    contents : [{page: 1, uri: 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png', text: 'sonata'},
-                {page: 2, uri: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png', text: 'avante'}],
-}];
-
 //flatlist 이기때문에 추가로 데이터들이 더 필요하다. 일정 갯수만큼 스크롤이 하단에 다다르면 서버에 요청해야함.
 const AfterDATA = [{
-    id: 1,
+    galleryId: 1,
     thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 },{
-    id: 2,
+    galleryId: 2,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 3,
+    galleryId: 3,
     thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 },{
-    id: 4,
+    galleryId: 4,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 5,
+    galleryId: 5,
     thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 },{
-    id: 6,
+    galleryId: 6,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 7,
+    galleryId: 7,
     thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 },{
-    id: 8,
+    galleryId: 8,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 9,
+    galleryId: 9,
     thumbnail : 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
 },{
-    id: 10,
+    galleryId: 10,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 11,
+    galleryId: 11,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 12,
+    galleryId: 12,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 13,
+    galleryId: 13,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 14,
+    galleryId: 14,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 15,
+    galleryId: 15,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 16,
+    galleryId: 16,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 17,
+    galleryId: 17,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 18,
+    galleryId: 18,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 19,
+    galleryId: 19,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 20,
+    galleryId: 20,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 21,
+    galleryId: 21,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 },{
-    id: 22,
+    galleryId: 22,
     thumbnail : 'https://www.hyundai.com/contents/vr360/DN08/exterior/NB9/001.png',
 }];
 
@@ -189,15 +98,16 @@ function Gallery(props){
     const [shopName, setShopName] = React.useState(props.shopName);
     const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const [galleryContents, setGalleryContents] = React.useState(props.gallery)
 
-    async function getContents(name, id){
+    async function getData(name, id){
         try{
             /*const result = await axios({
                                         method: 'GET' ,
                                         url : '' , //name, id 사용
                                     });
             props.navigation.navigate("DetailGallery", {contents:result.response});*/
-            props.navigation.navigate("DetailGallery", {contents:DATA[id-1].contents});
+            props.navigation.navigate("DetailGallery", {contents:findGalleyContents(galleryContents, id).contents});
             return 0;
         }
         catch (error){
@@ -209,7 +119,7 @@ function Gallery(props){
     const renderItem = ({ item }) => {
         
         return(
-            <ImageView onPress={()=>{getContents(shopName, item.id);}}>
+            <ImageView onPress={()=>{getData(shopName, item.galleryId);}}>
                 <Image style={{height:'100%',width:'100%',}} source={{uri:item.thumbnail}}  resizeMode='stretch'/>
             </ImageView>
         );
@@ -281,6 +191,12 @@ function Gallery(props){
         },
     });
 
+  function findGalleyContents(array, id){
+    const result = array.filter(item => item.galleryId === id);
+    return result[0];
+  }
+
+
     return(
         <Total>
             <Animated.View
@@ -293,7 +209,7 @@ function Gallery(props){
                 <Animated.FlatList
                     data={props.gallery}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.galleryId}
                     numColumns={3}
                     scrollEnabled={true}
                     onScroll={Animated.event(

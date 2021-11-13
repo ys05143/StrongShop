@@ -51,8 +51,18 @@ const Input = styled.TextInput`
     padding: 10px;
 `;
 
+const sendDATA = {
+    orderId: 1,
+    userName: '허지훈',
+    shopName: '올댓카니발',
+    images: [ '', '' ],
+    text: '좋습니다...'
+}
+
 function RegisterReviewScreen(props) {
     const [shopName, setShopName] = React.useState(props.route.params.shopName);
+    const [userName, setUserName] = React.useState(props.route.params.userName);
+    const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [img, setImg] = React.useState([]);
     const [text, setText] = React.useState(null);
 
@@ -81,6 +91,15 @@ function RegisterReviewScreen(props) {
         .catch(error => {
             console.log(error);
         });
+    }
+
+    function finalSend(){
+        let newData = {...sendDATA};
+        newData.orderId = orderId;
+        newData.userName = userName;
+        newData.shopName = shopName;
+        newData.images = img;
+        newData.text = text;
     }
 
     return(

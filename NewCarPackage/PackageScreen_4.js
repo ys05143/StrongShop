@@ -122,7 +122,6 @@ function PackageScreen_4(props){
     const [displayRegion, setDisplayRegion] = React.useState('서울');
     const [regionModal, setRegionModal] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [isSending, setIsSending] = React.useState(false);
 
     //useEffect 내에서 async 추천 하지 않음 promise then catch 형태로 추후 수정해야함.
     React.useEffect( ()=>{
@@ -136,6 +135,8 @@ function PackageScreen_4(props){
                 }
                 if(response.region !== null){
                     setSelectedRegion(response.region);
+                    const result = REGION.filter(item => item.key === response.region);
+                    setDisplayRegion(result[0].value);
                 }
             }
             else{
@@ -158,7 +159,6 @@ function PackageScreen_4(props){
 
     async function storeRequire(){
         try{
-            setIsSending(true);
             let newOrder;
             const response = await storage.fetch('BidOrder');
             if(response !== null){
@@ -180,7 +180,7 @@ function PackageScreen_4(props){
             }
             const check = await storage.fetch('BidOrder');
             if(check !== null){
-                console.log(check);
+                //console.log(check);
                 setSearchModal(true);
             }
             else{
@@ -193,7 +193,7 @@ function PackageScreen_4(props){
                     { cancelable: false }
                   );
             }
-            console.log('In page 4 check: ', check);
+            //console.log('In page 4 check: ', check);
         }
         catch(error){
             console.log(error);
@@ -226,7 +226,6 @@ function PackageScreen_4(props){
 
     function getSearchModal(close){
         setSearchModal(close);
-        setIsSending(false);
     }
 
     return(
@@ -246,22 +245,11 @@ function PackageScreen_4(props){
                             value={text}
                             onChangeText={value=>{setText(value);}}
                             placeholder={"예) 반드시 0월 0일에 시공을 시작했으면 좋겠습니다."}
-                            placeholderTextColor="gray"/>
+                            placeholderTextColor="gray"
+                            maxLength={400}/>
                     <RegionView>
                         <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
                         <PickerView onPress={()=>{setRegionModal(true)}}>
-                            {/* <Picker
-                            selectedValue={selectedRegion}
-                            onValueChange={(itemValue, itemIndex) => {setSelectedRegion(itemValue);}}>
-                                <Picker.Item label="없음" value={null}/>
-                                <Picker.Item label="서울" value="seoul" />
-                                <Picker.Item label="대전" value="daejeon" />
-                                <Picker.Item label="대구" value="daegu" />
-                                <Picker.Item label="부산" value="busan" />
-                                <Picker.Item label="인천" value="incheon" />
-                                <Picker.Item label="광주" value="gwangju" />
-                                <Picker.Item label="제주" value="jeju" />
-                            </Picker> */}
                             <Text>{displayRegion}</Text>
                         </PickerView>
                     </RegionView>
@@ -278,9 +266,7 @@ function PackageScreen_4(props){
                 <Icon name="close-outline" size={35} color={'black'} onPress={()=>{askCancelRequire();}}></Icon>
             </View>
         </TotalView>
-        {isSending && <View style={{width: WIDTH, height: HEIGHT, position: 'absolute', alignItems: 'center', justifyContent: 'center', backgroundColor: sendingColor}}>
-            <ActivityIndicator size = 'large' color= {Color.main}/>
-        </View>}
+        
         </KeyboardAwareScrollView>
 
         <Modal
@@ -309,7 +295,7 @@ function PackageScreen_4(props){
                                 showsVerticalScrollIndicator={true}>
                         {_.map(REGION, (item)=>{
                             return(
-                                <PickItem key={item.key} onPress={()=>{setSelectedRegion(item.key); console.log(selectedRegion); setDisplayRegion(item.value); setRegionModal(false);}}>
+                                <PickItem key={item.key} onPress={()=>{setSelectedRegion(item.key); setDisplayRegion(item.value); setRegionModal(false);}}>
                                     <Text>{item.value}</Text>
                                 </PickItem>
                             )
