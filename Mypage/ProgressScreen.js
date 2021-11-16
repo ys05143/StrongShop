@@ -1,24 +1,20 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Modal , Portal , Provider}  from 'react-native-paper';
-import { FlatList , ScrollView, Alert, Text } from 'react-native';
+import { FlatList , ScrollView, Alert, Text, ActivityIndicator } from 'react-native';
 import Color from '../constants/Color';
 import { Image } from 'react-native';
-import _, { set } from 'lodash';
+import _ from 'lodash';
 import Icon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 //import { request , PERMISSIONS } from 'react-native-permissions';
 import Swiper  from 'react-native-swiper';
-import AppWindow from '../constants/AppWindow';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
-const WIDTH = AppWindow.width;
-const HEIGHT = AppWindow.height;
-const NOTCH = AppWindow.IOS_notch;
-const Total = styled.View`
-    width: ${WIDTH}px;
-    height: ${HEIGHT}px;
-    margin-top: ${NOTCH}px;
-`;
-const Container = styled.SafeAreaView``;
 const View = styled.View``;
 const Row = styled.View`
     flex-direction: row ;
@@ -96,16 +92,15 @@ const progress = [
 const DATA=[
     {
         orderId: 1,
-        state: 6
     },{
-        address: '서울 광진구 능동로 120'
+        address: ''
     },{
-        inspectionImages: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
+        inspectionImages: []
     },{
-        constructionImages: ['https://picsum.photos/0','https://picsum.photos/100', 'https://picsum.photos/200' ]
+        constructionImages: []
     },{
-        address: '서울 광진구 능동로 120',
-        finalReceipt: '틴팅: 루마썬팅\n블랙박스: 파인테크\nPPF: \n보조배터리: \n애프터블로우: \n방수: \n랩핑: \n유리막코팅: \n언더코팅\n'
+        finalAddress: '',
+        finalReceipt: ''
     }
 ]
 
@@ -117,38 +112,19 @@ function ProgressScreen( props ) {
     const[visible,setVisible] = React.useState(false);
     const[selectedImage, setSelectedImage] = React.useState(null);
     const[shopName, setShopName] = React.useState(props.route.params.companyName);
+    const[shopData, setShopData] = React.useState(DATA);
+    const[isLoading, setIsLoading] = React.useState(false);
 
-    // openNew = async () => {
-    //     //request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-    //     await MultipleImagePicker.openPicker({
-    //         mediaType: 'image',
-    //         // selectedAssets: pictures,
-    //         doneTitle: "완료",
-    //         selectedColor: "#162741",
-    //     })
-    //     .then(res => {
-    //        url = [] ;
-    //        res.map(file =>  {
-    //         //    newPath = file.path.replace('file://','').replace('file:///','file://');
-    //            url.push(file.path);
-    //        });
-    //        if ( pictures != null ) {
-    //        files = pictures ;
-    //        url.map(file=>{
-    //            files.push(file);
-    //        })
-    //        setPictures(files);
-    //        setRefresh(true);
-    //        setRefresh(false);
-    //        }
-    //        else {
-    //            setPictures(url);
-    //        }
-
-    //     }) 
-    //     .catch(e => { });
-       
-    // }
+    const isFocused = useIsFocused();
+    React.useEffect(()=>{
+        setIsLoading(true);
+        if(isFocused){
+            getData()
+            .then(res => {
+               setIsLoading(false);
+            })
+        }
+    },[isFocused, state])
 
     const RenderItem = ({item}) =>  {
         return(
@@ -164,12 +140,114 @@ function ProgressScreen( props ) {
             '출고를 확정하시겠습니까?',
             [
               {text: '네', onPress: () => {
-                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, shopName: shopName, finalReceipt: DATA[4].finalReceipt});
+                console.log(shopName);
+                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, shopName: shopName, finalReceipt: shopData[4].finalReceipt});
               }},
               {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
+    }
+
+    async function getData(){
+        try{
+            setIsLoading(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/contract/3/${orderId}`,
+                    headers : {Auth: auth},
+                })
+                .catch(
+                    e=>{console.log(e);}
+                );
+                let rawData = response.data.data;
+                console.log('state:',state,rawData);
+                
+                if(rawData !== null){
+                    let newData = shopData;
+                    if(state === 3){
+                        newData[1] = {address: rawData.shipment_location};
+                    }
+                    else if(state === 4){
+                        newData[2] = {inspectionImages: rawData.inspectionImages};
+                    }
+                    else if(state === 6){
+                        newData[3] = {constructionImages: rawData.constructionImages};
+                    }
+                    else if(state === 7){
+                        newData[4] = {finalAddress: rawData.shipment_location, finalReceipt: rawData.receipt};
+                    }
+                    setShopData(newData);
+                    console.log(newData);
+                }
+                else{
+                    console.log('my data is empty');
+                }
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '로그인이 필요합니다.',
+                    [
+                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen");}},
+                    ],
+                    { cancelable: false }
+                );
+            }
+            setIsLoading(false);
+        }
+        catch{
+            Alert.alert(
+                '오류',
+                'getData 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );
+        }
+    
+    }
+
+    async function NextState(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'PUT',
+                    url : `${server.url}/api/contract/${state}/${orderId}` ,
+                    data : {
+                        orderId: orderId
+                    },
+                    headers : {Auth: auth},
+                });
+                console.log(response);
+                setState(state+1);
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '로그인이 필요합니다.',
+                    [
+                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                    ],
+                    { cancelable: false }
+                );
+            }
+        }
+        catch{e => {  
+            Alert.alert(
+                '오류',
+                '정보 전송에 실패했습니다.',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );
+            console.log(e);
+        }}
     }
 
     return(
@@ -204,7 +282,8 @@ function ProgressScreen( props ) {
                     }
                 </Title>
             </View>
-            <SwiperView>
+            
+            {!isLoading ? <SwiperView>
                 <Swiper horizontal={true} index={state-3}
                     showsButtons={true}
                     showsHorizontalScrollIndicator={true}
@@ -222,17 +301,19 @@ function ProgressScreen( props ) {
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+DATA[1].address}</Title>
+                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].address}</Title>
+                            {state === 3 && <Button onPress={()=>{NextState();}}>완료</Button>}
                         </View>
                     </SwiperView>}
                     
                     {state >= 4 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 4 ? 'red' : 'black'}}>
+                        <Title style={{ padding: 10 , color : (state === 4 && state ===5) ? 'red' : 'black'}}>
                         {'2단계: '}{progress[2].title}
                         </Title>
+                        {state === 5 && <Button onPress={()=>{NextState();}}>승인</Button>}
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
-                                data={DATA[2].inspectionImages}
+                                data={shopData[2].inspectionImages}
                                 scrollEnabled={true}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item}
@@ -241,13 +322,13 @@ function ProgressScreen( props ) {
                         </View>
                     </SwiperView>}
 
-                    {state >= 5 && <SwiperView>
+                    {state >= 6 && <SwiperView>
                         <Title style={{ padding: 10 , color : state === 5 ? 'red' : 'black'}}>
                         {'3단계: '}{progress[3].title}
                         </Title>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
-                                data={DATA[3].constructionImages}
+                                data={shopData[3].constructionImages}
                                 scrollEnabled={true}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item}
@@ -256,13 +337,13 @@ function ProgressScreen( props ) {
                         </View>
                     </SwiperView>}
 
-                    {state >= 5 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
+                    {state >= 7 && <SwiperView>
+                        <Title style={{ padding: 10 , color : state === 7 ? 'red' : 'black'}}>
                         {'4단계: '}{progress[4].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+DATA[4].address}</Title>
+                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].finalAddress}</Title>
                             <Text style={{color: 'red', marginVertical: 5, alignSelf: 'center'}}>/*모든시공이 완료되었는지 반드시 확인해주세요.*/</Text>
                             <InfoView>
                                 <ScrollView>
@@ -270,7 +351,7 @@ function ProgressScreen( props ) {
                                         <Icon name={'ellipse'} style={{marginRight: 5}}/>
                                         <Title>시공내역</Title>
                                     </Row>
-                                    <Text style={{fontSize: 15, marginRight: 5}}>{DATA[4].finalReceipt}</Text>
+                                    <Text style={{fontSize: 15, marginRight: 5}}>{shopData[4].finalReceipt}</Text>
                                 </ScrollView>
                             </InfoView>
                             <Button style={{marginTop: 20}} mode={'contained'} color={Color.main} onPress={()=>{FinalConfirm()}}>출고 확정</Button>
@@ -278,7 +359,10 @@ function ProgressScreen( props ) {
                     </SwiperView>}
                     
                 </Swiper>
-            </SwiperView>
+            </SwiperView> : 
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>
+            </View>}
         </View>
         </Provider>
     );

@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakao2d78be1659a3be57c8a3446dfdad968e</string>
+				<string>kakao6b3660e4525fdc150251de1bfb79d735</string>
 			</array>
 		</dict>
 		<dict>
@@ -42,7 +42,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>2d78be1659a3be57c8a3446dfdad968e</string>
+	<string>6b3660e4525fdc150251de1bfb79d735</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
@@ -141,6 +141,10 @@
 		<string>Sunflower-Bold.ttf</string>
 		<string>Sunflower-Light.ttf</string>
 		<string>Sunflower-Medium.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

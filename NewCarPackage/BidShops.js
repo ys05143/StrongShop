@@ -49,6 +49,7 @@ function Shop(props, {navigation}) {
                     headers : {Auth: auth},
                 });
                 console.log(response);
+                props.navigation.navigate("MainScreen");
             }
         }
         catch{

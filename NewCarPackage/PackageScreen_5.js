@@ -5,7 +5,7 @@ import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
 //pages
-import Shop from './Shop';
+import BidShops from './BidShops';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -215,7 +215,7 @@ function PackageScreen_5(props){
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
                             return(
-                                <Shop key={item.bid_id} item={[item]} navigation={props.navigation} orderId={orderId}></Shop>
+                                <BidShops key={item.bid_id} item={[item]} navigation={props.navigation} orderId={orderId}></BidShops>
                             )
                         })}
                     </ScrollView>:

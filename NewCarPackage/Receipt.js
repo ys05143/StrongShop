@@ -42,74 +42,57 @@ function Receipt(props){
 
     async function finishOrder(){ // 서버에 오더 전송
         try{
-            // if(receipt !== null){
-            //     const auth = await checkJwt();
-            //     if(auth !== null){
-            //         const response = await axios({
-            //             method: 'POST',
-            //             url : `${server.url}/api/orders` ,
-            //             data : {
-            //                 details: JSON.stringify(receipt),
-            //                 region: region,
-            //             },
-            //             headers : {Auth: auth},
-            //         });
-            //         console.log(response);
-    
-            //         await AsyncStorage.removeItem('BidOrder', ()=>{
-            //             Alert.alert(
-            //                 '완료',
-            //                 '견적 등록을 완료했습니다.',
-            //                 [
-            //                     {text: 'OK', onPress: () => {
-            //                             console.log("remove async Bid")
-            //                             props.navigation.navigate("MainScreen");
-            //                         }
-            //                     },
-            //                 ],
-            //                 { cancelable: false }
-            //             );
-            //         });
-            //         sendModal(false);
-            //     }
-            //     else{
-            //         Alert.alert(
-            //             '실패',
-            //             '로그인이 필요합니다.',
-            //             [
-            //                 {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
-            //             ],
-            //             { cancelable: false }
-            //         );
-            //     }
-            // }
-            // else{
-            //     Alert.alert(
-            //         '실패',
-            //         '작성한 견적이 없습니다.',
-            //         [
-            //             {text: 'OK', onPress: () => {}},
-            //         ],
-            //         { cancelable: false }
-            //     );
-            // } 
-            
-            //for test
-            await AsyncStorage.removeItem('BidOrder', ()=>{
-                Alert.alert(
-                    '완료',
-                    '견적 등록을 완료했습니다.',
-                    [
-                        {text: 'OK', onPress: () => {
-                                console.log("remove async Bid")
-                                props.navigation.navigate("MainScreen");
-                            }
+            if(receipt !== null){
+                const auth = await checkJwt();
+                if(auth !== null){
+                    const response = await axios({
+                        method: 'POST',
+                        url : `${server.url}/api/orders` ,
+                        data : {
+                            details: JSON.stringify(receipt),
+                            region: region,
                         },
+                        headers : {Auth: auth},
+                    });
+                    console.log(response);
+    
+                    await AsyncStorage.removeItem('BidOrder', ()=>{
+                        Alert.alert(
+                            '완료',
+                            '견적 등록을 완료했습니다.',
+                            [
+                                {text: 'OK', onPress: () => {
+                                        console.log("remove async Bid")
+                                        props.navigation.navigate("MainScreen");
+                                    }
+                                },
+                            ],
+                            { cancelable: false }
+                        );
+                    });
+                    sendModal(false);
+                }
+                else{
+                    Alert.alert(
+                        '실패',
+                        '로그인이 필요합니다.',
+                        [
+                            {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '작성한 견적이 없습니다.',
+                    [
+                        {text: 'OK', onPress: () => {}},
                     ],
                     { cancelable: false }
                 );
-            });
-            sendModal(false);
+            } 
         }
         catch{
             Alert.alert(

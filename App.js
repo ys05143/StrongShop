@@ -3,8 +3,9 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Icon  from "react-native-vector-icons/Ionicons";
-import { DefaultTheme, DataTable, Provider as PaperProvider } from 'react-native-paper';
+import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
@@ -34,10 +35,31 @@ const Button = styled.TouchableOpacity`
 `;
 const Stack = createStackNavigator();
 
-function App (props) {
+function App (props,{navigation}) {
+
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
+  React.useEffect(()=>{
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+    requestUserPermission().catch((e) =>{ console.log('firebase errror')});
+  },[]);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{
+      <Stack.Navigator 
+      initialRouteName={MainScreen}
+      screenOptions={{
         headerLeft: (props)=>(
           <Button {...props}>
             <BackIcon />

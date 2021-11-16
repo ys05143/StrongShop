@@ -8,7 +8,7 @@ async function checkJwt(props){
         if(isToken.filter(item=>item === 'auth').length !== 0 ){
             const token = await storage.fetch('auth')
             const auth = token.auth;
-            console.log('get auth');
+            console.log('User has JWT');
             //console.log(auth);
             return auth;
         }

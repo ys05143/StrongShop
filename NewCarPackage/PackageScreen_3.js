@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //pages
 import SelectDetailOption from './SelectDetailOption';
-import Select4Screen3_3 from './Select4Screen3_3';
+import SelectTitleOption from './SelectTitleOption';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -642,7 +642,7 @@ function PackageScreen_3(props) {
                     ref={swiper}
                     onChangeIndex={(index)=>{setCurrentIndex(index.index); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: index.index, viewPosition: 0.5})}}>
                         <SelectInSwiper>    
-                            <Select4Screen3_3 getChoose={getTintingChoose} 
+                            <SelectTitleOption getChoose={getTintingChoose} 
                                                 choose={TintingChoose} 
                                                 name={'틴팅'}/>
                             <SelectDetailOption getChoose={getLUMA} 
@@ -675,7 +675,7 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getPPFChoose} 
+                            <SelectTitleOption getChoose={getPPFChoose} 
                                                 choose={PPFChoose} 
                                                 name={'PPF'}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
@@ -688,7 +688,7 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getBlackboxChoose} 
+                            <SelectTitleOption getChoose={getBlackboxChoose} 
                                                 choose={BlackboxChoose} 
                                                 name={'블랙박스'}/>
                             <SelectDetailOption getChoose={getFINETECH} 
@@ -713,7 +713,7 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getBatteryChoose} 
+                            <SelectTitleOption getChoose={getBatteryChoose} 
                                                 choose={BatteryChoose} 
                                                 name={'보조배터리'}/>
                             <SelectDetailOption getChoose={getBatteryANY} 
@@ -730,7 +730,7 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getAfterblowChoose} 
+                            <SelectTitleOption getChoose={getAfterblowChoose} 
                                                 choose={AfterblowChoose} 
                                                 name={'애프터블로우'}/>
                             <SelectDetailOption getChoose={getAfterblowANY} 
@@ -747,7 +747,7 @@ function PackageScreen_3(props) {
                             </Row>                  
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getSoundproofChoose} 
+                            <SelectTitleOption getChoose={getSoundproofChoose} 
                                                 choose={SoundproofChoose} 
                                                 name={'방음'}/>
                             <SelectDetailOption getChoose={getSoundproofANY} 
@@ -764,7 +764,7 @@ function PackageScreen_3(props) {
                             </Row>                   
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getWrappingChoose} 
+                            <SelectTitleOption getChoose={getWrappingChoose} 
                                                 choose={WrappingChoose} 
                                                 name={'랩핑'}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
@@ -777,12 +777,12 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getGlassCoatingChoose} 
+                            <SelectTitleOption getChoose={getGlassCoatingChoose} 
                                                 choose={GlassCoatingChoose} 
                                                 name={'유리막코팅'}/>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <Select4Screen3_3 getChoose={getUnderCoatingChoose} 
+                            <SelectTitleOption getChoose={getUnderCoatingChoose} 
                                                 choose={UnderCoatingChoose} 
                                                 name={'언더코팅'}/>
                         </SelectInSwiper>

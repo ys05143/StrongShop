@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, ActivityIndicator } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
+import Icon from "react-native-vector-icons/Ionicons";
 //constants
 import Color from '../constants/Color';
 //function
@@ -137,15 +139,37 @@ function MainScreen( props ) {
     const [existingDialog, setExistingDialog] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
     const [myOrderList, setMyOrderList] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
-        if(isFocused) getData();
+        if(isFocused) {
+            getData();
+        }
     },[isFocused]);
 
     const hideDialog = () => setExistingDialog(false);
+
+    React.useEffect(()=>{
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+          console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
+          Alert.alert(
+            '알림',
+            '알림이 도착했습니다. 이동하시겠습니까?',
+            [
+              {text: '네', onPress: () => {
+                props.navigation.navigate("MainScreen");
+              }},
+              {text: '아니요', onPress: () => {}}
+            ],
+            { cancelable: true }
+        );
+        });
+
+        return unsubscribe;
+      },[]);
 
     async function CheckAsync(){
         try{
@@ -196,11 +220,12 @@ function MainScreen( props ) {
 
     function StateMove(orderId, state, carName, companyName){
         if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId});
-        else if(state === 3 || state === 4 || state === 5 || state === 6) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state, companyName: companyName});
+        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state, companyName: companyName});
     }
 
     async function getData(){
         try{
+            setIsLoading(true);
             const auth = await checkJwt();
             if(auth !== null){
                 const myOrderResponse = await axios({
@@ -209,7 +234,7 @@ function MainScreen( props ) {
                     headers : {Auth: auth},
                 });
                 let rawData = myOrderResponse.data.data;
-                if(rawData){
+                if(rawData !== null){
                     rawData.map(item => {
                         item['details'] = JSON.parse(item.details) ;
                     })
@@ -217,6 +242,7 @@ function MainScreen( props ) {
                     let newData = [];
                     rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time})});
                     setMyOrderList(newData);
+                    console.log(newData);
                 }
                 else{
                     console.log('my orderList is empty');
@@ -224,27 +250,21 @@ function MainScreen( props ) {
                 }
             }
             else{
-                Alert.alert(
-                    '실패',
-                    '로그인이 필요합니다.',
-                    [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
-                    ],
-                    { cancelable: false }
-                );
+                console.log("no login");
             }
+            setIsLoading(false);
         }
         catch{e=>{
             //console.log(e);
             Alert.alert(
                 '오류',
-                '무응답',
+                'getData 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
                 { cancelable: false }
-            );
-        }}
+            );}
+        }
         
     }
     
@@ -254,8 +274,9 @@ function MainScreen( props ) {
             'BIDDING_COMPLETE' : 2,
             'DESIGNATING_SHIPMENT_LOCATION' : 3,
             'CAR_EXAMINATION' : 4,
-            'CONSTRUCTING' : 5,
-            'CONTSTRUCTION_COMPLETED' : 6,
+            'CAR_EXAMINATION_FIN' : 5,
+            'CONSTRUCTING' : 6,
+            'CONSTRUCTION_COMPLETED' : 7,
         }
         return item[state];
     }
@@ -296,61 +317,62 @@ function MainScreen( props ) {
                 <Title style={styles.text}>
                     당신의 차량
                 </Title>
+                <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
                 <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
             </TextRow>
-            <View style={{ height: 250 , borderBottomWidth: 3 , borderBottomColor: 'lightgray' }}>
-                    {
-                        //요청받아서 없으면 빈 리스트 넘겨줌.
-                        changeView ? (
-                            <ScrollView horizontal={true} style={styles.scrollview}>
-                                {
+            <View style={{ height: 250 , borderBottomWidth: 3 , borderBottomColor: 'lightgray'}}>
+                {!isLoading ? 
+                <>
+                    { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
+                        <ScrollView horizontal={true} style={styles.scrollview}>
+                            {
+                            myOrderList.map(item=>{
+                                return(
+                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
+                                    <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
+                                    <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
+                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
+                                    <Card.Content>
+                                    <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
+                                    </Card.Content>
+                                    </Card> 
+                                )
+                            })
+                            }
+                        </ScrollView>                
+                    ) : 
+                    (
+                        <Swiper 
+                            autoplay={true} 
+                            style={{ marginVertical: 10 }}
+                            renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
+                            >
+                            {
                                 myOrderList.map(item=>{
                                     return(
-                                        <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
-                                        <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
-                                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '시공 중' : item.state == 6 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
-                                        <Card.Content>
-                                        <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
-                                        </Card.Content>
+                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
+                                            <TextRow style={{ flex: 1}}>
+                                                <View style={{ flex: 3 }}>
+                                                    <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    
+                                                </View>
+                                                <View style={{ flex: 2 }}>
+                                                    <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
+                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
+                                                    <Card.Content>
+                                                    <Text style={{ fontSize: 20 , padding: 10 }}>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
+                                                    </Card.Content>
+                                                </View>
+                                            </TextRow>
                                         </Card> 
                                     )
                                 })
-                                }
-                            </ScrollView>                
-                        ) : 
-                        (
-                            <Swiper 
-                                autoplay={true} 
-                                style={{ marginVertical: 10 }}
-                                renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
-                                >
-                                {
-                                    myOrderList.map(item=>{
-                                        return(
-                                            <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
-                                                <TextRow style={{ flex: 1}}>
-                                                    <View style={{ flex: 3 }}>
-                                                        <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    
-                                                    </View>
-                                                    <View style={{ flex: 2 }}>
-                                                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '시공 중' : item.state == 6 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
-                                                        <Card.Content>
-                                                        <Text style={{ fontSize: 20 , padding: 10 }}>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
-                                                        </Card.Content>
-                                                    </View>
-                                                </TextRow>
-                                            </Card> 
-                                        )
-                                    })
-                                }
-                            </Swiper>
-                        )
-                            
-                        }
-                    
-                    
+                            }
+                        </Swiper>
+                    )}     
+                </> :
+                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
+                </View>}
             </View>
 
             <PaperProvider>

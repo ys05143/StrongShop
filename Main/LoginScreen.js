@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import IMP from 'iamport-react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
+import messaging from '@react-native-firebase/messaging';
 //functoin
 import storage from '../function/storage';
 //component
@@ -63,8 +64,8 @@ const styles = {
 function LoginScreen(props) {
     const snapPoints = React.useMemo(() => ['80%'], []);
     const [userName,setUserName] = React.useState("");
-    const [userNameFocus,setUserNameFocus] = React.useState(false);
     const [dtoData,setDtoData] = React.useState(null);
+    const [fcmToken, setFcmToken] = React.useState();
 
     const bottomSheetModalRef = React.useRef(null);
     const handlePresentModalPress = React.useCallback(() => {
@@ -74,6 +75,11 @@ function LoginScreen(props) {
         bottomSheetModalRef.current?.dismiss();
     }, []);  
 
+    React.useEffect(()=>{
+        messaging().getToken().then( res =>{
+          setFcmToken(res);
+        });
+    },[]);
 
     // 카카오 AccessToken => 서버 
     function requestAccessToken(accessToken) {
@@ -126,6 +132,7 @@ function LoginScreen(props) {
                 ...dtoData ,
                 phoneNumber: '01012341234' ,
                 name: '허지훈',
+                fcmToken: fcmToken,
             }
         })
         .then(async(res) =>{
@@ -149,7 +156,6 @@ function LoginScreen(props) {
         })
         .catch(e => {
             //
-            
         })
     }
 
