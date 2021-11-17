@@ -136,13 +136,21 @@ function ProgressScreen( props ) {
         )
     }
 
-    function FinalConfirm(){
+    async function FinalConfirm(){
+        const auth = await checkJwt();
+        if(auth !== null){
+            const response = await axios({
+                method: 'PUT',
+                url : `${server.url}/api/contract/7/${contractId}` ,
+                headers : {Auth: auth},
+            });
+        }
         Alert.alert(
             '확인',
             '출고를 확정하시겠습니까?',
             [
               {text: '네', onPress: () => {
-                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, companyName: shopData[0].companyName, receipt: shopData[0].receipt, companyId: shopData[0].companyId});
+                props.navigation.navigate("RegisterReviewScreen",{contractId: contractId, companyName: shopData[0].companyName, receipt: shopData[4].receipt, companyId: shopData[0].companyId});
               }},
               {text: '아니요', onPress: () => {}}
             ],
@@ -164,7 +172,7 @@ function ProgressScreen( props ) {
                     e=>{console.log(e);}
                 );
                 let rawData = response.data.data;
-                console.log('state:',state,rawData);
+                //console.log('state:',state,rawData);
 
                 if(rawData !== null){
                     let newData = shopData;
@@ -207,10 +215,10 @@ function ProgressScreen( props ) {
                         newData[3] = {constructionImages: imageList};
                     }
                     if(state >= 7){
-                        newData[4] = {shipmentLocation: rawData.shipmentLocation, receipt: rawData.receipt};
+                        newData[4] = {shipmentLocation: rawData.shipment_location, receipt: rawData.receipt};
                     }
                     setShopData(newData);
-                    console.log("newData", newData);
+                    //console.log("newData", newData);
                 }
                 else{
                     console.log('my data is empty');

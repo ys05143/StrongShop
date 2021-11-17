@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Title } from 'react-native-paper';
@@ -9,6 +9,10 @@ import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const InfoView = styled.View`
     width: 100%;
@@ -61,7 +65,6 @@ const sendDATA = {
 
 function RegisterReviewScreen(props) {
     const [companyName, setCompanyName] = React.useState(props.route.params.companyName);
-    const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [constractId, setContractId] = React.useState(props.route.params.constractId);
     const [companyId, setCompanyId] = React.useState(props.route.params.companyId);
     const [img, setImg] = React.useState([]);
@@ -77,12 +80,12 @@ function RegisterReviewScreen(props) {
         })
         .then(images => {
             setImg(images);
-            //console.log(images);
+            console.log(images);
             //path => uri:"file://"+item.path or uri: item.path
             let formdata = new FormData();
-            img.map((image)=>{
+            images.map((image)=>{
                 let name = image.fileName;
-                let type = "image/jpeg";
+                let type = "multipart/form-data";
                 let imgUri = image.path;
                 formdata.append("files", { name: name , type: type, uri: imgUri });
             });
@@ -97,53 +100,47 @@ function RegisterReviewScreen(props) {
     async function SendData(){
         try{
             setIsSending(true);
-            if(receipt !== null){
-                const auth = await checkJwt();
-                if(auth !== null){
-                    const response = await axios({
-                        method: 'POST',
-                        url : `${server.url}/api/review/${companyId}` ,
-                        data : {
-                            files: imgFormData,
-                            content: text,
-                            rating: '5', //별점
-                        },
-                        headers : {Auth: auth},
-                    });
-                    console.log(response);
-                }
-                else{
+            let newFormData = imgFormData;
+            newFormData.append("content", text);
+            newFormData.append("rating", "5");
+            console.log(newFormData);
+            const auth = await checkJwt();
+            if(auth !== null){   
+                const response = await axios.post(`${server.url}/api/review/${companyId}`, newFormData, {
+                    headers: {'content-type': 'multipart/form-data' , Auth: auth }
+                }).then(res=>{
                     Alert.alert(
-                        '실패',
-                        '로그인이 필요합니다.',
+                        '성공',
+                        '리뷰 등록에 성공했습니다.',
                         [
-                            {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                            {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen");}},
                         ],
                         { cancelable: false }
                     );
-                }
+                });
             }
             else{
                 Alert.alert(
                     '실패',
-                    '작성한 견적이 없습니다.',
+                    '로그인이 필요합니다.',
                     [
-                        {text: 'OK', onPress: () => {}},
+                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
                     ],
                     { cancelable: false }
                 );
-            } 
+            }
             setIsSending(false);
         }
         catch{
             Alert.alert(
                 '오류',
-                '견적 등록을 실패했습니다.',
+                '리뷰 등록을 실패했습니다.',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
+            //setIsSending(false);
         }
     }
 
@@ -152,9 +149,6 @@ function RegisterReviewScreen(props) {
             <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{companyName}</Text>
             </View>
-            <TouchableOpacity style={{height: AppWindow.TopBar, justifyContent: 'center', position: 'absolute'}}  onPress={()=>{ props.navigation.goBack() }}>
-                <Icon name="chevron-back-outline" size={35} color={'black'}></Icon>
-            </TouchableOpacity>
             <View style={{alignItems: 'center', paddingHorizontal: 10, marginTop: 5}}>
                 <InfoView>
                     <ScrollView>
@@ -162,7 +156,7 @@ function RegisterReviewScreen(props) {
                             <Icon name={'ellipse'} style={{marginRight: 5}}/>
                             <Title>시공내역</Title>
                         </Row>
-                        <Text style={{fontSize: 15}}>{'props.route.params.receipt'}</Text>
+                        <Text style={{fontSize: 15}}>{props.route.params.receipt}</Text>
                     </ScrollView>
                 </InfoView>
             </View>
@@ -192,9 +186,13 @@ function RegisterReviewScreen(props) {
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                     <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
-                    <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
+                    <Button mode={"contained"} onPress={() => {SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
                 </Row>
             </BtnView>
+            {isSending && 
+                <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
+                    <ActivityIndicator color= {Color.main}/>
+                </View>}
         </TotalView>
     )
 }

@@ -265,7 +265,7 @@ function MainScreen( props ) {
                     setIsLoading(false);
                 })
                 .catch(e=>{
-                    console.log('server communication error')
+                    console.log('[MainScreen] server communication error')
                 })
             }
             else{
