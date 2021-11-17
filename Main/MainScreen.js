@@ -153,14 +153,17 @@ function MainScreen( props ) {
     const hideDialog = () => setExistingDialog(false);
 
     React.useEffect(()=>{
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-          console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
+        const unsubscribe = messaging().onMessage( async remoteMessage => {
+          //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
+          console.log(remoteMessage.data.index);
+          const index = remoteMessage.data.index;
           Alert.alert(
-            '알림',
+            index,
             '알림이 도착했습니다. 이동하시겠습니까?',
             [
               {text: '네', onPress: () => {
-                props.navigation.navigate("MainScreen");
+                  if(index === 200 || index === 210 || index === 211 || index === 212 || index === 213) props.navigation.navigate("MainScreen");
+                  else props.navigation.navigate("MainScreen");
               }},
               {text: '아니요', onPress: () => {}}
             ],
@@ -168,9 +171,19 @@ function MainScreen( props ) {
         );
         });
 
-        return unsubscribe;
-      },[]);
+        messaging().onNotificationOpenedApp(remoteMessage => {
+            props.navigation.navigate("MainScreen");
+        });
 
+        return unsubscribe;
+    },[]);
+
+    React.useEffect(()=>{
+        const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+            props.navigation.navigate("MainScreen");
+        });
+        return unsubscribe;
+    },[])
     async function CheckAsync(){
         try{
             const response = await storage.fetch('BidOrder');
@@ -218,9 +231,9 @@ function MainScreen( props ) {
         }
     }
 
-    function StateMove(orderId, state, carName, companyName){
+    function StateMove(orderId, state, carName){
         if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId});
-        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state, companyName: companyName});
+        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
     }
 
     async function getData(){
@@ -232,27 +245,32 @@ function MainScreen( props ) {
                     method: 'GET',
                     url : `${server.url}/api/orders/user`,
                     headers : {Auth: auth},
-                });
-                let rawData = myOrderResponse.data.data;
-                if(rawData !== null){
-                    rawData.map(item => {
-                        item['details'] = JSON.parse(item.details) ;
-                    })
-                    //console.log(rawData);
-                    let newData = [];
-                    rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time})});
-                    setMyOrderList(newData);
-                    console.log(newData);
-                }
-                else{
-                    console.log('my orderList is empty');
-                    setMyOrderList([]);
-                }
+                })
+                .then(res => {
+                    let rawData = res.data.data;
+                    if(rawData !== null){
+                        rawData.map(item => {
+                            item['details'] = JSON.parse(item.details) ;
+                        })
+                        //console.log(rawData);
+                        let newData = [];
+                        rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time})});
+                        setMyOrderList(newData);
+                        console.log(newData);
+                    }
+                    else{
+                        setMyOrderList([]);
+                        console.log(newData);
+                    }
+                    setIsLoading(false);
+                })
+                .catch(e=>{
+                    console.log('server communication error')
+                })
             }
             else{
                 console.log("no login");
             }
-            setIsLoading(false);
         }
         catch{e=>{
             //console.log(e);
@@ -328,7 +346,7 @@ function MainScreen( props ) {
                             {
                             myOrderList.map(item=>{
                                 return(
-                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
+                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
                                     <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
@@ -350,7 +368,7 @@ function MainScreen( props ) {
                             {
                                 myOrderList.map(item=>{
                                     return(
-                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.companyName)}}>
+                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
                                             <TextRow style={{ flex: 1}}>
                                                 <View style={{ flex: 3 }}>
                                                     <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    

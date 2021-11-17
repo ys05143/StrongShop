@@ -91,27 +91,29 @@ const progress = [
 //서버로 부터 받은 데이터
 const DATA=[
     {
-        orderId: 1,
+        companyName: '',
+        companyId: 0,
+        contractId: 0,
     },{
-        address: ''
+        shipmentLocation: ''
     },{
         inspectionImages: []
     },{
         constructionImages: []
     },{
-        finalAddress: '',
-        finalReceipt: ''
+        shipmentLocation: '',
+        receipt: ''
     }
 ]
 
 
 function ProgressScreen( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
+    const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
     const[refresh,setRefresh] = React.useState(false);
     const[visible,setVisible] = React.useState(false);
     const[selectedImage, setSelectedImage] = React.useState(null);
-    const[shopName, setShopName] = React.useState(props.route.params.companyName);
     const[shopData, setShopData] = React.useState(DATA);
     const[isLoading, setIsLoading] = React.useState(false);
 
@@ -140,8 +142,7 @@ function ProgressScreen( props ) {
             '출고를 확정하시겠습니까?',
             [
               {text: '네', onPress: () => {
-                console.log(shopName);
-                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, shopName: shopName, finalReceipt: shopData[4].finalReceipt});
+                props.navigation.navigate("RegisterReviewScreen",{orderId: orderId, companyName: shopData[0].companyName, receipt: shopData[0].receipt, companyId: shopData[0].companyId});
               }},
               {text: '아니요', onPress: () => {}}
             ],
@@ -164,23 +165,52 @@ function ProgressScreen( props ) {
                 );
                 let rawData = response.data.data;
                 console.log('state:',state,rawData);
-                
+
                 if(rawData !== null){
                     let newData = shopData;
-                    if(state === 3){
-                        newData[1] = {address: rawData.shipment_location};
+                    if(state >= 3){
+                        newData[0] = {companyName: rawData.company_name, contractId: rawData.contract_id, companyId: rawData.company_id};
+                        newData[1] = {shipmentLocation: rawData.shipment_location, receipt: rawData.receipt};
+                        setContractId(rawData.contract_id);
                     }
-                    else if(state === 4){
-                        newData[2] = {inspectionImages: rawData.inspectionImages};
+                    if(state >= 4){
+                        const img_res = await axios({
+                            method: 'GET',
+                            url : `${server.url}/api/contract/4/${rawData.contract_id}`,
+                            headers : {Auth: auth},
+                        })
+                        .catch(
+                            e=>{console.log(e);}
+                        );
+                        let rawImg = img_res.data.data.imageUrlResponseDtos;
+                        imageList=[];
+                        rawImg.map(item => {
+                            imageList.push(item.imageUrl);
+                        })
+                        newData[2] = {inspectionImages: imageList};
                     }
-                    else if(state === 6){
-                        newData[3] = {constructionImages: rawData.constructionImages};
+                    if(state >= 6){
+                        const img_res = await axios({
+                            method: 'GET',
+                            url : `${server.url}/api/contract/6/${rawData.contract_id}`,
+                            headers : {Auth: auth},
+                        })
+                        .catch(
+                            e=>{console.log(e);}
+                        );
+                        console.log(img_res.data.data.responseDtos);
+                        let rawImg = img_res.data.data.responseDtos;
+                        imageList=[];
+                        rawImg.map(item => {
+                            imageList.push(item.imageUrl);
+                        })
+                        newData[3] = {constructionImages: imageList};
                     }
-                    else if(state === 7){
-                        newData[4] = {finalAddress: rawData.shipment_location, finalReceipt: rawData.receipt};
+                    if(state >= 7){
+                        newData[4] = {shipmentLocation: rawData.shipmentLocation, receipt: rawData.receipt};
                     }
                     setShopData(newData);
-                    console.log(newData);
+                    console.log("newData", newData);
                 }
                 else{
                     console.log('my data is empty');
@@ -254,11 +284,11 @@ function ProgressScreen( props ) {
         <Provider>
         {/* 사진 상세보기 */}
         <Portal>
-        <Modal visible={visible} onDismiss={() => { setVisible(false) }} contentContainerStyle={{ width: '100%', height: 600 , backgroundColor: 'lightgray' }}>
-            <IconButton icon='close' style={{ alignSelf: 'flex-end'}} onPress={ () => { setVisible(false) }} />
-            <SwiperView>
-                <Image source={{ uri : selectedImage }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
-            </SwiperView>
+        <Modal visible={visible} onDismiss={() => { setVisible(false) }} contentContainerStyle={{ width: '100%', height: 500 , backgroundColor: 'transparent' }}>
+            <IconButton icon='close' style={{ alignSelf: 'flex-end'}} color={'white'} onPress={ () => { setVisible(false) }} />
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Image source={{ uri : selectedImage }} style={{ width: '95%' , height: '100%' }} resizeMode='contain'/>
+            </View>
         </Modal>
         </Portal>
 
@@ -266,7 +296,7 @@ function ProgressScreen( props ) {
             <View>
                 <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.BackAction onPress={() => { props.navigation.goBack() }} />
-                <Appbar.Content title={shopName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
+                <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 <View>
                     <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatDetail',{ name : props.route.params.name }) }} color='white'/>
                     <Badge size={12} style={{position: 'absolute'}}/>
@@ -301,13 +331,13 @@ function ProgressScreen( props ) {
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].address}</Title>
+                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].shipmentLocation}</Title>
                             {state === 3 && <Button onPress={()=>{NextState();}}>완료</Button>}
                         </View>
                     </SwiperView>}
                     
                     {state >= 4 && <SwiperView>
-                        <Title style={{ padding: 10 , color : (state === 4 && state ===5) ? 'red' : 'black'}}>
+                        <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
                         {'2단계: '}{progress[2].title}
                         </Title>
                         {state === 5 && <Button onPress={()=>{NextState();}}>승인</Button>}
@@ -323,7 +353,7 @@ function ProgressScreen( props ) {
                     </SwiperView>}
 
                     {state >= 6 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 5 ? 'red' : 'black'}}>
+                        <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
                         {'3단계: '}{progress[3].title}
                         </Title>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
@@ -343,7 +373,7 @@ function ProgressScreen( props ) {
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].finalAddress}</Title>
+                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].shipmentLocation}</Title>
                             <Text style={{color: 'red', marginVertical: 5, alignSelf: 'center'}}>/*모든시공이 완료되었는지 반드시 확인해주세요.*/</Text>
                             <InfoView>
                                 <ScrollView>
@@ -351,7 +381,7 @@ function ProgressScreen( props ) {
                                         <Icon name={'ellipse'} style={{marginRight: 5}}/>
                                         <Title>시공내역</Title>
                                     </Row>
-                                    <Text style={{fontSize: 15, marginRight: 5}}>{shopData[4].finalReceipt}</Text>
+                                    <Text style={{fontSize: 15, marginRight: 5}}>{shopData[4].receipt}</Text>
                                 </ScrollView>
                             </InfoView>
                             <Button style={{marginTop: 20}} mode={'contained'} color={Color.main} onPress={()=>{FinalConfirm()}}>출고 확정</Button>

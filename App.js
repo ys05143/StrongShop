@@ -49,9 +49,6 @@ function App (props,{navigation}) {
   }
 
   React.useEffect(()=>{
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
-    });
     requestUserPermission().catch((e) =>{ console.log('firebase errror')});
   },[]);
 

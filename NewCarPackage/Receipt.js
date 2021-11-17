@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, Alert } from 'react-native';
+import { Text, View, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
 import styled from 'styled-components/native';
 import _ from 'lodash';
@@ -39,9 +39,11 @@ const DetailOptions = styled.View`
 function Receipt(props){
     const [receipt, setReceipt] = React.useState(null);
     const [region, setRegion] = React.useState(null);
+    const [isSending, setIsSending] = React.useState(false);
 
     async function finishOrder(){ // 서버에 오더 전송
         try{
+            setIsSending(true);
             if(receipt !== null){
                 const auth = await checkJwt();
                 if(auth !== null){
@@ -93,6 +95,7 @@ function Receipt(props){
                     { cancelable: false }
                 );
             } 
+            setIsSending(false);
         }
         catch{
             Alert.alert(
@@ -183,6 +186,7 @@ function Receipt(props){
     }
     return (
         <Total>
+            {!isSending ? <>
             { receipt !== null && <SearchView>
                 <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
@@ -289,6 +293,9 @@ function Receipt(props){
                     </View>
                 </View>}
             </SearchView>}
+            </> : <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size = 'small' color= {Color.main}/>
+                </View>}
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendModal();}}>
                     <Text>수정</Text>

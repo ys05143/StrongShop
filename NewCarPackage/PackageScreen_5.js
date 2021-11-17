@@ -146,7 +146,10 @@ function PackageScreen_5(props){
                     method: 'GET',
                     url : `${server.url}/api/bidding/${orderId}`,
                     headers : {Auth: auth},
-                });
+                })
+                .catch(e=>{
+                    console.log(e);
+                })
                 const rawData = response.data.data;
                 console.log(rawData);
                 if(rawData.length !== 0){

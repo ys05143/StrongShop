@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Title } from 'react-native-paper';
@@ -54,58 +54,103 @@ const Input = styled.TextInput`
 const sendDATA = {
     orderId: 1,
     userName: '허지훈',
-    shopName: '올댓카니발',
+    companyName: '올댓카니발',
     images: [ '', '' ],
     text: '좋습니다...'
 }
 
 function RegisterReviewScreen(props) {
-    const [shopName, setShopName] = React.useState(props.route.params.shopName);
-    const [userName, setUserName] = React.useState(props.route.params.userName);
+    const [companyName, setCompanyName] = React.useState(props.route.params.companyName);
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
+    const [constractId, setContractId] = React.useState(props.route.params.constractId);
+    const [companyId, setCompanyId] = React.useState(props.route.params.companyId);
     const [img, setImg] = React.useState([]);
+    const [imgFormData, setImgFormData] = React.useState();
     const [text, setText] = React.useState(null);
+    const [isSending, setIsSending] = React.useState(false);
 
     function ImgPick(){
-        // ImagePicker.openPicker({
-        //     multiple: true
-        //   }).then(images => {
-        //     console.log(images);
-        //     let newData = [...images, ...img];
-        //     setImg(newData);
-        //   })
-        //   .catch((error)=>{
-        //     console.log(error); 
-        //   });
         MultipleImagePicker.openPicker({
             mediaType: 'image', 
             selectedAssets: img,
             doneTitle: "완료",
-            selectedColor: "#162741",
         })
         .then(images => {
             setImg(images);
-            console.log(images);
+            //console.log(images);
             //path => uri:"file://"+item.path or uri: item.path
+            let formdata = new FormData();
+            img.map((image)=>{
+                let name = image.fileName;
+                let type = "image/jpeg";
+                let imgUri = image.path;
+                formdata.append("files", { name: name , type: type, uri: imgUri });
+            });
+            setImgFormData(formdata);
+            console.log(formdata);
         })
         .catch(error => {
             console.log(error);
         });
     }
 
-    function finalSend(){
-        let newData = {...sendDATA};
-        newData.orderId = orderId;
-        newData.userName = userName;
-        newData.shopName = shopName;
-        newData.images = img;
-        newData.text = text;
+    async function SendData(){
+        try{
+            setIsSending(true);
+            if(receipt !== null){
+                const auth = await checkJwt();
+                if(auth !== null){
+                    const response = await axios({
+                        method: 'POST',
+                        url : `${server.url}/api/review/${companyId}` ,
+                        data : {
+                            files: imgFormData,
+                            content: text,
+                            rating: '5', //별점
+                        },
+                        headers : {Auth: auth},
+                    });
+                    console.log(response);
+                }
+                else{
+                    Alert.alert(
+                        '실패',
+                        '로그인이 필요합니다.',
+                        [
+                            {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '작성한 견적이 없습니다.',
+                    [
+                        {text: 'OK', onPress: () => {}},
+                    ],
+                    { cancelable: false }
+                );
+            } 
+            setIsSending(false);
+        }
+        catch{
+            Alert.alert(
+                '오류',
+                '견적 등록을 실패했습니다.',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );
+        }
     }
 
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
-                <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{shopName}</Text>
+                <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{companyName}</Text>
             </View>
             <TouchableOpacity style={{height: AppWindow.TopBar, justifyContent: 'center', position: 'absolute'}}  onPress={()=>{ props.navigation.goBack() }}>
                 <Icon name="chevron-back-outline" size={35} color={'black'}></Icon>
@@ -117,7 +162,7 @@ function RegisterReviewScreen(props) {
                             <Icon name={'ellipse'} style={{marginRight: 5}}/>
                             <Title>시공내역</Title>
                         </Row>
-                        <Text style={{fontSize: 15}}>{props.route.params.finalReceipt}</Text>
+                        <Text style={{fontSize: 15}}>{'props.route.params.receipt'}</Text>
                     </ScrollView>
                 </InfoView>
             </View>
