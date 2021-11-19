@@ -1,7 +1,10 @@
 # OSX
 #
 .DS_Store
-
+#ios
+ios/
+#android
+android/
 # Xcode
 #
 build/
