@@ -56,7 +56,7 @@ function Receipt(props){
                         },
                         headers : {Auth: auth},
                     });
-                    console.log(response);
+                    //console.log(response);
     
                     await AsyncStorage.removeItem('BidOrder', ()=>{
                         Alert.alert(
@@ -123,8 +123,7 @@ function Receipt(props){
                 setReceipt(res);
                 setRegion(res.region);
                 if(res !== null){
-                    //console.log(res);
-                    console.log(JSON.stringify(res));
+                    console.log(res);
                 }
             })
             .catch(e => {

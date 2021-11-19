@@ -3,11 +3,11 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Alert } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
+import AlarmScreen from './Main/AlarmScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
@@ -28,14 +28,9 @@ import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
 import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
 
-const Button = styled.TouchableOpacity`
-    padding-left: 10px;
-    justify-content: center;
-    align-items: center;
-`;
 const Stack = createStackNavigator();
 
-function App (props,{navigation}) {
+function App (props) {
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -50,26 +45,22 @@ function App (props,{navigation}) {
 
   React.useEffect(()=>{
     requestUserPermission().catch((e) =>{ console.log('firebase errror')});
+    messaging().getToken().then(res=>{console.log(res)});
   },[]);
 
   return (
+    <>
     <NavigationContainer>
-      <Stack.Navigator 
-      initialRouteName={MainScreen}
-      screenOptions={{
-        headerLeft: (props)=>(
-          <Button {...props}>
-            <BackIcon />
-          </Button>),
-        headerStyle:{backgroundColor:'#f45111'},
-      }}>
+      <Stack.Navigator>
         
         { /* 개발시 보는 임시 첫화면 */}
         {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>}
         {/* 메인화면 */}
         {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>}
-        {/* 메인화면 */}
+        {/* 로그인 화면 */}
         {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
+        {/* 알림 화면 */}
+        {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>}
         {/* 신차패키지 1 */}
         {<Stack.Screen name="PackageScreen_1" component={PackageScreen_1} options={{headerShown:false}}/>}
         {/* 신차패키지 2 */}
@@ -109,6 +100,7 @@ function App (props,{navigation}) {
 
       </Stack.Navigator>
     </NavigationContainer>
+    </>
   );
 };
 

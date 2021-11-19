@@ -65,8 +65,8 @@ const sendDATA = {
 
 function RegisterReviewScreen(props) {
     const [companyName, setCompanyName] = React.useState(props.route.params.companyName);
-    const [constractId, setContractId] = React.useState(props.route.params.constractId);
-    const [companyId, setCompanyId] = React.useState(props.route.params.companyId);
+    const [completedContractId, setCompletedContractId] = React.useState(props.route.params.completedContractId);
+    const [receipt, setReceipt] = React.useState(props.route.params.receipt);
     const [img, setImg] = React.useState([]);
     const [imgFormData, setImgFormData] = React.useState();
     const [text, setText] = React.useState(null);
@@ -104,16 +104,17 @@ function RegisterReviewScreen(props) {
             newFormData.append("content", text);
             newFormData.append("rating", "5");
             console.log(newFormData);
+            console.log(`${server.url}/api/review/${completedContractId}`);
             const auth = await checkJwt();
             if(auth !== null){   
-                const response = await axios.post(`${server.url}/api/review/${companyId}`, newFormData, {
+                const response = await axios.post(`${server.url}/api/review/${completedContractId}`, newFormData, {
                     headers: {'content-type': 'multipart/form-data' , Auth: auth }
                 }).then(res=>{
                     Alert.alert(
                         '성공',
                         '리뷰 등록에 성공했습니다.',
                         [
-                            {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen");}},
+                            {text: 'OK', onPress: () => {props.navigation.replace("MainScreen");}},
                         ],
                         { cancelable: false }
                     );
@@ -156,7 +157,7 @@ function RegisterReviewScreen(props) {
                             <Icon name={'ellipse'} style={{marginRight: 5}}/>
                             <Title>시공내역</Title>
                         </Row>
-                        <Text style={{fontSize: 15}}>{props.route.params.receipt}</Text>
+                        <Text style={{fontSize: 15}}>{receipt}</Text>
                     </ScrollView>
                 </InfoView>
             </View>
@@ -185,12 +186,12 @@ function RegisterReviewScreen(props) {
             </TextView>
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                    <Button mode={"contained"} onPress={() => {}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
+                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("MainScreen")}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
                     <Button mode={"contained"} onPress={() => {SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
                 </Row>
             </BtnView>
             {isSending && 
-                <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
+                <View style={{width: '100%', height: '50%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
                     <ActivityIndicator color= {Color.main}/>
                 </View>}
         </TotalView>

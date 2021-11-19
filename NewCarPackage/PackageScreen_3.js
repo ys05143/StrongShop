@@ -419,6 +419,7 @@ function PackageScreen_3(props) {
     
     async function makeTotal(){
         let finalresult = {...InitialOptions};
+        
         finalresult.tinting= TintingChoose;
         finalresult.detailTinting.ANY = TintingANY;
         finalresult.detailTinting.ETC = TintingETC;
@@ -437,7 +438,6 @@ function PackageScreen_3(props) {
         finalresult.detailBlackbox.INAVI = INAVI;
 
         finalresult.battery = BatteryChoose;
-        finalresult.detailBattery = BatteryANY;
         finalresult.detailBattery.ANY = BatteryANY;
         finalresult.detailBattery.ETC =BatteryETC;
 

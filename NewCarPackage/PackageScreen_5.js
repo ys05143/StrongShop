@@ -147,9 +147,6 @@ function PackageScreen_5(props){
                     url : `${server.url}/api/bidding/${orderId}`,
                     headers : {Auth: auth},
                 })
-                .catch(e=>{
-                    console.log(e);
-                })
                 const rawData = response.data.data;
                 console.log(rawData);
                 if(rawData.length !== 0){
@@ -157,7 +154,6 @@ function PackageScreen_5(props){
                     rawData.map(item => {
                         item['detail'] = JSON.parse(item.detail) ;
                     });
-                    console.log(rawData);
                     //내가 사용할 DATA만들기
                     let newData = [];
                     rawData.map(item => {
@@ -170,7 +166,7 @@ function PackageScreen_5(props){
                             bid_id: item.id,
                         })
                     });
-                    console.log(newData);   
+                    //console.log(newData);   
                     setBidList(newData);
                 }
                 else{
@@ -190,10 +186,9 @@ function PackageScreen_5(props){
             }
         }
         catch{e=>{
-            console.log(e);
             Alert.alert(
                 '오류',
-                '서버 응답 오류',
+                'PackageScreen_5 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],

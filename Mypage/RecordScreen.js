@@ -1,12 +1,17 @@
 import React from 'react'
 import styled from 'styled-components/native';
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Card, Provider as PaperProvider } from 'react-native-paper';
 import _ from 'lodash';
 import moment from 'moment';
+import FastImage from 'react-native-fast-image';
 //component
 import TotalView from '../components/TotalView';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
 const TopBar = styled.View`
@@ -28,62 +33,116 @@ const TextRow = styled.View`
 // 당신의 차량 DATA
 const DATA = [
     {
-        orderId: 1,
-        shopImage: 'https://picsum.photos/0' ,
+        contractId: 1,
+        companyImage: null ,
         carName: '카니발' ,
         date: '20170120',
-        shopName: '올댓카니발',
+        companyName: '올댓카니발',
         price: 3000000,
-        finalReceipt: "블랙박스 파인테크 300만원",
+        receipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        orderId: 2,
-        shopImage: 'https://picsum.photos/0' ,
+        contractId: 2,
+        companyImage: null ,
         carName: '소나타' ,
         date: '20180318',
-        shopName: '올댓오토모빌',
+        companyName: '올댓오토모빌',
         price: 5000000,
-        finalReceipt: "블랙박스 파인테크 300만원",
+        receipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        orderId: 3,
-        shopImage: 'https://picsum.photos/100' ,
+        contractId: 3,
+        companyImage: 'https://picsum.photos/100' ,
         carName: '티볼리' ,
         date: '20200604',
-        shopName: '카샵',
+        companyName: '카샵',
         price: 2000000,
-        finalReceipt: "블랙박스 파인테크 300만원",
+        receipt: "블랙박스 파인테크 300만원",
     } ,
     {
-        orderId: 4,
-        shopImage: 'https://picsum.photos/200' ,
+        contractId: 4,
+        companyImage: 'https://picsum.photos/200' ,
         carName: '카니발' ,
         date: '20211126',
-        shopName: '올댓카니발',
+        companyName: '올댓카니발',
         price: 1500000,
-        finalReceipt: "블랙박스 파인테크 300만원",
+        receipt: "블랙박스 파인테크 300만원",
     }
 ]
 
 function RecordScreen(props) {
+    const [recordData, setRecordData] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
 
-    function gotoRegisterReview(orderId, userName, shopName, finalReceipt){
-        props.navigation.navigate("RegisterReviewScreen", {orderId: orderId, userName: userName, shopName: shopName, finalReceipt: finalReceipt});
+    function gotoRegisterReview(contractId, userName, companyName, receipt){
+        props.navigation.navigate("RegisterReviewScreen", {contractId: contractId, userName: userName, companyName: companyName, receipt: receipt});
+    }
+
+    async function getData(){
+        try{
+            setIsLoading(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/`,
+                    headers : {Auth: auth},
+                })
+                const rawData = response.data.data;
+                console.log(rawData);
+                let record = [];
+                rawData.map(item => {
+                    let detail = JSON.parse(item.detail);
+                    detail.
+                    record.push({
+                        companyImage: item.company_thumbnail_image,
+                        date: item.createdtime,
+                        companyName: company_name,
+                        price: item.detail, 
+                        receipt: item.detail,
+                    })
+                })
+                setRecordData(record);
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '로그인이 필요합니다.',
+                    [
+                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                    ],
+                    { cancelable: false }
+                );
+            }
+            setIsLoading(false);
+        }
+        catch{e => {
+            Alert.alert(
+                '오류',
+                '과거 시공내역 조회 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }
     }
     function renderItem({item}){
         return(
             <Card style={{flex: 1}}>
                 <TextRow style={{flex: 1}}>
                     <View style={{flex: 2}}>
-                        <Card.Cover source={{uri: item.shopImage}} style={{flex: 1}}/>    
+                        <View style={{flex: 1}}>
+                            <FastImage  source={item.companyImage === null ? require('../LOGO_2.png'):{uri: item.companyImage}} style={{width: '100%', height: '100%'}}/>
+                        </View>  
                     </View>
                     <View style={{flex: 3}}>
-                        <Card.Title title={item.shopName} 
+                        <Card.Title title={item.companyName} 
                                     titleStyle={{fontWeight: 'bold', fontSize: 20 , padding: 10}} 
                                     subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                     subtitle={item.carName} 
                                     right={(props) => <TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
-                                                                        onPress={()=>{gotoRegisterReview(item.orderId, item.userName, item.shopName, item.finalReceipt);}}>
+                                                                        onPress={()=>{gotoRegisterReview(item.contractId, item.userName, item.companyName, item.receipt);}}>
                                                             <Text>리뷰쓰기</Text>           
                                                         </TouchableOpacity>}/> 
                         <Card.Content>
@@ -109,7 +168,7 @@ function RecordScreen(props) {
             </TopBar>
             <FlatList  data={DATA}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.orderId}/>
+                    keyExtractor={(item) => item.contractId}/>
         </TotalView>
     );
 }

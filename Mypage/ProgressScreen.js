@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Modal , Portal , Provider}  from 'react-native-paper';
 import { FlatList , ScrollView, Alert, Text, ActivityIndicator } from 'react-native';
 import Color from '../constants/Color';
-import { Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -110,6 +110,7 @@ const DATA=[
 function ProgressScreen( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
     const[contractId, setContractId] = React.useState();
+    const[completedContractId, setCompletedContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
     const[refresh,setRefresh] = React.useState(false);
     const[visible,setVisible] = React.useState(false);
@@ -131,26 +132,28 @@ function ProgressScreen( props ) {
     const RenderItem = ({item}) =>  {
         return(
             <CButton onPress={ () =>  { setSelectedImage(item); setVisible(true) }}>
-                <Image source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
+                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
             </CButton>
         )
     }
 
     async function FinalConfirm(){
-        const auth = await checkJwt();
-        if(auth !== null){
-            const response = await axios({
-                method: 'PUT',
-                url : `${server.url}/api/contract/7/${contractId}` ,
-                headers : {Auth: auth},
-            });
-        }
         Alert.alert(
             '확인',
             '출고를 확정하시겠습니까?',
             [
-              {text: '네', onPress: () => {
-                props.navigation.navigate("RegisterReviewScreen",{contractId: contractId, companyName: shopData[0].companyName, receipt: shopData[4].receipt, companyId: shopData[0].companyId});
+              {text: '네', onPress: async () => {
+                const auth = await checkJwt();
+                if(auth !== null){
+                    const response = await axios({
+                        method: 'PUT',
+                        url : `${server.url}/api/contract/7/${contractId}` ,
+                        headers : {Auth: auth},
+                    });
+                    console.log(response);
+                    const receiptDetails = response.data.data.details;
+                    props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
+                }
               }},
               {text: '아니요', onPress: () => {}}
             ],
@@ -239,7 +242,7 @@ function ProgressScreen( props ) {
         catch{
             Alert.alert(
                 '오류',
-                'getData 오류',
+                'ProgressScreen get 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -278,7 +281,7 @@ function ProgressScreen( props ) {
         catch{e => {  
             Alert.alert(
                 '오류',
-                '정보 전송에 실패했습니다.',
+                'ProgressScreen Next 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -295,7 +298,7 @@ function ProgressScreen( props ) {
         <Modal visible={visible} onDismiss={() => { setVisible(false) }} contentContainerStyle={{ width: '100%', height: 500 , backgroundColor: 'transparent' }}>
             <IconButton icon='close' style={{ alignSelf: 'flex-end'}} color={'white'} onPress={ () => { setVisible(false) }} />
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Image source={{ uri : selectedImage }} style={{ width: '95%' , height: '100%' }} resizeMode='contain'/>
+                <FastImage source={{ uri : selectedImage }} style={{ width: '95%' , height: '100%' }} resizeMode='contain'/>
             </View>
         </Modal>
         </Portal>
@@ -306,7 +309,7 @@ function ProgressScreen( props ) {
                 <Appbar.BackAction onPress={() => { props.navigation.goBack() }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 <View>
-                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatDetail',{ name : props.route.params.name }) }} color='white'/>
+                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatDetail',{ name : shopData[0].companyName}) }} color='white'/>
                     <Badge size={12} style={{position: 'absolute'}}/>
                 </View>
                 </Appbar.Header>  
@@ -340,7 +343,7 @@ function ProgressScreen( props ) {
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
                             <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].shipmentLocation}</Title>
-                            {state === 3 && <Button onPress={()=>{NextState();}}>완료</Button>}
+                            {state === 3 && <Button mode={'contained'} color={Color.main} style={{marginTop: 10}} onPress={()=>{NextState();}}>완료</Button>}
                         </View>
                     </SwiperView>}
                     
@@ -348,7 +351,7 @@ function ProgressScreen( props ) {
                         <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
                         {'2단계: '}{progress[2].title}
                         </Title>
-                        {state === 5 && <Button onPress={()=>{NextState();}}>승인</Button>}
+                        {state === 5 && <Button mode={'contained'} color={Color.main} style={{marginTop: 10}} onPress={()=>{NextState();}}>승인</Button>}
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
                                 data={shopData[2].inspectionImages}

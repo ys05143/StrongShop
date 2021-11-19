@@ -7,6 +7,7 @@ import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import Icon from "react-native-vector-icons/Ionicons";
+import FastImage from 'react-native-fast-image'
 //constants
 import Color from '../constants/Color';
 //function
@@ -155,24 +156,63 @@ function MainScreen( props ) {
     React.useEffect(()=>{
         const unsubscribe = messaging().onMessage( async remoteMessage => {
           //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
-          console.log(remoteMessage.data.index);
           const index = remoteMessage.data.index;
           Alert.alert(
             index,
             '알림이 도착했습니다. 이동하시겠습니까?',
             [
-              {text: '네', onPress: () => {
-                  if(index === 200 || index === 210 || index === 211 || index === 212 || index === 213) props.navigation.navigate("MainScreen");
-                  else props.navigation.navigate("MainScreen");
+              {text: '네', onPress: async() => {
+                const alarmList = await storage.fetch("Alarm");
+                console.log('main Async',alarmList);
+                let newAlarm = alarmList !== null ? [...alarmList] : [];
+                const length = newAlarm.length;
+
+                let title = '오류';
+                let content = '알림을 표시할 수 없습니다.';
+
+                if(index === '200'){
+                    title = '입찰이 도착했습니다';
+                    content = '도착!'
+                }
+                else if(index === '201'){
+                    title = '입찰시간이 종료되었습니다.';
+                    content = '종료!'
+                }
+                else if(index === '210'){
+                    title = '업체에서 검수 사진을 등록했습니다.';
+                    content = '등록!'
+                }
+                else if(index === '211'){
+                    title = '검수가 완료되었습니다.';
+                    content = '완료!'
+                }
+                else if(index === '212'){
+                    title = '시공사진이 등록되었습니다.';
+                    content = '등록!'
+                }
+                else if(index === '213'){
+                    title = '시공이 완료되었습니다';
+                    content = '완료!'
+                }
+                else if(index === '214'){
+                    title = '리뷰를 작성해주세요.';
+                    content = '제발!'
+                }
+                newAlarm.push({
+                    id: length,
+                    alarmType: index === null ? 0 : index,
+                    date: '20211126',
+                    isRead: false,
+                    title: title,
+                    content: content,
+                });
+                await storage.store("Alarm", newAlarm);
+                props.navigation.navigate("AlarmScreen");
               }},
               {text: '아니요', onPress: () => {}}
             ],
-            { cancelable: true }
-        );
-        });
-
-        messaging().onNotificationOpenedApp(remoteMessage => {
-            props.navigation.navigate("MainScreen");
+                { cancelable: true }
+            );
         });
 
         return unsubscribe;
@@ -184,6 +224,7 @@ function MainScreen( props ) {
         });
         return unsubscribe;
     },[])
+
     async function CheckAsync(){
         try{
             const response = await storage.fetch('BidOrder');
@@ -254,18 +295,18 @@ function MainScreen( props ) {
                         })
                         //console.log(rawData);
                         let newData = [];
-                        rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time})});
+                        rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time, carImage: null})});
                         setMyOrderList(newData);
-                        console.log(newData);
+                        //console.log(newData);
                     }
                     else{
                         setMyOrderList([]);
-                        console.log(newData);
+                        //console.log(newData);
                     }
                     setIsLoading(false);
                 })
                 .catch(e=>{
-                    console.log('[MainScreen] server communication error')
+                    console.log('[MainScreen] ',e);
                 })
             }
             else{
@@ -276,7 +317,7 @@ function MainScreen( props ) {
             //console.log(e);
             Alert.alert(
                 '오류',
-                'getData 오류',
+                'MainScreen 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -298,12 +339,63 @@ function MainScreen( props ) {
         }
         return item[state];
     }
+    
+
+
+    async function SendTestData(){
+        const receipt = {
+            processPage: 3,
+            carName: 'AVANTE HYBRID',
+            options: 
+            { tinting: true,
+                detailTinting: 
+                { LUMA: true,
+                    SOLAR: true,
+                    RAINBOW: false,
+                    RAYNO: false,
+                    ANY: false,
+                    ETC: '' },
+                ppf: false,
+                detailPpf: { ETC: '' },
+                blackbox: true,
+                detailBlackbox: { FINETECH: false, INAVI: false, ANY: true, ETC: '' },
+                battery: false,
+                detailBattery: false,
+                afterblow: false,
+                detailAfterblow: { ANY: false, ETC: '' },
+                soundproof: false,
+                detailSoundproof: { ANY: false, ETC: '' },
+                wrapping: true,
+                detailWrapping: { DESIGN: '호랑이' },
+                glasscoating: false,
+                undercoating: false },
+            require: '하하하하하하하',
+            region: 'seoul' 
+        }
+        const region = 'seoul';
+        let i;
+        const auth = await checkJwt();
+        for(i=0; i<100; i++){
+            if(auth !== null){
+                const response = await axios({
+                    method: 'POST',
+                    url : `${server.url}/api/orders` ,
+                    data : {
+                        details: JSON.stringify(receipt),
+                        region: region,
+                    },
+                    headers : {Auth: auth},
+                });
+            }
+            console.log('POST',i);
+        }
+    }
 
     return(
         <>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.Content title=''/>
-                <Appbar.Action icon="bell-outline" onPress={() => {getData();}} />
+                <Appbar.Action icon="bell-outline" onPress={() => {props.navigation.navigate("AlarmScreen")}} />
                 <Appbar.Action icon="account-circle" onPress={() => {props.navigation.navigate('MyPageScreen')}} />
             </Appbar.Header> 
 
@@ -344,15 +436,18 @@ function MainScreen( props ) {
                     { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
                         <ScrollView horizontal={true} style={styles.scrollview}>
                             {
-                            myOrderList.map(item=>{
+                            myOrderList.map(item =>{
                                 return(
                                     <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
-                                    <Card.Cover source={{ uri: item.carImage }} style={styles.cover}/>
-                                    <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
-                                    <Card.Content>
-                                    <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
-                                    </Card.Content>
+                                        <View style={styles.cover}>
+                                            <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
+                                        </View>
+                                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
+                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
+                                        <Card.Content style={{flexDirection: 'row'}}>
+                                            <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
+                                            <Text>{"/"+item.orderId}</Text>
+                                        </Card.Content>
                                     </Card> 
                                 )
                             })
@@ -363,6 +458,7 @@ function MainScreen( props ) {
                         <Swiper 
                             autoplay={true} 
                             style={{ marginVertical: 10 }}
+                            loop={false}
                             renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
                             >
                             {
@@ -371,11 +467,13 @@ function MainScreen( props ) {
                                         <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
                                             <TextRow style={{ flex: 1}}>
                                                 <View style={{ flex: 3 }}>
-                                                    <Card.Cover source={{ uri: item.carImage }} style={{ flex: 1 }}/>    
+                                                    <View style={{flex: 1}}>
+                                                        <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
+                                                    </View>  
                                                 </View>
                                                 <View style={{ flex: 2 }}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '업체 선정' : ''} />
+                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
                                                     <Card.Content>
                                                     <Text style={{ fontSize: 20 , padding: 10 }}>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
                                                     </Card.Content>

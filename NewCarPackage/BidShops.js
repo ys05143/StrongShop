@@ -30,7 +30,7 @@ const DetailView = styled.View`
     background-color: lightgray;
 `;
 
-function Shop(props, {navigation}) {
+function BidShop(props, {navigation}) {
     //for acodian
     const [activeSections, setActiveSections] = React.useState([]);
 
@@ -48,14 +48,14 @@ function Shop(props, {navigation}) {
                     },
                     headers : {Auth: auth},
                 });
-                console.log(response);
-                props.navigation.navigate("MainScreen");
+                //console.log(response);
+                props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3});
             }
         }
         catch{
             Alert.alert(
                 '오류',
-                '서버 응답 오류',
+                'BidShop 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -114,4 +114,4 @@ function Shop(props, {navigation}) {
     );
 }
 
-export default Shop;
+export default BidShop;
