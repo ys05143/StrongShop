@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.strongshop.mobile">
+  package="com.mobile.strongshop.customer">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -32,7 +32,7 @@
 
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
                 <data android:host="oauth"
-                    android:scheme="kakao2d78be1659a3be57c8a3446dfdad968e" />
+                    android:scheme="kakao6b3660e4525fdc150251de1bfb79d735" />
             </intent-filter>
         </activity>
         <meta-data

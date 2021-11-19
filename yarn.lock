@@ -1221,7 +1221,7 @@
 
 "@react-native-firebase/messaging@^13.0.1":
   version "13.0.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-13.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-13.0.1.tgz#cc10a99e75e155ab566d2f112dedb20d1a50f4f7"
   integrity sha512-EYEExRXtGrDgYciWPDvCKXGVQLXEAErE1KFWglzcEBjFOyp9NGf0kj1Gd54r03g7BN1JybK8AC+pWgkTTkFf5A==
 
 "@react-native-picker/picker@^1.16.7":
