@@ -5,20 +5,10 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Avatar, Badge, Switch } from 'react-native-paper';
 //component
 import TotalView from '../components/TotalView';
+import TopBar from '../components/TopBar';
 //constant
 import Color from '../constants/Color';
 
-const TopBar = styled.View`
-    height: 60px;
-    width: 100%;
-    padding-right: 10px;
-    border-bottom-width: 1px;
-    border-color: lightgray;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-`;
 const ProfileView = styled.View`
     width: 100%;
     background-color: white;
@@ -115,7 +105,7 @@ function MyPageScreen(props){
     return(
         <TotalView notchColor={'white'}>
             <TopBar>
-                <TouchableOpacity>
+                <TouchableOpacity style={{padding: 5}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>

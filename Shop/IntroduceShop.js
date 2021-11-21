@@ -1,11 +1,14 @@
 import React from 'react';
-import { Text,Animated,PanResponder,View } from 'react-native';
+import { Text,Animated,PanResponder,View, ScrollView, Alert } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
-import axios from 'axios';
 import styled from 'styled-components/native';
 import { useIsFocused } from '@react-navigation/native';
 //constants
 import AppWindow from '../constants/AppWindow';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -34,7 +37,12 @@ const IntroView = styled.View`
     padding: 10px 15px;
     background-color: white;
 `;
-const Total = styled.ScrollView``;
+
+const Data = {
+    introduceText : '',
+    coord : {latitude: 37.547167222, longitude: 127.068899861},
+    region : '',
+}
 
 function IntroduceShop(props){
     const scrollY = React.useRef(new Animated.Value(0)).current; 
@@ -125,64 +133,63 @@ function IntroduceShop(props){
         },
     });
 
+    async function getData(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/`,
+                    headers : {Auth: auth},
+                })
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'IndroduceShop 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
+    }
 
     return(
-        <>
-            <Animated.View
-            style={{
-                position: 'absolute',
-                width: '100%',
-                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
-            }}
-            >
-                <Animated.ScrollView 
-                scrollEnabled={true}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                    { useNativeDriver: true,
-                    listener: (e)=>{}}, // use native driver for animation: ;
-                )}>
-                    <IntroView>
-                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
-                        <View style={{width: '100%', alignItems: 'center'}}>
-                            <View style={{width: '90%', marginTop: 5}}>
-                                <Text>{props.introduceText}</Text>
-                            </View>
+        <View>
+            <ScrollView scrollEnabled={true}>
+                <IntroView>
+                    <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
+                    <View style={{width: '100%', alignItems: 'center'}}>
+                        <View style={{width: '90%', marginTop: 5}}>
+                            <Text>{props.introduceText}</Text>
                         </View>
-                    </IntroView>
-                    {isFocused && 
-                    <AddressView>
-                        <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
-                        <View style={{width: '100%', alignItems: 'center'}}>
-                            <View style={{width: '90%', marginTop: 5}}>
-                                <Text>{props.region}</Text>
-                            </View>
-                            <MapView>
-                                <NaverMapView style={{width: '100%', height: '100%'}}
-                                                    scrollGesturesEnabled={true}
-                                                    showsMyLocationButton={true}
-                                                    center={{...coord, zoom: 16}}>
-                                    <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>
-                                </NaverMapView>
-                            </MapView>
+                    </View>
+                </IntroView>
+                {isFocused && 
+                <AddressView>
+                    <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
+                    <View style={{width: '100%', alignItems: 'center'}}>
+                        <View style={{width: '90%', marginTop: 5}}>
+                            <Text>{props.region}</Text>
                         </View>
-                    </AddressView>}
-                </Animated.ScrollView>
-            </Animated.View>
-
-            {(first||last)&&<Animated.View
-                style={{
-                position: 'absolute',
-                transform: [{ translateY: pan.y }],
-                width: '100%',
-                backgroundColor: 'transparent',
-                height: 2*HEIGHT,
-                }}
-                {...panResponder.panHandlers}
-            >
-            </Animated.View>}
-        
-        </>
+                        <MapView>
+                            <NaverMapView style={{width: '100%', height: '100%'}}
+                                                scrollGesturesEnabled={true}
+                                                showsMyLocationButton={true}
+                                                center={{...coord, zoom: 16}}>
+                                <Marker coordinate={coord} onClick={() => console.warn('onClick! marker')}/>
+                            </NaverMapView>
+                        </MapView>
+                    </View>
+                </AddressView>}
+            </ScrollView>
+        </View>
     )
 
     

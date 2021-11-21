@@ -16,6 +16,8 @@ import Color from '../constants/Color';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
+const HOMEINDICATOR = AppWindow.HomeIndicator;
+const NOTCH = AppWindow.IOS_notch;
 
 const TAB_HEIGHT = 50;
 const HEADER_MAX_HEIGHT = 300;
@@ -250,12 +252,12 @@ const Tab = createMaterialTopTabNavigator();
 
 function ShopScreen_1(props){
   const [isLoading, setIsLoading] = React.useState(false);
-  const [totalFirst, setTotalFirst] = React.useState(true);
-  const [Pan, setPan] = React.useState(new Animated.ValueXY({x: 0, y: 0}));
+  const [totalFirst, setTotalFirst] = React.useState(false);
+  const [Pan, setPan] = React.useState(new Animated.ValueXY({ x: 0, y: -HEADER_SCROLL_DISTANCE }));
   const [shopData, setShopData] = React.useState(DATA);
   const twinkle = new Animated.Value(0);
 
-  function setInitial(){
+  function moveTab(){
     if(totalFirst !== true){
       //setPan(new Animated.ValueXY({x: 0, y: 0}));
       Animated.spring(
@@ -264,6 +266,14 @@ function ShopScreen_1(props){
             useNativeDriver: true } // Back to zero
         ).start();
       setTotalFirst(true);
+    }
+    else{
+      Animated.spring(
+        Pan, // Auto-multiplexed
+        { toValue: { x: 0, y: -HEADER_SCROLL_DISTANCE },
+            useNativeDriver: true } // Back to zero
+        ).start();
+      setTotalFirst(false);
     }
   }
 
@@ -347,76 +357,82 @@ function ShopScreen_1(props){
 
     
   return(
-    <TotalView notchColor={Color.main}>
-      <Animated.View
-        style={[styles.header]}>
-        {!isLoading && <Animated.Image
-        style={[
-            styles.headerBackground,
-            {
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslateY }],
-            },
-        ]}
-        source={{uri: DATA.representImg}}
-        />}
-        {!isLoading && <Animated.View
+    <View style={{backgroundColor: Color.main, width: '100%', height: '100%'}}>
+      <View style={{flex: 1, marginTop: NOTCH}}>
+        <Animated.View
+          style={[styles.header]}>
+          {!isLoading && <Animated.Image
           style={[
-            styles.subTitleView,
-            {
+              styles.headerBackground,
+              {
               opacity: imageOpacity,
               transform: [{ translateY: imageTranslateY }],
-            }
+              },
+          ]}
+          source={{uri: 'https://picsum.photos/0'}}
+          />}
+          {!isLoading && <Animated.View
+            style={[
+              styles.subTitleView,
+              {
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslateY }],
+              }
+            ]}>
+              <Intro onPress={()=>{moveTab();}}>
+                <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{DATA.shopName}</Text>
+              </Intro>
+          </Animated.View>}
+        </Animated.View>
+        <Animated.View
+          style={[
+          styles.topBar,
+          {
+              transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
+          },
           ]}>
-            <Text style={{color: 'white', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{DATA.shopName}</Text>
-        </Animated.View>}
-      </Animated.View>
-      <Animated.View
-        style={[
-        styles.topBar,
-        {
-            transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
-        },
-        ]}>
-          <View style={{width: 35}}>
-            <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
-          </View>
-          <Animated.View
-            style={[null,{
-              opacity: textOpacity,
-            }]}>
-            <Intro onPress={()=>{setInitial();}}>
-              <Text style={styles.title}>{DATA.shopName}</Text>
-            </Intro>
-          </Animated.View>
-          {!totalFirst && <Animated.View style={[{marginLeft: 15}, {opacity: twinkle}]}>
-            <Text style={{color: 'white'}}>{'<- 업체명을 터치하시면\n원래상태로 돌아갑니다.'}</Text>
-        </Animated.View>}  
-      </Animated.View>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          transform: [{ translateY: Pan.y }],
-          height: HEIGHT-HEADER_MIN_HEIGHT,
-          marginTop: HEADER_MAX_HEIGHT,
-        }}
-      >
-        {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
-                                                            swipeEnabled: false, 
-                                                            tabBarIndicatorStyle: {backgroundColor: Color.main},
-                                                            tabBarActiveTintColor: Color.main,
-                                                            tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
-                                                                                      
-          <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={shopData.introduceText} coord={shopData.coord} region={shopData.region} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} shopName={shopData.shopName} gallery={shopData.gallery} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={shopData.shopName} merchandise={shopData.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={shopData.shopName} review={shopData.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
-          
-        </Tab.Navigator> : 
-        <ActivityIndicator size = 'large' color= {'white'}/>}
-      </Animated.View>
-    </TotalView>
+            <View style={{width: 35}}>
+              <Icon name="chevron-back-outline" size={35} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
+            </View>
+            <Animated.View
+              style={[null,{
+                opacity: textOpacity,
+              }]}>
+              <Intro onPress={()=>{moveTab();}}>
+                <Text style={styles.title}>{DATA.shopName}</Text>
+              </Intro>
+            </Animated.View>
+            {!totalFirst && <Animated.View style={[{marginLeft: 15}, {opacity: twinkle}]}>
+              <Text style={{color: 'white'}}>{'<- 업체명을 터치하시면\n원래상태로 돌아갑니다.'}</Text>
+          </Animated.View>}  
+        </Animated.View>
+        <Animated.View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            transform: [{ translateY: Pan.y }],
+            height: HEIGHT-HEADER_MIN_HEIGHT+HOMEINDICATOR,
+            marginTop: HEADER_MAX_HEIGHT,
+          }}
+        >
+          {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
+                                                              swipeEnabled: true, 
+                                                              tabBarIndicatorStyle: {backgroundColor: Color.main},
+                                                              tabBarActiveTintColor: Color.main,
+                                                              tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
+                                                                                 
+            <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} introduceText={shopData.introduceText} coord={shopData.coord} region={shopData.region} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+            <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} shopName={shopData.shopName} gallery={shopData.gallery} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+            <Tab.Screen name="취급상품" children={({navigation})=><Merchandise_2 name={'취급상품'} navigation={navigation} shopName={shopData.shopName} merchandise={shopData.merchandise} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+            <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} shopName={shopData.shopName} review={shopData.review} Pan={Pan} getPan={getPan} totalFirst={totalFirst} getTotalFirst={getTotalFirst}/>}/>
+            
+          </Tab.Navigator> : 
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size = 'large' color= {'white'}/>
+          </View>}
+        </Animated.View>
+      </View>
+    </View>
   );
 }
 

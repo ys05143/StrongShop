@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text,Image, FlatList,View, Animated, PanResponder } from 'react-native';
+import { Text,Image, FlatList,View, Animated, PanResponder, Alert } from 'react-native';
 import AppWindow from '../constants/AppWindow';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -13,7 +17,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const Total = styled.View`
     width: 100%;
-    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
+    padding-top: 10px;
     align-items: center;
 `;
 const ReviewView = styled.View`
@@ -85,30 +89,25 @@ const AfterDATA=[{
     profileImg: require('../resource/character4.png'),
 }];
 
+const DATA = [{ 
+    companyId: 1, 
+    content: "반말하지 마세요", 
+    createdTime: "2021-11-19T23:06:00", 
+    id: 16, 
+    imageUrls: [{
+        galleryId: 3, 
+        id: 4, 
+        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
+    }], 
+    rating: 5, "reply": null, 
+    userNickName: "ㅎㅎ", 
+    userThumbnailImage: "http://k.kakaocdn.net/dn/bnznMs/btrazLTprkY/9wznFjIGhM1VNPc1PGZG11/img_110x110.jpg"
+}]
+
 function ReviewList(props){
     const [shopName, setShopName] = React.useState(props.shopName);
     const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
-    function renderItem({item}){
-        return(
-            <View style={{width: WIDTH, alignItems: 'center'}}>
-            <ReviewView key={item.reviewId}>
-                <NameView>
-                    <ProfileImg>
-                        <Image  source={item.profileImg===null ? require('../resource/default_profile.png') : item.profileImg} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
-                    </ProfileImg>
-                    <Name>{item.name}</Name>
-                </NameView>
-                <ContentView>
-                    <ContentImg>
-                        <Image source={{uri: item.images}} style={{width:'100%', height: '100%'}} resizeMode='cover'></Image>
-                    </ContentImg>
-                    <Content>{item.text}</Content>
-                </ContentView>
-            </ReviewView>
-            </View>
-        );
-    }
     
     const [first, setFirst] = React.useState(props.totalFirst);
     const [last, setLast] = React.useState(false);
@@ -176,42 +175,66 @@ function ReviewList(props){
         },
     });
 
+    function renderItem({item}){
+        return(
+            <View style={{width: WIDTH, alignItems: 'center'}}>
+            <ReviewView key={item.reviewId}>
+                <NameView>
+                    <ProfileImg>
+                        <Image  source={item.profileImg===null ? require('../resource/default_profile.png') : item.profileImg} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
+                    </ProfileImg>
+                    <Name>{item.name}</Name>
+                </NameView>
+                <ContentView>
+                    <ContentImg>
+                        <Image source={{uri: item.images}} style={{width:'100%', height: '100%'}} resizeMode='cover'></Image>
+                    </ContentImg>
+                    <Content>{item.text}</Content>
+                </ContentView>
+            </ReviewView>
+            </View>
+        );
+    }
+
+    async function getData(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/`,
+                    headers : {Auth: auth},
+                })
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'IndroduceShop 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
+    }
 
     return(
         <Total>
-            <Animated.View
-            style={{
-                position: 'absolute',
-                width: '100%',
-                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
-                paddingTop: 10,
-            }}
-            >
-                <Animated.FlatList data={props.review}
+            <View>
+                <FlatList data={props.review}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.reviewId}
                     nestedScrollEnabled={true}
                     scrollEnabled={true}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                        { useNativeDriver: true,
-                        listener: (e)=>{console.log(e.nativeEvent.contentOffset.y)}}, // use native driver for animation: ;
-                    )}
                     onRefresh={()=>{console.log("refresh")}}
                     refreshing={isRefreshing}
                     />
-            </Animated.View>
-            {(first||last)&&<Animated.View
-                style={{
-                position: 'absolute',
-                transform: [{ translateY: pan.y }],
-                width: '100%',
-                backgroundColor: 'tranparent',
-                height: 2*HEIGHT,
-                }}
-                {...panResponder.panHandlers}
-            >
-                </Animated.View>}
+            </View>
         </Total>
     )
 }

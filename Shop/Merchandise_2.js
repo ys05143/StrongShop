@@ -1,12 +1,16 @@
 import React from 'react';
 import _ from 'lodash';
 import styled from 'styled-components/native';
-import { ScrollView, Text,View, Animated, PanResponder, ActivityIndicator } from 'react-native';
+import { ScrollView, Text,View, Animated, PanResponder, ActivityIndicator, Alert } from 'react-native';
 //constants
 import Color from '../constants/Color';
 //pages
 import ProductDetail from './ProductDetail';
 import AppWindow from '../constants/AppWindow';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -40,13 +44,11 @@ const merchadiseList= [
 
 const Total = styled.View`
     width: 100%;
-    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
     align-items: center;
 `;
 
 const Option = styled.ScrollView`
     height: 70px;
-    flex-direction: row;
     margin-top: 10px;
     margin-bottom: 10px;
     background-color: white;
@@ -81,6 +83,19 @@ const TEMP_BLACKBOX=[{
     price: 380000,
     text: '룸미러와 블랙박스의 만남\n전후방 FHD, SONY STARVIS\n후방사각지대 시야확보'
 }];
+
+const DATA = {
+    afterblow: [], 
+    battery: [], 
+    blackbox: [{additionalInfo: "아아아아", companyId: 7, id: 7, item: 'BLACKBOX', name: "오옹오ㅗ오"}], 
+    deafening: [], 
+    etc: [], 
+    glasscoating: [], 
+    ppf: [{additionalInfo: "어어엉", companyId: 6, id: 6, item: 'PPF', name: "아아아"}], 
+    tinting: [{additionalInfo: "ㅇㅇㅇㅇ", companyId: 5, id: 5, item: 'TINTING', name: "ㅇㅇ"}], 
+    undercoating: [], 
+    wrapping: [],
+}
 
 function Merchandise_2(props){
     //props로 받은 shopName으로 서버에 그 shop의 정보 요청해서 각 파트별로 useState에 저장
@@ -168,39 +183,52 @@ function Merchandise_2(props){
         setIsLoading(true);
         setShow(title);
         //체크 후 필요시 요청
-        setTimeout(()=>{setIsLoading(false)}, 2000);
+        //setTimeout(()=>{setIsLoading(false)}, 2000);
+        setIsLoading(false);
+    }
+
+    async function getData(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/`,
+                    headers : {Auth: auth},
+                })
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'IndroduceShop 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
     }
 
     return(
         <Total>
-            <Animated.View
-            style={{
-                position: 'absolute',
-                width: '100%',
-                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
-            }}
-            >
-                <View>
-                    <Option horizontal={true} contentContainerStyle={{alignItems: 'center'}}>
-                        {_.map(merchadiseList, (item) => {
-                            return(
-                                <OptionView key={item.title}>
-                                    <OptionName style={{borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{showOption(item.title)}}>
-                                        <Text style={{color: show === item.title ? Color.main : 'gray'}}>{item.name}</Text>
-                                    </OptionName>
-                                </OptionView>
-                            );}
-                        )}
-                    </Option>
-                </View>
-
-                <Animated.ScrollView
-                scrollEnabled={true}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                    { useNativeDriver: true,
-                    listener: (e)=>{}}, // use native driver for animation: ;
-                )}>
+            <Option horizontal={true}>
+                {_.map(merchadiseList, (item) => {
+                    return(
+                        <OptionView key={item.title} style={{alignSelf: 'center'}}>
+                            <OptionName style={{borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{showOption(item.title)}}>
+                                <Text style={{color: show === item.title ? Color.main : 'gray'}}>{item.name}</Text>
+                            </OptionName>
+                        </OptionView>
+                    );}
+                )}
+            </Option>
+            <View style={{width: '100%'}}>
+                <ScrollView scrollEnabled={true}>
                     {isLoading && <ActivityIndicator size = 'large' color= {Color.main}/>}
                     {(show === 'Tinting' && !isLoading) && <ProductDetail list={tintingList} title={'틴팅'}/>}
                     {(show === 'BlackBox' && !isLoading) && <ProductDetail list ={blackboxList} title={'블랙박스'}/>}
@@ -208,21 +236,8 @@ function Merchandise_2(props){
                     {(show === 'UnderCoating' && !isLoading) && <ProductDetail list ={underCoatingList} title={'하부코팅'}/>}
                     {(show === 'PPF' && !isLoading) && <ProductDetail list ={ppfList} title={'PPF'}/>}
                     {(show === 'UnderDeafening' && !isLoading) && <ProductDetail list ={underDeafeningList} title={'하부방음'}/>}
-                </Animated.ScrollView>   
-            </Animated.View> 
-
-            {(first||last)&&<Animated.View
-                style={{
-                position: 'absolute',
-                transform: [{ translateY: pan.y }],
-                width: '100%',
-                backgroundColor: 'transparent',
-                height: 2*HEIGHT,
-                }}
-                {...panResponder.panHandlers}
-            >
-            </Animated.View>}
-            
+                </ScrollView> 
+            </View>          
         </Total>
     )
 }

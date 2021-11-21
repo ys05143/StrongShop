@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator, Easing } from 'react-native';
-import axios from 'axios';
+import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator, Easing, FlatList, Alert } from 'react-native';
 import AppWindow from '../constants/AppWindow';
 import { result } from 'lodash';
+//for server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -90,40 +93,36 @@ const ImageView = styled.TouchableOpacity`
 `;
 const Total = styled.View`
     width: 100%;
-    height: ${HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT}px;
     align-items: center;
 `;
 
+const DATA = [{
+    company_id: 1, 
+    content: "ㅎㄹㅇ", 
+    createdTime: "2021-11-19T23:00:32", 
+    id: 3, 
+    imageUrls: [{
+        galleryId: 3, 
+        id: 4, 
+        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
+    }]
+}, {
+    company_id: 1, 
+    content: "ㅎㄹㅇ", 
+    createdTime: "2021-11-19T23:00:32", 
+    id: 4, 
+    imageUrls: [{
+        galleryId: 3, 
+        id: 4, 
+        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
+    }]
+}]
+
 function Gallery(props){
-    const [shopName, setShopName] = React.useState(props.shopName);
+    const [shopName, setShopName] = React.useState(props.shopName); //요청시 사용
     const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
-    const [galleryContents, setGalleryContents] = React.useState(props.gallery)
-
-    async function getData(name, id){
-        try{
-            /*const result = await axios({
-                                        method: 'GET' ,
-                                        url : '' , //name, id 사용
-                                    });
-            props.navigation.navigate("DetailGallery", {contents:result.response});*/
-            props.navigation.navigate("DetailGallery", {contents:findGalleyContents(galleryContents, id).contents});
-            return 0;
-        }
-        catch (error){
-            console.log(error);
-            return -1;
-        }
-    }
-
-    const renderItem = ({ item }) => {
-        
-        return(
-            <ImageView onPress={()=>{getData(shopName, item.galleryId);}}>
-                <Image style={{height:'100%',width:'100%',}} source={{uri:item.thumbnail}}  resizeMode='stretch'/>
-            </ImageView>
-        );
-    };
+    const [galleryContents, setGalleryContents] = React.useState(props.gallery);
 
     const [first, setFirst] = React.useState(props.totalFirst);
     const [last, setLast] = React.useState(false);
@@ -191,47 +190,75 @@ function Gallery(props){
         },
     });
 
-  function findGalleyContents(array, id){
-    const result = array.filter(item => item.galleryId === id);
-    return result[0];
-  }
+    async function showDetail(name, id){
+        try{
+            /*const result = await axios({
+                                        method: 'GET' ,
+                                        url : '' , //name, id 사용
+                                    });
+            props.navigation.navigate("DetailGallery", {contents:result.response});*/
+            props.navigation.navigate("DetailGallery", {contents:findGalleyContents(galleryContents, id).contents});
+            return 0;
+        }
+        catch (error){
+            console.log(error);
+            return -1;
+        }
+    }
+
+    async function getData(){
+        try{
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/`,
+                    headers : {Auth: auth},
+                })
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'IndroduceShop 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
+    }
+
+    const renderItem = ({ item }) => {
+        
+        return(
+            <ImageView onPress={()=>{showDetail(shopName, item.galleryId);}}>
+                <Image style={{height:'100%',width:'100%',}} source={{uri:item.thumbnail}} resizeMode='stretch'/>
+            </ImageView>
+        );
+    };
+
+    function findGalleyContents(array, id){
+        const result = array.filter(item => item.galleryId === id);
+        return result[0];
+    }
 
 
     return(
         <Total>
-            <Animated.View
-            style={{
-                position: 'absolute',
-                width: '100%',
-                height: HEIGHT-HEADER_MIN_HEIGHT-TAB_HEIGHT,
-            }}
-            >
-                <Animated.FlatList
-                    data={props.gallery}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.galleryId}
-                    numColumns={3}
-                    scrollEnabled={true}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }], // event.nativeEvent.contentOffset.x to scrollX
-                        { useNativeDriver: true,
-                        listener: (e)=>{console.log(e.nativeEvent.contentOffset.y)}}, // use native driver for animation: ;
-                    )}
-                    onRefresh={()=>{console.log("refresh")}}
-                    refreshing={isRefreshing}
-                    />
-            </Animated.View>
-            {(first||last)&&<Animated.View
-                style={{
-                position: 'absolute',
-                transform: [{ translateY: pan.y }],
-                width: '100%',
-                backgroundColor: 'transparent',
-                height: 2*HEIGHT,
-                }}
-                {...panResponder.panHandlers}
-            >
-                </Animated.View>}
+            <FlatList
+                data={props.gallery}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.galleryId}
+                numColumns={3}
+                scrollEnabled={true}
+                onRefresh={()=>{console.log("refresh")}}
+                refreshing={isRefreshing}
+                />
         </Total>
     );
 }

@@ -309,7 +309,7 @@ function ProgressScreen( props ) {
                 <Appbar.BackAction onPress={() => { props.navigation.goBack() }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 <View>
-                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatDetail',{ name : shopData[0].companyName}) }} color='white'/>
+                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName}) }} color='white'/>
                     <Badge size={12} style={{position: 'absolute'}}/>
                 </View>
                 </Appbar.Header>  

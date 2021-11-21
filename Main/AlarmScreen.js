@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 //component
 import TotalView from "../components/TotalView";
+import TopBar from "../components/TopBar";
 //function
 import storage from "../function/storage";
 //constants
@@ -19,18 +20,6 @@ const AlarmView = styled.TouchableOpacity`
     padding: 5px 10px;
     justify-content: center;
 `;
-const TopBar = styled.View`
-    height: 60px;
-    width: 100%;
-    padding-right: 10px;
-    border-bottom-width: 1px;
-    border-color: lightgray;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-`;
-
 const DATA = [{
     id: 2,
     alarmType: 200,
@@ -51,7 +40,7 @@ function AlarmScreen(props){
 
     async function GetAlarm(){
         let response = await storage.fetch("Alarm");
-        setAlarmList(response.reverse());
+        setAlarmList(response !== null ? response.reverse(): null);
     }
 
     async function ClearAlarmList(){
@@ -87,12 +76,12 @@ function AlarmScreen(props){
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity>
+                <TouchableOpacity style={{padding: 5}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>알림</Text>
                 <TouchableOpacity>
-                    <Icon name="trash-outline" size={30} color={'black'} onPress={()=>{ClearAlarmList();}}></Icon>
+                    <Icon name="trash-outline" size={25} color={'black'} onPress={()=>{ClearAlarmList();}}></Icon>
                 </TouchableOpacity>
             </TopBar>
             {!isLoading ? <FlatList

@@ -8,6 +8,8 @@ import messaging from '@react-native-firebase/messaging';
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
 import AlarmScreen from './Main/AlarmScreen';
+import ChatListScreen from './Mypage/ChatListScreen';
+import ChatScreen from './Main/ChatScreen';
 import PackageScreen_1 from './NewCarPackage/PackageScreen_1';
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
@@ -19,7 +21,7 @@ import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
-import ProgressScreen from './Mypage/ProgressScreen';
+import ProgressScreen from './Main/ProgressScreen';
 
 import Past_PackageScreen_3_1 from './NewCarPackage/Past_PackageScreen_3_1';
 import Past_PackageScreen_3_2 from './NewCarPackage/Past_PackageScreen_3_2';
@@ -61,6 +63,10 @@ function App (props) {
         {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
         {/* 알림 화면 */}
         {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>}
+        {/* 채팅목록 화면 */}
+        {<Stack.Screen name="ChatListScreen" component={ChatListScreen} options={{headerShown:false}}/>}
+        {/* 채팅 화면 */}
+        {<Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown:false}}/>}
         {/* 신차패키지 1 */}
         {<Stack.Screen name="PackageScreen_1" component={PackageScreen_1} options={{headerShown:false}}/>}
         {/* 신차패키지 2 */}
@@ -71,7 +77,7 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
         {/* 신차패키지 5 */}
         {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
-        {/* 업체페이지 5 */}
+        {/* 업체페이지 */}
         {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 */}
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
