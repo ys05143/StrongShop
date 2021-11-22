@@ -69,9 +69,9 @@ const iosKeys = {
   };
   
   const androidKeys = {
-    kConsumerKey: "",
-    kConsumerSecret: "",
-    kServiceAppName: ""
+    kConsumerKey: "ClD3jS3tjfj969pqrxW6",
+    kConsumerSecret: "BVCzkiHTVf",
+    kServiceAppName: "strongshop-customer"
   };
   
   const initials = Platform.OS === "ios" ? iosKeys : androidKeys;
