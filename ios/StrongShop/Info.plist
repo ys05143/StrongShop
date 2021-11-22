@@ -85,6 +85,8 @@
 		<string>lguthepay-xpay</string>
 		<string>liivbank</string>
 		<string>supertoss</string>
+        <string>naversearchapp</string>
+        <string>naversearchthirdlogin</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
