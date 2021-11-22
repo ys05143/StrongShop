@@ -2,12 +2,13 @@ import React from 'react' ;
 import styled from 'styled-components/native';
 import { Title , Button , Text, } from 'react-native-paper';
 import axios from 'axios';
-import { ActivityIndicator, Alert, ScrollView, TextInput } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, TextInput, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import IMP from 'iamport-react-native';
+import { NaverLogin, getProfile } from "@react-native-seoul/naver-login";
 import Icon  from "react-native-vector-icons/Ionicons";
 import messaging from '@react-native-firebase/messaging';
 //functoin
@@ -60,12 +61,28 @@ const styles = {
     }
 
 }
+const iosKeys = {
+    kConsumerKey: "ClD3jS3tjfj969pqrxW6",
+    kConsumerSecret: "BVCzkiHTVf",
+    kServiceAppName: "strongshop-customer",
+    kServiceAppUrlScheme: "strongshop" // only for iOS
+  };
+  
+  const androidKeys = {
+    kConsumerKey: "",
+    kConsumerSecret: "",
+    kServiceAppName: ""
+  };
+  
+  const initials = Platform.OS === "ios" ? iosKeys : androidKeys;
+  
 
 function LoginScreen(props) {
     const snapPoints = React.useMemo(() => ['80%'], []);
     const [userName,setUserName] = React.useState("");
     const [dtoData,setDtoData] = React.useState(null);
     const [fcmToken, setFcmToken] = React.useState();
+    const [loginVer, setLoginVer] = React.useState('');
 
     const bottomSheetModalRef = React.useRef(null);
     const handlePresentModalPress = React.useCallback(() => {
@@ -82,10 +99,10 @@ function LoginScreen(props) {
     },[]);
 
     // 카카오 AccessToken => 서버 
-    function requestAccessToken(accessToken) {
+    function requestAccessToken(accessToken, name) {
         axios({
             method : 'GET' ,
-            url : `${server.url}/api/login/user/kakao` ,
+            url : `${server.url}/api/login/user/${name}` ,
             headers : {
                 Authorization : accessToken
             } ,
@@ -123,11 +140,12 @@ function LoginScreen(props) {
         })
     }
 
-    function requestSignIn() {
+    function requestSignIn(name) {
+        console.log(`${server.url}/api/login/user/${name}`);
         // 서버에게 dtoData 전달
         axios({
             method: 'POST',
-            url : `${server.url}/api/login/user/kakao` ,
+            url : `${server.url}/api/login/user/${name}` ,
             data : {
                 ...dtoData ,
                 phoneNumber: '01012341234' ,
@@ -162,6 +180,7 @@ function LoginScreen(props) {
 
     const handleKakaoLogin = async() =>  {
         // 카카오 인증요청
+        setLoginVer('kakao');
         const token = await login().catch(e=>{console.log(e) });
         console.log(token);
         // 카카오 인증취소 / 인증실패 
@@ -169,7 +188,7 @@ function LoginScreen(props) {
         const accessToken = 'Bearer ' + token.accessToken ;        
         try {
             // token 서버에게 전달 
-            requestAccessToken(accessToken);
+            requestAccessToken(accessToken, 'kakao');
         }
         catch {
             Alert.alert('다시 요청해주세요.');
@@ -177,11 +196,26 @@ function LoginScreen(props) {
 
     }
 
+    const naverLogin = props => {
+        return new Promise((resolve, reject) => {
+          NaverLogin.login(props, (err, token) => {
+            setLoginVer('naver');
+            const accessToken = 'Bearer ' + token.accessToken ; 
+            requestAccessToken(accessToken,'naver');
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(token);
+          });
+        });
+      };
+
     // 휴대폰인증
     function phoneAuth(response) {
        if ( response.success ) {
            // 최종 회원가입요청
-           requestSignIn();
+           requestSignIn(loginVer);
        }
        else {
            // 인증 취소 / 대표자명과 맞지않을때
@@ -217,7 +251,7 @@ function LoginScreen(props) {
                     <Button style={styles.loginButton} color='white' icon='chat' onPress={handleKakaoLogin}>
                         카카오로 시작하기
                     </Button>
-                    <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={handlePresentModalPress}>
+                    <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>naverLogin(initials)}>
                         네이버로 시작하기
                     </Button>
                 {/* </ImageBackground> */}
@@ -232,7 +266,7 @@ function LoginScreen(props) {
                     <>
                         <Title style={styles.title}> {userName}님으로 인증할게요.(2/2)</Title>
                         <View style={{ width: '100%' , height: 700 }}>
-                            <Button onPress={requestSignIn}>테스트</Button>
+                            <Button onPress={()=>requestSignIn(loginVer)}>테스트</Button>
                         {/* <IMP.Certification
                         userCode={'iamport'}  // 가맹점 식별코드
                         // tierCode={'AAA'}      // 티어 코드: agency 기능 사용자에 한함

@@ -8,6 +8,7 @@
 #if RCT_DEV
 #import <React/RCTDevLoadingView.h>
 #endif
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 #import <RNKakaoLogins.h>
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -36,6 +37,9 @@ static void InitializeFlipper(UIApplication *application) {
  if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
     return [RNKakaoLogins handleOpenUrl: url];
  }
+  if ([url.scheme isEqualToString:@"strongshop"]) {
+      return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+    }
 
  return NO;
 }
@@ -45,6 +49,9 @@ static void InitializeFlipper(UIApplication *application) {
   if ([FIRApp defaultApp] == nil) {
       [FIRApp configure];
     }
+  [[NaverThirdPartyLoginConnection getSharedInstance] setIsNaverAppOauthEnable:YES];
+  [[NaverThirdPartyLoginConnection getSharedInstance] setIsInAppOauthEnable:YES];
+
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
