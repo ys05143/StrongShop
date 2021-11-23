@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator, Easing, FlatList, Alert } from 'react-native';
 import AppWindow from '../constants/AppWindow';
-import { result } from 'lodash';
+import FastImage from 'react-native-fast-image';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -93,128 +93,51 @@ const ImageView = styled.TouchableOpacity`
 `;
 const Total = styled.View`
     width: 100%;
-    align-items: center;
 `;
 
 const DATA = [{
-    company_id: 1, 
-    content: "ㅎㄹㅇ", 
+    content: "", 
     createdTime: "2021-11-19T23:00:32", 
-    id: 3, 
+    galleryId: 0, 
     imageUrls: [{
-        galleryId: 3, 
-        id: 4, 
-        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
+        galleryId: 0, 
+        id: 0, 
+        imageUrl: ""
     }]
-}, {
-    company_id: 1, 
-    content: "ㅎㄹㅇ", 
-    createdTime: "2021-11-19T23:00:32", 
-    id: 4, 
-    imageUrls: [{
-        galleryId: 3, 
-        id: 4, 
-        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
-    }]
-}]
+}];
 
 function Gallery(props){
-    const [shopName, setShopName] = React.useState(props.shopName); //요청시 사용
-    const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
-    const [galleryContents, setGalleryContents] = React.useState(props.gallery);
-
-    const [first, setFirst] = React.useState(props.totalFirst);
-    const [last, setLast] = React.useState(false);
-    const pan = React.useRef(props.Pan).current;
-
+    const [galleryData, setGalleryData] = React.useState(DATA);
+    const [isLoading, setIsLoading] = React.useState(false);
+    
     React.useEffect(()=>{
-        setFirst(props.totalFirst);
-        setLast(false);
-    },[props.totalFirst]);
-
-    const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-        if(first){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            pan.setOffset({
-                x: 0,
-                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
-            });
-        }
-        if(last){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            console.log(first);
-            pan.setOffset({
-                x: 0,
-                y: last === true?  -HEADER_SCROLL_DISTANCE : 0
-            });         
-        }},
-        onPanResponderMove: Animated.event([
-        null,
-        {
-            dx: pan.x,
-            dy: pan.y,
-        },
-        ],{
-            useNativeDriver: false,
-            listener: (e)=>{props.getPan(pan);}
-        }),
-        onPanResponderRelease: () => {
-        if(first){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            props.getTotalFirst(false);
-            //setFirst(false);
-        }
-        if(last){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            setLast(false);
-            props.getTotalFirst(true);
-            //setFirst(true);
-        }
-        },
-    });
-
-    async function showDetail(name, id){
-        try{
-            /*const result = await axios({
-                                        method: 'GET' ,
-                                        url : '' , //name, id 사용
-                                    });
-            props.navigation.navigate("DetailGallery", {contents:result.response});*/
-            props.navigation.navigate("DetailGallery", {contents:findGalleyContents(galleryContents, id).contents});
-            return 0;
-        }
-        catch (error){
-            console.log(error);
-            return -1;
-        }
-    }
+        getData()
+    },[]);
 
     async function getData(){
         try{
+            setIsLoading(true);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
-                    url : `${server.url}/api/`,
+                    url : `${server.url}/api/gallery/${props.companyId}`,
                     headers : {Auth: auth},
                 })
+                const rawData = response.data.data;
+                //console.log('gallery',rawData);
+                let newData = [];
+                rawData.map(item => {
+                    newData.push({ 
+                        content: item.content, 
+                        createdTime: item.createdTime, 
+                        galleryId: item.id, 
+                        imageUrls: item.imageUrls,
+                    });
+                })
+                setGalleryData(newData);
+                setIsLoading(false);
             }
             else{
                 console.log("no login");
@@ -224,7 +147,7 @@ function Gallery(props){
             //console.log(e);
             Alert.alert(
                 '오류',
-                'IndroduceShop 오류',
+                'gallery 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -233,11 +156,90 @@ function Gallery(props){
         }  
     }
 
+    // const [first, setFirst] = React.useState(props.totalFirst);
+    // const [last, setLast] = React.useState(false);
+    //const scrollY = React.useRef(new Animated.Value(0)).current; 
+    //const pan = React.useRef(props.Pan).current;
+
+    // React.useEffect(()=>{
+    //     setFirst(props.totalFirst);
+    //     setLast(false);
+    // },[props.totalFirst]);
+
+    // const panResponder = PanResponder.create({
+    //     onStartShouldSetPanResponder: () => true,
+    //     onPanResponderGrant: () => {
+    //     if(first){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+    //         });
+    //     }
+    //     if(last){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         console.log(first);
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: last === true?  -HEADER_SCROLL_DISTANCE : 0
+    //         });         
+    //     }},
+    //     onPanResponderMove: Animated.event([
+    //     null,
+    //     {
+    //         dx: pan.x,
+    //         dy: pan.y,
+    //     },
+    //     ],{
+    //         useNativeDriver: false,
+    //         listener: (e)=>{props.getPan(pan);}
+    //     }),
+    //     onPanResponderRelease: () => {
+    //     if(first){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         props.getTotalFirst(false);
+    //         //setFirst(false);
+    //     }
+    //     if(last){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         setLast(false);
+    //         props.getTotalFirst(true);
+    //         //setFirst(true);
+    //     }
+    //     },
+    // });
+
+    async function showDetail(id){
+        try{
+            const selectedGallery = findGalleyContents(galleryData, id);
+            props.navigation.navigate("DetailGallery", {contents: selectedGallery.imageUrls, text: selectedGallery.content});
+            return 0;
+        }
+        catch (error){
+            console.log(error);
+            return -1;
+        }
+    }
+
     const renderItem = ({ item }) => {
         
         return(
-            <ImageView onPress={()=>{showDetail(shopName, item.galleryId);}}>
-                <Image style={{height:'100%',width:'100%',}} source={{uri:item.thumbnail}} resizeMode='stretch'/>
+            <ImageView onPress={()=>{showDetail(item.galleryId);}}>
+                <FastImage style={{height:'100%',width:'100%',}} source={{uri:item.imageUrls[0].imageUrl}} resizeMode='contain'/>
             </ImageView>
         );
     };
@@ -250,15 +252,15 @@ function Gallery(props){
 
     return(
         <Total>
-            <FlatList
-                data={props.gallery}
+            {!isLoading && <FlatList
+                data={galleryData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.galleryId}
                 numColumns={3}
                 scrollEnabled={true}
                 onRefresh={()=>{console.log("refresh")}}
                 refreshing={isRefreshing}
-                />
+                />}
         </Total>
     );
 }

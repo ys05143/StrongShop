@@ -36,7 +36,7 @@ function BidShop(props, {navigation}) {
 
     async function sendData(orderId, bidId){
         try{
-            //console.log(orderId, bidId);
+            console.log(orderId, bidId);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
@@ -47,7 +47,7 @@ function BidShop(props, {navigation}) {
                         bidding_id: bidId,
                     },
                     headers : {Auth: auth},
-                });
+                })
                 //console.log(response);
                 props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3});
             }
@@ -70,8 +70,8 @@ function BidShop(props, {navigation}) {
                 <ShopView>
                     <NameView> 
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Text style={{fontSize: 20}}>{section.company_name}</Text>
-                            <Button mode={'outlined'} style={{marginLeft: 5}} color={Color.main} onPress={()=>{props.navigation.navigate("ShopScreen_1");}}>홈페이지 방문</Button>
+                            <Text style={{fontSize: 20}}>{section.companyName}</Text>
+                            <Button mode={'outlined'} style={{marginLeft: 5}} color={Color.main} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: section.companyId, companyName: section.companyName});}}>홈페이지 방문</Button>
                         </View>
                         <View style={{flexDirection: 'row', marginTop: 3, alignItems: 'center'}}>
                             <Text style={{fontSize: 15, marginLeft: 3, color: 'gray'}}>{section.simpleRegion}</Text>
@@ -91,7 +91,7 @@ function BidShop(props, {navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
                 <DetailView>
                     <Text>{section.quote}</Text>
-                    <Button mode={'contained'} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{sendData(props.orderId, section.bid_id)}}>선택하기</Button>
+                    <Button mode={'contained'} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{sendData(props.orderId, section.bidId)}}>선택하기</Button>
                 </DetailView>
             </View>
         );

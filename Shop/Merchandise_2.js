@@ -20,28 +20,6 @@ const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-const merchadiseList= [
-{
-    name: '틴팅',
-    title: 'Tinting',
-},{
-    name: '블랙박스',
-    title: 'BlackBox',
-},{
-    name: '유리막코팅',
-    title: 'GlassCoating',
-},{
-    name: '하부코팅',
-    title: 'UnderCoating',
-},{
-    name: 'PPF',
-    title: 'PPF',
-},{
-    name: '하부방음',
-    title: 'UnderDeafening',
-},
-];
-
 const Total = styled.View`
     width: 100%;
     align-items: center;
@@ -69,30 +47,48 @@ const OptionName = styled.TouchableOpacity`
     height: 40px;
 `;
 
-
-const TEMP_BLACKBOX=[{
-    name: '파인뷰LX5000',
-    price: 230000,
-    text: '더 빠른 DUAL CORE CPU AI 충격안내 시스템 및 졸음운전 예방 시스템 탑재'
-},{
-    name: '파인뷰 GX3000',
-    price: 350000,
-    text: '전후방 QHD 초고화질 블랙박스 HD화질보다 4배 더 선명한 녹화'
-},{
-    name: '파인뷰 LX3 ',
-    price: 380000,
-    text: '룸미러와 블랙박스의 만남\n전후방 FHD, SONY STARVIS\n후방사각지대 시야확보'
-}];
+const merchadiseList= [
+    {
+        name: '틴팅',
+        title: 'tinting',
+    },{
+        name: 'PPF',
+        title: 'ppf',
+    },{
+        name: '블랙박스',
+        title: 'blackBox',
+    },{
+        name: '보조배터리',
+        title: 'battery',
+    },{
+        name: '애프터블로우',
+        title: 'afterblow',
+    },{
+        name: '방음',
+        title: 'deafening',
+    },{
+        name: '랩핑',
+        title: 'warpping',
+    },{
+        name: '유리막코팅',
+        title: 'glassCoating',
+    },{
+        name: '하부코팅',
+        title: 'underCoating',
+    },{
+        name: '기타',
+        title: 'etc',
+    },];
 
 const DATA = {
     afterblow: [], 
     battery: [], 
-    blackbox: [{additionalInfo: "아아아아", companyId: 7, id: 7, item: 'BLACKBOX', name: "오옹오ㅗ오"}], 
+    blackbox: [],
     deafening: [], 
     etc: [], 
     glasscoating: [], 
-    ppf: [{additionalInfo: "어어엉", companyId: 6, id: 6, item: 'PPF', name: "아아아"}], 
-    tinting: [{additionalInfo: "ㅇㅇㅇㅇ", companyId: 5, id: 5, item: 'TINTING', name: "ㅇㅇ"}], 
+    ppf: [], 
+    tinting: [{additionalInfo: "ㅇㅇㅇㅇ", companyId: 5, id: 5, item: 'TINTING', name: "ㅇㅇ"}],
     undercoating: [], 
     wrapping: [],
 }
@@ -101,83 +97,128 @@ function Merchandise_2(props){
     //props로 받은 shopName으로 서버에 그 shop의 정보 요청해서 각 파트별로 useState에 저장
     //이후 asyncstorage 캐시도 필요할듯.
     //tinting은 처음에 무조건 받아오고 나머지는 클릭하면 받아오도록
-    const [shopName, setShopName] = React.useState(props.shopName);
-    const [show, setShow] = React.useState(props.merchandise.tinting !== null ? 'Tinting' : null);
-    const [isLoading, setIsLoading] = React.useState(props.merchandise.tinting !== null ? false : true);
-
-    const [tintingList, setTintingList] = React.useState(props.merchandise.tinting);
-    const [blackboxList, setBlackboxList] = React.useState(TEMP_BLACKBOX);
-    const [glassCoatingList, setGlassCoatingList] = React.useState(null);
-    const [underCoatingList, setUnderCoatingList] = React.useState(null);
-    const [ppfList, setPpfList] = React.useState(null);
-    const [underDeafeningList, setUnderDeafeningList] = React.useState(null);
-
-    const scrollY = React.useRef(new Animated.Value(0)).current; 
-    const [first, setFirst] = React.useState(props.totalFirst);
-    const [last, setLast] = React.useState(false);
-    const pan = React.useRef(props.Pan).current;
-
+    const [show, setShow] = React.useState('tinting');
+    const [productData, setProductData] = React.useState(DATA)
+    const [isLoading, setIsLoading] = React.useState(false);
+    
     React.useEffect(()=>{
-        setFirst(props.totalFirst);
-        setLast(false);
-    },[props.totalFirst]);
+        setIsLoading(true);
+        getData()
+        .then(res => {
+            setIsLoading(false);
+        })
+    },[]);
 
-    const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-        if(first){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            pan.setOffset({
-                x: 0,
-                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
-            });
+    async function getData(){
+        try{
+            setIsLoading(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/product/${props.companyId}`,
+                    headers : {Auth: auth},
+                })
+                const rawData = response.data.data;
+                console.log("product",rawData);
+                const newData = { 
+                    afterblow: rawData.afterblow, 
+                    battery: rawData.battery, 
+                    blackbox: rawData.blackbox,  
+                    deafening: rawData.deafening, 
+                    etc: rawData.etc,  
+                    glasscoating: rawData.glasscoating,  
+                    ppf: rawData.ppf, 
+                    tinting: rawData.tinting, 
+                    undercoating: rawData.undercoating, 
+                    wrapping: rawData.wrapping, 
+                }
+                setProductData(newData);
+                setIsLoading(false);
+            }
+            else{
+                console.log("no login");
+            }
         }
-        if(last){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            console.log(first);
-            pan.setOffset({
-                x: 0,
-                y: last === true?  -HEADER_SCROLL_DISTANCE : 0
-            });         
-        }},
-        onPanResponderMove: Animated.event([
-        null,
-        {
-            dx: pan.x,
-            dy: pan.y,
-        },
-        ],{
-            useNativeDriver: false,
-            listener: (e)=>{props.getPan(pan);}
-        }),
-        onPanResponderRelease: () => {
-        if(first){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            props.getTotalFirst(false);
-            //setFirst(false);
-        }
-        if(last){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            setLast(false);
-            props.getTotalFirst(true);
-            //setFirst(true);
-        }
-        },
-    });
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'ReviewList 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
+    }
+
+    //const scrollY = React.useRef(new Animated.Value(0)).current; 
+    // const [first, setFirst] = React.useState(props.totalFirst);
+    // const [last, setLast] = React.useState(false);
+    //const pan = React.useRef(props.Pan).current;
+
+    // React.useEffect(()=>{
+    //     setFirst(props.totalFirst);
+    //     setLast(false);
+    // },[props.totalFirst]);
+
+    // const panResponder = PanResponder.create({
+    //     onStartShouldSetPanResponder: () => true,
+    //     onPanResponderGrant: () => {
+    //     if(first){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+    //         });
+    //     }
+    //     if(last){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         console.log(first);
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: last === true?  -HEADER_SCROLL_DISTANCE : 0
+    //         });         
+    //     }},
+    //     onPanResponderMove: Animated.event([
+    //     null,
+    //     {
+    //         dx: pan.x,
+    //         dy: pan.y,
+    //     },
+    //     ],{
+    //         useNativeDriver: false,
+    //         listener: (e)=>{props.getPan(pan);}
+    //     }),
+    //     onPanResponderRelease: () => {
+    //     if(first){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         props.getTotalFirst(false);
+    //         //setFirst(false);
+    //     }
+    //     if(last){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         setLast(false);
+    //         props.getTotalFirst(true);
+    //         //setFirst(true);
+    //     }
+    //     },
+    // });
 
     function showOption(title) {
         setIsLoading(true);
@@ -230,12 +271,15 @@ function Merchandise_2(props){
             <View style={{width: '100%'}}>
                 <ScrollView scrollEnabled={true}>
                     {isLoading && <ActivityIndicator size = 'large' color= {Color.main}/>}
-                    {(show === 'Tinting' && !isLoading) && <ProductDetail list={tintingList} title={'틴팅'}/>}
-                    {(show === 'BlackBox' && !isLoading) && <ProductDetail list ={blackboxList} title={'블랙박스'}/>}
-                    {(show === 'GlassCoating' && !isLoading) && <ProductDetail list ={glassCoatingList} title={'유리막코팅'}/>}
-                    {(show === 'UnderCoating' && !isLoading) && <ProductDetail list ={underCoatingList} title={'하부코팅'}/>}
-                    {(show === 'PPF' && !isLoading) && <ProductDetail list ={ppfList} title={'PPF'}/>}
-                    {(show === 'UnderDeafening' && !isLoading) && <ProductDetail list ={underDeafeningList} title={'하부방음'}/>}
+                    {(show === 'tinting' && !isLoading) && <ProductDetail list={productData.tinting} title={'틴팅'}/>}
+                    {(show === 'blackBox' && !isLoading) && <ProductDetail list ={productData.blackbox} title={'블랙박스'}/>}
+                    {(show === 'glassCoating' && !isLoading) && <ProductDetail list ={productData.glasscoating} title={'유리막코팅'}/>}
+                    {(show === 'underCoating' && !isLoading) && <ProductDetail list ={productData.undercoating} title={'하부코팅'}/>}
+                    {(show === 'ppf' && !isLoading) && <ProductDetail list ={productData.ppf} title={'PPF'}/>}
+                    {(show === 'afterblow' && !isLoading) && <ProductDetail list ={productData.deafening} title={'애프터블로우'}/>}
+                    {(show === 'battery' && !isLoading) && <ProductDetail list ={productData.deafening} title={'보조배터리'}/>}
+                    {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.deafening} title={'랩핑'}/>}
+                    {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.deafening} title={'기타'}/>}
                 </ScrollView> 
             </View>          
         </Total>

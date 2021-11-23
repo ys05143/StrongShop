@@ -191,7 +191,7 @@ function RegisterReviewScreen(props) {
                 </Row>
             </BtnView>
             {isSending && 
-                <View style={{width: '100%', height: '50%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
+                <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
                     <ActivityIndicator color= {Color.main}/>
                 </View>}
         </TotalView>

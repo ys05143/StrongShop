@@ -29,7 +29,7 @@ function ProductDetail(props){
             <ContentView>
                 {_.map(props.list , (item) => {
                     return(
-                        <ExpandProduct item={[item]} key={item.name}></ExpandProduct>
+                        <ExpandProduct item={[item]} key={item.id}></ExpandProduct>
                     );
                 })}
             </ContentView>

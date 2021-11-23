@@ -54,78 +54,18 @@ const ShopList = styled.View`
 `;
 //현재 입찰에 참여중인 업체들
 const DATA = [{
-    company_id:1,
-    company_name: '올댓 오토모빌',
+    companyId:1,
+    companyName: '올댓 오토모빌',
     simpleRegion: '서울 광진',
     price: 20000000,
     quote: '구체 견적들 ex) 썬팅: T70 15, 블랙박스: 파인뷰LX5000 ...',
 },{
-    company_id:2,
-    company_name: '카샵1',
+    companyId:2,
+    companyName: '카샵1',
     simpleRegion: '서울 금천',
     price: 15000000,
     quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:3,
-    company_name: '카샵2',
-    simpleRegion: '서울 서초',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:4,
-    company_name: '카샵3',
-    simpleRegion: '서울 송파',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:5,
-    company_name: '카샵4',
-    simpleRegion: '서울 강남',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:6,
-    company_name: '카샵5',
-    simpleRegion: '서울 종로',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:7,
-    company_name: '카샵6',
-    simpleRegion: '서울 은평',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:8,
-    company_name: '카샵7',
-    simpleRegion: '서울 마포',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:9,
-    company_name: '카샵8',
-    simpleRegion: '서울 금천',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:10,
-    company_name: '카샵9',
-    simpleRegion: '서울 금천',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:11,
-    company_name: '카샵10',
-    simpleRegion: '서울 금천',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},{
-    company_id:12,
-    company_name: '카샵11',
-    simpleRegion: '서울 금천',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-}];
+},];
 
 function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
@@ -158,15 +98,14 @@ function PackageScreen_5(props){
                     let newData = [];
                     rawData.map(item => {
                         newData.push({
-                            company_id: item.company_id,
+                            companyId: item.company_id,
                             simpleRegion: item.address === null? 'null':item.address,
-                            company_name: item.company_name === null? 'null':item.company_name,
+                            companyName: item.company_name === null? 'null':item.company_name,
                             price: parseInt(item.detail.totalPrice)*10000,
-                            quote: 'item.detail',
-                            bid_id: item.id,
+                            quote: JSON.stringify(item.detail),
+                            bidId: item.id,
                         })
-                    });
-                    //console.log(newData);   
+                    });  
                     setBidList(newData);
                 }
                 else{
@@ -213,7 +152,7 @@ function PackageScreen_5(props){
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
                             return(
-                                <BidShops key={item.bid_id} item={[item]} navigation={props.navigation} orderId={orderId}></BidShops>
+                                <BidShops key={item.bidId} item={[item]} navigation={props.navigation} orderId={orderId}></BidShops>
                             )
                         })}
                     </ScrollView>:

@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { Avatar, Card } from 'react-native-paper';
 import { Text,Image, FlatList,View, Animated, PanResponder, Alert } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import AppWindow from '../constants/AppWindow';
+//component
+import Row from '../components/Row';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -105,106 +109,41 @@ const DATA = [{
 }]
 
 function ReviewList(props){
-    const [shopName, setShopName] = React.useState(props.shopName);
-    const scrollY = React.useRef(new Animated.Value(0)).current; 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const [reviewData, setReviewData] = React.useState(DATA);
+    const [isLoading, setIsLoading] = React.useState(false);
     
-    const [first, setFirst] = React.useState(props.totalFirst);
-    const [last, setLast] = React.useState(false);
-    const pan = React.useRef(props.Pan).current;
-
     React.useEffect(()=>{
-        setFirst(props.totalFirst);
-        setLast(false);
-    },[props.totalFirst]);
-
-    const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-        if(first){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            pan.setOffset({
-                x: 0,
-                y: first === true? 0 : -HEADER_SCROLL_DISTANCE
-            });
-        }
-        if(last){
-            pan.setValue({
-                x: 0,
-                y: 0
-            })
-            console.log(first);
-            pan.setOffset({
-                x: 0,
-                y: last === true?  -HEADER_SCROLL_DISTANCE : 0
-            });         
-        }},
-        onPanResponderMove: Animated.event([
-        null,
-        {
-            dx: pan.x,
-            dy: pan.y,
-        },
-        ],{
-            useNativeDriver: false,
-            listener: (e)=>{props.getPan(pan);}
-        }),
-        onPanResponderRelease: () => {
-        if(first){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            props.getTotalFirst(false);
-            //setFirst(false);
-        }
-        if(last){
-            Animated.spring(
-            pan, // Auto-multiplexed
-            { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
-                useNativeDriver: true } // Back to zero
-            ).start();
-            setLast(false);
-            props.getTotalFirst(true);
-            //setFirst(true);
-        }
-        },
-    });
-
-    function renderItem({item}){
-        return(
-            <View style={{width: WIDTH, alignItems: 'center'}}>
-            <ReviewView key={item.reviewId}>
-                <NameView>
-                    <ProfileImg>
-                        <Image  source={item.profileImg===null ? require('../resource/default_profile.png') : item.profileImg} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
-                    </ProfileImg>
-                    <Name>{item.name}</Name>
-                </NameView>
-                <ContentView>
-                    <ContentImg>
-                        <Image source={{uri: item.images}} style={{width:'100%', height: '100%'}} resizeMode='cover'></Image>
-                    </ContentImg>
-                    <Content>{item.text}</Content>
-                </ContentView>
-            </ReviewView>
-            </View>
-        );
-    }
+        getData();
+    },[]);
 
     async function getData(){
         try{
+            setIsLoading(true);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
-                    url : `${server.url}/api/`,
+                    url : `${server.url}/api/review/${props.companyId}`,
                     headers : {Auth: auth},
+                }).catch(e=>{console.log(e)})
+                const rawData = response.data.data;
+                //console.log('review',rawData);
+                let newData = [];
+                rawData.map(item => {
+                    newData.push({ 
+                        content: item.content, 
+                        createdTime: item.createdTime, 
+                        reviewId: item.id, 
+                        imageUrls: item.imageUrls,
+                        rating: item.rating, 
+                        reply : item.reply, 
+                        userNickName: item.userNickName, 
+                        userThumbnailImage: item.userThumbnailImage.replace('http','https'),
+                    });
                 })
+                setReviewData(newData);
+                setIsLoading(false);
             }
             else{
                 console.log("no login");
@@ -214,7 +153,7 @@ function ReviewList(props){
             //console.log(e);
             Alert.alert(
                 '오류',
-                'IndroduceShop 오류',
+                'ReviewList 오류',
                 [
                     {text: 'OK', onPress: () => {}},
                 ],
@@ -222,11 +161,100 @@ function ReviewList(props){
             );}
         }  
     }
+    
+    //const [first, setFirst] = React.useState(props.totalFirst);
+    //const [last, setLast] = React.useState(false);
+    //const scrollY = React.useRef(new Animated.Value(0)).current; 
+    // const pan = React.useRef(props.Pan).current;
+
+    // React.useEffect(()=>{
+    //     setFirst(props.totalFirst);
+    //     setLast(false);
+    // },[props.totalFirst]);
+
+    // const panResponder = PanResponder.create({
+    //     onStartShouldSetPanResponder: () => true,
+    //     onPanResponderGrant: () => {
+    //     if(first){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: first === true? 0 : -HEADER_SCROLL_DISTANCE
+    //         });
+    //     }
+    //     if(last){
+    //         pan.setValue({
+    //             x: 0,
+    //             y: 0
+    //         })
+    //         console.log(first);
+    //         pan.setOffset({
+    //             x: 0,
+    //             y: last === true?  -HEADER_SCROLL_DISTANCE : 0
+    //         });         
+    //     }},
+    //     onPanResponderMove: Animated.event([
+    //     null,
+    //     {
+    //         dx: pan.x,
+    //         dy: pan.y,
+    //     },
+    //     ],{
+    //         useNativeDriver: false,
+    //         listener: (e)=>{props.getPan(pan);}
+    //     }),
+    //     onPanResponderRelease: () => {
+    //     if(first){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: first === true ? -HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         props.getTotalFirst(false);
+    //         //setFirst(false);
+    //     }
+    //     if(last){
+    //         Animated.spring(
+    //         pan, // Auto-multiplexed
+    //         { toValue: { x: 0, y: last === true ? HEADER_SCROLL_DISTANCE : 0 },
+    //             useNativeDriver: true } // Back to zero
+    //         ).start();
+    //         setLast(false);
+    //         props.getTotalFirst(true);
+    //         //setFirst(true);
+    //     }
+    //     },
+    // });
+
+    function renderItem({item}){ //구버전 review
+        console.log(item);
+        return(
+            <View style={{width: WIDTH, alignItems: 'center'}}>
+            <ReviewView key={item.reviewId}>
+                <NameView>
+                    <ProfileImg>
+                        <FastImage  source={item.userThumbnailImage === null ? require('../resource/default_profile.png') : {uri: item.userThumbnailImage}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
+                    </ProfileImg>
+                    <Name>{item.userNickName}</Name>
+                </NameView>
+                <ContentView>
+                    <ContentImg>
+                        <FastImage source={{uri: item.imageUrls[0].imageUrl}} style={{width:'100%', height: '100%'}} resizeMode='cover'></FastImage>
+                    </ContentImg>
+                    <Content>{item.content}</Content>
+                </ContentView>
+            </ReviewView>
+            </View>
+        );
+    }
 
     return(
         <Total>
-            <View>
-                <FlatList data={props.review}
+            {!isLoading && <View>
+                <FlatList data={reviewData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.reviewId}
                     nestedScrollEnabled={true}
@@ -234,7 +262,7 @@ function ReviewList(props){
                     onRefresh={()=>{console.log("refresh")}}
                     refreshing={isRefreshing}
                     />
-            </View>
+            </View>}
         </Total>
     )
 }

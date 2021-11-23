@@ -203,7 +203,7 @@ const merchadiseList= [
         data: ['유리막코팅'],
     },{
         id: 8,
-        data: ['언더코팅'],
+        data: ['하부코팅'],
     }];
 
 function PackageScreen_3(props) {
@@ -784,7 +784,7 @@ function PackageScreen_3(props) {
                         <SelectInSwiper>
                             <SelectTitleOption getChoose={getUnderCoatingChoose} 
                                                 choose={UnderCoatingChoose} 
-                                                name={'언더코팅'}/>
+                                                name={'하부코팅'}/>
                         </SelectInSwiper>
                     </SwiperFlatList>  : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                 </AllSelectView>

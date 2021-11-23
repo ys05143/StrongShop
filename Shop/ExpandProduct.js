@@ -24,7 +24,6 @@ function ExpandProduct(props){
         return (
             <NameView>
                 <Text style={{fontSize: 18}}>{section.name}</Text>
-                <Text style={{marginLeft: 10}}>{section.price}원</Text>
                 <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black'></MaterialIcons>
             </NameView>
         );
@@ -33,7 +32,7 @@ function ExpandProduct(props){
     const _renderContent = section => {
         return(
             <DetailView>
-                <Text>{section.text}</Text>
+                <Text>{section.additionalInfo}</Text>
             </DetailView>
         )
     };
