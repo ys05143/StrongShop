@@ -36,7 +36,6 @@ function BidShop(props, {navigation}) {
 
     async function sendData(orderId, bidId){
         try{
-            console.log(orderId, bidId);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
@@ -62,6 +61,20 @@ function BidShop(props, {navigation}) {
                 { cancelable: false }
             );
         }
+    }
+
+    function finalCheck(orderId, bidId){
+        Alert.alert(
+            '확인',
+            '이 업체로 선택하시겠습니까?',
+            [
+                {text: '네', onPress: async () => {
+                    sendData(orderId, bidId);
+                }},
+                {text: '아니요', onPress: () => {}},
+            ],
+            { cancelable: false }
+        );
     }
 
     function _renderHeader (section, index, isActive) {
@@ -91,7 +104,7 @@ function BidShop(props, {navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
                 <DetailView>
                     <Text>{section.quote}</Text>
-                    <Button mode={'contained'} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{sendData(props.orderId, section.bidId)}}>선택하기</Button>
+                    <Button mode={'contained'} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId)}}>선택하기</Button>
                 </DetailView>
             </View>
         );

@@ -6,16 +6,15 @@ import ExpandProduct from './ExpandProduct';
 
 const TitleView = styled.View`
     width: 100%;
-    padding: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
 `;
 const Title = styled.Text`
     font-size: 30px;
     font-family: 'DoHyeon-Regular';
 `;
 const ContentView = styled.View`
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 10px;
+    padding: 10px 20px;
 `;
 
 

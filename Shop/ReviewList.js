@@ -4,6 +4,7 @@ import { Avatar, Card } from 'react-native-paper';
 import { Text,Image, FlatList,View, Animated, PanResponder, Alert } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import AppWindow from '../constants/AppWindow';
+import { useIsFocused } from '@react-navigation/native';
 //component
 import Row from '../components/Row';
 //for server
@@ -94,18 +95,19 @@ const AfterDATA=[{
 }];
 
 const DATA = [{ 
-    companyId: 1, 
-    content: "반말하지 마세요", 
-    createdTime: "2021-11-19T23:06:00", 
-    id: 16, 
+    companyId: 0, 
+    content: '', 
+    createdTime: '', 
+    reviewId: 0, 
     imageUrls: [{
-        galleryId: 3, 
-        id: 4, 
-        imageUrl: "https://strongfilebucket.s3.ap-northeast-2.amazonaws.com/b574b391-f8af-4f95-876d-1cf71f0bd85b.jpg"
+        galleryId: 0, 
+        id: 0, 
+        imageUrl: '',
     }], 
-    rating: 5, "reply": null, 
-    userNickName: "ㅎㅎ", 
-    userThumbnailImage: "http://k.kakaocdn.net/dn/bnznMs/btrazLTprkY/9wznFjIGhM1VNPc1PGZG11/img_110x110.jpg"
+    rating: 0, 
+    reply: '', 
+    userNickName: '', 
+    userThumbnailImage: '',
 }]
 
 function ReviewList(props){
@@ -113,9 +115,10 @@ function ReviewList(props){
     const [reviewData, setReviewData] = React.useState(DATA);
     const [isLoading, setIsLoading] = React.useState(false);
     
+    const isFocused = useIsFocused();
     React.useEffect(()=>{
-        getData();
-    },[]);
+        if(isFocused) getData();
+    },[isFocused]);
 
     async function getData(){
         try{
@@ -139,7 +142,7 @@ function ReviewList(props){
                         rating: item.rating, 
                         reply : item.reply, 
                         userNickName: item.userNickName, 
-                        userThumbnailImage: item.userThumbnailImage.replace('http','https'),
+                        userThumbnailImage: item.userThumbnailImage,
                     });
                 })
                 setReviewData(newData);
@@ -230,13 +233,12 @@ function ReviewList(props){
     // });
 
     function renderItem({item}){ //구버전 review
-        console.log(item);
         return(
             <View style={{width: WIDTH, alignItems: 'center'}}>
             <ReviewView key={item.reviewId}>
                 <NameView>
                     <ProfileImg>
-                        <FastImage  source={item.userThumbnailImage === null ? require('../resource/default_profile.png') : {uri: item.userThumbnailImage}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
+                        <FastImage  source={item.userThumbnailImage === null ? require('../resource/default_profile.png') : {uri: item.userThumbnailImage.includes('https') ? item.userThumbnailImage : item.userThumbnailImage.replace('http', 'https')}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>
                     </ProfileImg>
                     <Name>{item.userNickName}</Name>
                 </NameView>

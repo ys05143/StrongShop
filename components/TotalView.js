@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import AppWindow from '../constants/AppWindow';
 import { Platform,Dimensions } from 'react-native';
 import { isIphoneX } from "react-native-iphone-x-helper";
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -14,7 +15,7 @@ const Total = styled.View`
 `;
 const Notch = styled.View`
     width: ${WIDTH}px;
-    height: ${Platform.OS === 'ios'? isIphoneX() ? NOTCH: 0 : 0}px;
+    height: ${getStatusBarHeight(true)}px;
 `;
 const HomeIndicator = styled.View`
     width: ${WIDTH}px;

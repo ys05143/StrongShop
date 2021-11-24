@@ -6,14 +6,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const NameView = styled.View`
     flex-direction: row;
-    align-items: flex-end;
-    padding: 5px 0px;
+    height: 50px;
+    align-items: center;
 `;
 const DetailView = styled.View`
     border: 1px;
-    border-radius: 10px;
+    border-radius: 5px;
     width: 100%;
-    padding: 5px;
+    padding: 15px;
 `;
     
 function ExpandProduct(props){

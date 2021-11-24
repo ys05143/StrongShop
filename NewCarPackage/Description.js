@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Text, Image } from 'react-native';
-import { ifIphoneX } from "react-native-iphone-x-helper";
-import StatusBarHeight from '../constants/StatusBarHeight';
 import Color from '../constants/Color';
 
 const Describe = styled.View`

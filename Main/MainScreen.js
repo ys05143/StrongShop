@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import Icon from "react-native-vector-icons/Ionicons";
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
+import moment from 'moment';
 //constants
 import Color from '../constants/Color';
 //function
@@ -140,6 +141,7 @@ function MainScreen( props ) {
     const [existingDialog, setExistingDialog] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
     const [myOrderList, setMyOrderList] = React.useState([]);
+    const [orderTimeList, setOrderTimeList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
@@ -272,8 +274,8 @@ function MainScreen( props ) {
         }
     }
 
-    function StateMove(orderId, state, carName){
-        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId});
+    function StateMove(orderId, state, carName, time){
+        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time});
         else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
     }
 
@@ -295,8 +297,20 @@ function MainScreen( props ) {
                         })
                         //console.log(rawData);
                         let newData = [];
-                        rawData.map(item => {newData.push({orderId: item.id, carName: item.details.carName, state: translateState(item.state), time: item.created_time, carImage: null})});
+                        let timeData = [];
+                        rawData.map(item => { 
+                            newData.push({
+                                orderId: item.id, 
+                                carName: item.details.carName, 
+                                state: translateState(item.state), 
+                                time: item.created_time, 
+                                carImage: null
+                            });
+                            const curTime = Date.now()
+                            timeData.push(moment.duration(moment(item.created_time).add(48, 'hours').diff(moment(curTime))).asSeconds());
+                        });
                         setMyOrderList(newData);
+                        setOrderTimeList(timeData);
                         //console.log(newData);
                     }
                     else{
@@ -311,10 +325,10 @@ function MainScreen( props ) {
             }
             else{
                 console.log("no login");
+                setIsLoading(false);
             }
         }
         catch{e=>{
-            //console.log(e);
             Alert.alert(
                 '오류',
                 'MainScreen 오류',
@@ -325,6 +339,39 @@ function MainScreen( props ) {
             );}
         }
         
+    }
+
+    async function CancelOrder(orderId){
+        try{
+            setIsLoading(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'DELETE',
+                    url : `${server.url}/api/orders/${orderId}`,
+                    headers : {Auth: auth},
+                })
+                .then(res => {
+                    getData();
+                })
+                .catch(e=>{
+                    console.log('[MainScreen] ',e);
+                })
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            Alert.alert(
+                '오류',
+                'MainScreen 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }
     }
     
     function translateState(state){
@@ -340,7 +387,22 @@ function MainScreen( props ) {
         return item[state];
     }
     
-
+    async function MoveMypage(){
+        const auth = await checkJwt();
+        if(auth !== null){
+            props.navigation.navigate("MyPageScreen");
+        }
+        else{
+            Alert.alert(
+                '로그인 필요',
+                '로그인을 하셔야 합니다.',
+                [
+                    {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                ],
+                { cancelable: false }
+            );
+        }
+    }
 
     async function SendTestData(){
         const receipt = {
@@ -391,12 +453,54 @@ function MainScreen( props ) {
         }
     }
 
+
+    function useInterval(callback, delay) {
+        const savedCallback = React.useRef();
+        
+        // Remember the latest callback.
+        React.useEffect(() => {
+            savedCallback.current = callback;
+        }, [callback]);
+        
+        // Set up the interval.
+        React.useEffect(() => {
+            function tick() {
+            savedCallback.current();
+            }
+            if (delay !== null) {
+                let id = setInterval(tick, delay);
+                return () => clearInterval(id);
+            }
+        }, [delay]);
+    }
+
+    useInterval(()=>{
+        let newTime = [];
+        orderTimeList.map(item => {
+            newTime.push(item-60);
+        })
+        setOrderTimeList(newTime);
+    }, 60000);
+
+    function convertTime(time){
+        const target = parseInt(time);
+        let hour = parseInt(target/3600);
+        let minute = parseInt((target - hour*3600)/60);
+        let second = parseInt((target-hour*3600-minute*60));
+        
+        return {
+            hour: hour.toString().padStart(2,0),
+            minute: minute.toString().padStart(2,0),
+            second: second.toString().padStart(2,0),
+        };
+    }
+
     return(
         <>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.Content title=''/>
                 <Appbar.Action icon="bell-outline" onPress={() => {props.navigation.navigate("AlarmScreen")}} />
-                <Appbar.Action icon="account-circle" onPress={() => {props.navigation.navigate('MyPageScreen')}} />
+                <Appbar.Action icon="account-circle" onPress={async () => {MoveMypage();}} />
             </Appbar.Header> 
 
             <View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20}}>
@@ -436,18 +540,20 @@ function MainScreen( props ) {
                     { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
                         <ScrollView horizontal={true} style={styles.scrollview}>
                             {
-                            myOrderList.map(item =>{
+                            myOrderList.map((item, index) =>{
                                 return(
-                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
+                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                         <View style={styles.cover}>
                                             <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                         </View>
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                             subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
                                         <Card.Content style={{flexDirection: 'row'}}>
-                                            <Text>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
-                                            <Text>{"/"+item.orderId}</Text>
+                                            <Text>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>
                                         </Card.Content>
+                                        {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{CancelOrder(item.orderId)}}>
+                                            <Icon name="close-outline" size={25} color={'black'}></Icon>
+                                        </TouchableOpacity>}
                                     </Card> 
                                 )
                             })
@@ -462,9 +568,9 @@ function MainScreen( props ) {
                             renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
                             >
                             {
-                                myOrderList.map(item=>{
+                                myOrderList.map((item, index)=>{
                                     return(
-                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName)}}>
+                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                             <TextRow style={{ flex: 1}}>
                                                 <View style={{ flex: 3 }}>
                                                     <View style={{flex: 1}}>
@@ -475,10 +581,13 @@ function MainScreen( props ) {
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                                         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
                                                     <Card.Content>
-                                                    <Text style={{ fontSize: 20 , padding: 10 }}>{parseInt(stamp/3600)}:{(stamp-parseInt(stamp/3600)*3600)/60}</Text>
+                                                    <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>
                                                     </Card.Content>
                                                 </View>
                                             </TextRow>
+                                            {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{CancelOrder(item.orderId)}}>
+                                                <Icon name="close-outline" size={30} color={'black'}></Icon>
+                                            </TouchableOpacity>}
                                         </Card> 
                                     )
                                 })

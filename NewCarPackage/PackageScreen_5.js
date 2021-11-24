@@ -4,6 +4,8 @@ import { Text, View, ScrollView, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
+import Moment from 'react-moment';
 //pages
 import BidShops from './BidShops';
 //components
@@ -136,6 +138,46 @@ function PackageScreen_5(props){
         }}
     }
 
+    const [time, setTime] = React.useState(moment.duration(moment(props.route.params.createdTime).add(48, 'hours').diff(moment(Date.now()))).asSeconds());
+
+    function useInterval(callback, delay) {
+        const savedCallback = React.useRef();
+        
+        // Remember the latest callback.
+        React.useEffect(() => {
+            savedCallback.current = callback;
+        }, [callback]);
+        
+        // Set up the interval.
+        React.useEffect(() => {
+            function tick() {
+            savedCallback.current();
+            }
+            if (delay !== null) {
+                let id = setInterval(tick, delay);
+                return () => clearInterval(id);
+            }
+        }, [delay]);
+    }
+
+    useInterval(()=>{
+        if(time>0) setTime(time-1);
+    }, 1000);
+
+    function convertTime(time){
+        const target = parseInt(time);
+        let hour = parseInt(target/3600);
+        let minute = parseInt((target - hour*3600)/60);
+        let second = parseInt((target-hour*3600-minute*60));
+        
+        return {
+            hour: hour.toString().padStart(2,0),
+            minute: minute.toString().padStart(2,0),
+            second: second.toString().padStart(2,0),
+        };
+    }
+      
+
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TitleView>
@@ -143,7 +185,7 @@ function PackageScreen_5(props){
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{props.route.params.carName}</Text>
                 </View>
                 <TimeView>
-                    <Text style={{fontSize: 25}}>23:59:58</Text>
+                    <Text style={{fontSize: 25}}>{`${convertTime(time).hour}:${convertTime(time).minute}:${convertTime(time).second}`}</Text>
                 </TimeView>
             </TitleView>
             <ContentView>

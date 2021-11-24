@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator, Easing, FlatList, Alert } from 'react-native';
 import AppWindow from '../constants/AppWindow';
 import FastImage from 'react-native-fast-image';
+import { useIsFocused } from '@react-navigation/native';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -92,12 +93,12 @@ const ImageView = styled.TouchableOpacity`
     padding: 1px;
 `;
 const Total = styled.View`
-    width: 100%;
+    flex: 1;
 `;
 
 const DATA = [{
     content: "", 
-    createdTime: "2021-11-19T23:00:32", 
+    createdTime: "", 
     galleryId: 0, 
     imageUrls: [{
         galleryId: 0, 
@@ -111,9 +112,10 @@ function Gallery(props){
     const [galleryData, setGalleryData] = React.useState(DATA);
     const [isLoading, setIsLoading] = React.useState(false);
     
+    const isFocused = useIsFocused();
     React.useEffect(()=>{
-        getData()
-    },[]);
+        if(isFocused) getData();
+    },[isFocused]);
 
     async function getData(){
         try{
@@ -126,7 +128,7 @@ function Gallery(props){
                     headers : {Auth: auth},
                 })
                 const rawData = response.data.data;
-                //console.log('gallery',rawData);
+                console.log('gallery',rawData);
                 let newData = [];
                 rawData.map(item => {
                     newData.push({ 
@@ -235,8 +237,7 @@ function Gallery(props){
         }
     }
 
-    const renderItem = ({ item }) => {
-        
+    const renderItem = ({ item }) => { 
         return(
             <ImageView onPress={()=>{showDetail(item.galleryId);}}>
                 <FastImage style={{height:'100%',width:'100%',}} source={{uri:item.imageUrls[0].imageUrl}} resizeMode='contain'/>
@@ -252,15 +253,17 @@ function Gallery(props){
 
     return(
         <Total>
-            {!isLoading && <FlatList
-                data={galleryData}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.galleryId}
-                numColumns={3}
-                scrollEnabled={true}
-                onRefresh={()=>{console.log("refresh")}}
-                refreshing={isRefreshing}
-                />}
+            {!isLoading && <View style={{flex: 1}}>
+                <FlatList
+                    data={galleryData}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.galleryId}
+                    numColumns={3}
+                    scrollEnabled={true}
+                    onRefresh={()=>{console.log("refresh")}}
+                    refreshing={isRefreshing}
+                    />
+            </View>}
         </Total>
     );
 }

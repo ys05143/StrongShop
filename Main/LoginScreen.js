@@ -65,7 +65,7 @@ const iosKeys = {
     kConsumerKey: "ClD3jS3tjfj969pqrxW6",
     kConsumerSecret: "BVCzkiHTVf",
     kServiceAppName: "strongshop-customer",
-    kServiceAppUrlScheme: "strongshop" // only for iOS
+    kServiceAppUrlScheme: "strongshop-customer" // only for iOS
   };
   
   const androidKeys = {
@@ -104,7 +104,8 @@ function LoginScreen(props) {
             method : 'GET' ,
             url : `${server.url}/api/login/user/${name}` ,
             headers : {
-                Authorization : accessToken
+                Authorization : accessToken,
+                FCM : fcmToken,
             } ,
         })
         .then( async (res) =>  {

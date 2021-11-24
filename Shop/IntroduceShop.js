@@ -51,8 +51,8 @@ function IntroduceShop(props){
     
     const isFocused = useIsFocused();
     React.useEffect(()=>{
-        getData();
-    },[]);
+        if(isFocused) getData();
+    },[isFocused]);
 
     async function getData(){
         try{

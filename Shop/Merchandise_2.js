@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import styled from 'styled-components/native';
 import { ScrollView, Text,View, Animated, PanResponder, ActivityIndicator, Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 //constants
 import Color from '../constants/Color';
 //pages
@@ -32,7 +33,7 @@ const Option = styled.ScrollView`
     background-color: white;
 `;
 const OptionView = styled.View`
-    width: 90px;
+    width: 100px;
     height: 60px;
     justify-content: center;
     align-items: center;
@@ -43,7 +44,7 @@ const OptionName = styled.TouchableOpacity`
     border: 2px solid gray;
     justify-content: center;
     align-items: center;
-    width: 80px;
+    width: 90px;
     height: 40px;
 `;
 
@@ -101,13 +102,10 @@ function Merchandise_2(props){
     const [productData, setProductData] = React.useState(DATA)
     const [isLoading, setIsLoading] = React.useState(false);
     
+    const isFocused = useIsFocused();
     React.useEffect(()=>{
-        setIsLoading(true);
-        getData()
-        .then(res => {
-            setIsLoading(false);
-        })
-    },[]);
+        if(isFocused) getData();
+    },[isFocused]);
 
     async function getData(){
         try{
@@ -261,8 +259,8 @@ function Merchandise_2(props){
                 {_.map(merchadiseList, (item) => {
                     return(
                         <OptionView key={item.title} style={{alignSelf: 'center'}}>
-                            <OptionName style={{borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{showOption(item.title)}}>
-                                <Text style={{color: show === item.title ? Color.main : 'gray'}}>{item.name}</Text>
+                            <OptionName style={{backgroundColor: show === item.title ? Color.main : 'white', borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{showOption(item.title)}}>
+                                <Text style={{color: show === item.title ? 'white' : 'gray'}}>{item.name}</Text>
                             </OptionName>
                         </OptionView>
                     );}

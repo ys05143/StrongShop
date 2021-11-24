@@ -106,8 +106,21 @@ function Receipt(props){
                 ],
                 { cancelable: false }
             );
-        }
-        
+        } 
+    }
+
+    function finalCheck(){
+        Alert.alert(
+            '확인',
+            '이 업체로 선택하시겠습니까?',
+            [
+                {text: '네', onPress: async () => {
+                    finishOrder();
+                }},
+                {text: '아니요', onPress: () => {}},
+            ],
+            { cancelable: false }
+        );
     }
 
     function sendModal(){
@@ -299,7 +312,7 @@ function Receipt(props){
                 <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendModal();}}>
                     <Text>수정</Text>
                 </Button>
-                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{finishOrder();}}>
+                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{finalCheck();}}>
                     <Text>완료</Text>
                 </Button>
             </View>
