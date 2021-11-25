@@ -175,7 +175,7 @@ function ProgressScreen( props ) {
                     e=>{console.log(e);}
                 );
                 let rawData = response.data.data;
-                //console.log('state:',state,rawData);
+                console.log('state:',state,rawData);
 
                 if(rawData !== null){
                     let newData = shopData;
@@ -309,7 +309,7 @@ function ProgressScreen( props ) {
                 <Appbar.BackAction onPress={() => { props.navigation.goBack() }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 <View>
-                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName}) }} color='white'/>
+                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
                     <Badge size={12} style={{position: 'absolute'}}/>
                 </View>
                 </Appbar.Header>  

@@ -3,11 +3,18 @@ import { Text, View, Image, TextInput, TouchableOpacity, Platform } from 'react-
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Avatar, Badge, Switch } from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
 //component
 import TotalView from '../components/TotalView';
 import TopBar from '../components/TopBar';
 //constant
 import Color from '../constants/Color';
+//server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
+import { useIsFocused } from '@react-navigation/native';
 
 const ProfileView = styled.View`
     width: 100%;
@@ -71,12 +78,17 @@ const DATA = {
     profileImg: 'https://picsum.photos/0',
     userName: '허지훈',
     phoneNum: '01012345678',
+    loginVer: 'KAKAO',
+    fcm: true,
 }
 
 function MyPageScreen(props){
-    const [nameInput, setNameInput] = React.useState(DATA.userName);
-    const [phoneNumInput, setphoneNumInput] = React.useState(DATA.phoneNum);
+    const [myData, setMyData] = React.useState(DATA);
+    const [nameInput, setNameInput] = React.useState(null);
+    const [phoneNumInput, setphoneNumInput] = React.useState(null);
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [afterUpdate , setAfterUpdate] = React.useState(false);
     
     const regex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/; // 전화번호 형식 체크
     const check_010 = /^010-(\d)/;//010으로 번호 시작하는지 체크
@@ -84,23 +96,79 @@ function MyPageScreen(props){
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
     React.useEffect(()=>{
-        //세자리 콤마 정규식 -> this.number.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-        let value = phoneNumInput.replace(/[^0-9\-]/g, '');
-        if (/^(\d{3})(\d)/.test(value)) {
-            setphoneNumInput(value.replace(/^(\d{3})(\d)/, '$1-$2'));
-        }
-        if(check_010.test(value))
-        {
-            if (/^(\d{3}-\d{4})(\d)/.test(value)) {
-                setphoneNumInput(value.replace(/^(\d{3}-\d{4})(\d)/, '$1-$2'));
+        if(phoneNumInput !== null){
+            //세자리 콤마 정규식 -> this.number.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            let value = phoneNumInput.replace(/[^0-9\-]/g, '');
+            if (/^(\d{3})(\d)/.test(value)) {
+                setphoneNumInput(value.replace(/^(\d{3})(\d)/, '$1-$2'));
             }
+            if(check_010.test(value))
+            {
+                if (/^(\d{3}-\d{4})(\d)/.test(value)) {
+                    setphoneNumInput(value.replace(/^(\d{3}-\d{4})(\d)/, '$1-$2'));
+                }
+            }
+            else{
+                if (/^(\d{3}-\d{3})(\d)/.test(value)) {
+                    setphoneNumInput(value.replace(/^(\d{3}-\d{3})(\d)/, '$1-$2'));
+                }
+            }
+        }
+    }, [phoneNumInput]);
+
+    const isFocused = useIsFocused();
+    React.useEffect(()=>{
+        if(isFocused) getData();
+    },[isFocused]);
+
+    async function getData(){
+        try{
+            setIsLoading(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'GET',
+                    url : `${server.url}/api/user`,
+                    headers : {Auth: auth},
+                })
+                const rawData = response.data.data;
+                console.log(rawData);
+                setMyData({
+                    profileImg: rawData.thumbnail,
+                    userName: rawData.nickname,
+                    phoneNum: rawData.phonenumber,
+                    loginVer: rawData.loginmethod,
+                    fcm: true,
+                })
+                setNameInput(rawData.nickname);
+                setphoneNumInput(rawData.phonenumber);
+                setIsLoading(false);
+            }
+            else{
+                console.log("no login");
+            }
+        }
+        catch{e=>{
+            //console.log(e);
+            Alert.alert(
+                '오류',
+                'mypageScreen 오류',
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );}
+        }  
+    }
+
+    async function sendData(){
+        if(afterUpdate){
+            alert('저장');
         }
         else{
-            if (/^(\d{3}-\d{3})(\d)/.test(value)) {
-                setphoneNumInput(value.replace(/^(\d{3}-\d{3})(\d)/, '$1-$2'));
-            }
+            props.navigation.navigate("MainScreen");
         }
-    }, [phoneNumInput])
+    }
     
     return(
         <TotalView notchColor={'white'}>
@@ -110,22 +178,23 @@ function MyPageScreen(props){
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
                 <TouchableOpacity>
-                    <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{alert('save')}}>저장</Text>
+                    <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{sendData();}}>{afterUpdate ? '저장': '확인'}</Text>
                 </TouchableOpacity>
             </TopBar>
             <ProfileView>
                 <ProfileImg>
                     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: 50}}>
                         {DATA.profileImg === null ? <Avatar.Icon size={68} icon="account" style={{backgroundColor: 'white'}}/> :
-                                                    <Image source={{uri: DATA.profileImg}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>}
+                                                    <FastImage source={{uri: myData.profileImg.includes('https') ? myData.profileImg : myData.profileImg.replace('http', 'https')}} style={{height:'100%',width:'100%',}} resizeMode='contain'/>}
                     </View>
-                    <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'lightgray', position: 'absolute'}}>
+                    {afterUpdate && <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'lightgray', position: 'absolute'}}>
                         <Icon name="pencil-sharp" color={'gray'}></Icon>
-                    </Badge>
+                    </Badge>}
                 </ProfileImg>
                 <ProfileName placeholder='닉네임(최대 17자)'
                         placeholderTextColor="gray"
                         value={nameInput}
+                        editable={afterUpdate}
                         onChangeText={value=>setNameInput(value)}
                         returnKeyType="done"
                         maxLength={17}/>
@@ -136,24 +205,25 @@ function MyPageScreen(props){
                     <PhoneNum>
                         <TextInput style={{width: 190, paddingLeft: 5}}
                                     keyboardType={'number-pad'}
-                                    placeholder={'01012341234'}
+                                    placeholder={myData.phoneNum}
                                     value={phoneNumInput}
+                                    editable={afterUpdate}
                                     onChangeText={value=>setphoneNumInput(value)}
                                     returnKeyType="done"
                                     maxLength={13}
                                     onSubmitEditing={() => {regex.test(phoneNumInput) ? alert('형식 맞음') : alert('형식 틀림')}}/>
-                        <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}}>
+                        {afterUpdate && <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}}>
                             <Text style={{color: 'white'}}>인증</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                     </PhoneNum>
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10}}>
                     <Text>로그인 연동</Text>
-                    <Image source={require('../resource/kakaolink_btn_small_ov.png')} style={{width: 30, height: 30}}/>
+                    <Image source={myData.loginVer === 'KAKAO' ? require( '../resource/kakaolink_btn_small_ov.png'): require('../resource/alpha_n_box_icon.png')} style={{width: 30, height: 30}}/>
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10, marginBottom: 15}}>
                     <Text>푸시 알림 동의</Text>
-                    <Switch value={isSwitchOn} onValueChange={onToggleSwitch} color={Color.main}/>
+                    <Switch value={myData.fcm} color={Color.main}/>
                 </InfoOptions>
             </InfoView>
             <RecordView>

@@ -159,62 +159,64 @@ function MainScreen( props ) {
         const unsubscribe = messaging().onMessage( async remoteMessage => {
           //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
           const index = remoteMessage.data.index;
-          Alert.alert(
+          const alarmList = await storage.fetch("Alarm");
+        console.log('main Async',alarmList);
+        let newAlarm = alarmList !== null ? [...alarmList] : [];
+        const length = newAlarm.length;
+
+        let title = '오류';
+        let content = '알림을 표시할 수 없습니다.';
+
+        if(index === '200'){
+            title = '입찰이 도착했습니다';
+            content = '도착!'
+        }
+        else if(index === '201'){
+            title = '입찰시간이 종료되었습니다.';
+            content = '종료!'
+        }
+        else if(index === '210'){
+            title = '업체에서 검수 사진을 등록했습니다.';
+            content = '등록!'
+        }
+        else if(index === '211'){
+            title = '검수가 완료되었습니다.';
+            content = '완료!'
+        }
+        else if(index === '212'){
+            title = '시공사진이 등록되었습니다.';
+            content = '등록!'
+        }
+        else if(index === '213'){
+            title = '시공이 완료되었습니다';
+            content = '완료!'
+        }
+        else if(index === '214'){
+            title = '리뷰를 작성해주세요.';
+            content = '제발!'
+        }
+        newAlarm.push({
+            id: length,
+            alarmType: index === null ? 0 : index,
+            date: '20211126',
+            isRead: false,
+            title: title,
+            content: content,
+        });
+        await storage.store("Alarm", newAlarm);
+        if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+            Alert.alert(
             index,
             '알림이 도착했습니다. 이동하시겠습니까?',
             [
               {text: '네', onPress: async() => {
-                const alarmList = await storage.fetch("Alarm");
-                console.log('main Async',alarmList);
-                let newAlarm = alarmList !== null ? [...alarmList] : [];
-                const length = newAlarm.length;
-
-                let title = '오류';
-                let content = '알림을 표시할 수 없습니다.';
-
-                if(index === '200'){
-                    title = '입찰이 도착했습니다';
-                    content = '도착!'
-                }
-                else if(index === '201'){
-                    title = '입찰시간이 종료되었습니다.';
-                    content = '종료!'
-                }
-                else if(index === '210'){
-                    title = '업체에서 검수 사진을 등록했습니다.';
-                    content = '등록!'
-                }
-                else if(index === '211'){
-                    title = '검수가 완료되었습니다.';
-                    content = '완료!'
-                }
-                else if(index === '212'){
-                    title = '시공사진이 등록되었습니다.';
-                    content = '등록!'
-                }
-                else if(index === '213'){
-                    title = '시공이 완료되었습니다';
-                    content = '완료!'
-                }
-                else if(index === '214'){
-                    title = '리뷰를 작성해주세요.';
-                    content = '제발!'
-                }
-                newAlarm.push({
-                    id: length,
-                    alarmType: index === null ? 0 : index,
-                    date: '20211126',
-                    isRead: false,
-                    title: title,
-                    content: content,
-                });
-                await storage.store("Alarm", newAlarm);
                 props.navigation.navigate("AlarmScreen");
               }},
               {text: '아니요', onPress: () => {}}
             ],
                 { cancelable: true }
             );
+        }
         });
 
         return unsubscribe;
@@ -290,12 +292,12 @@ function MainScreen( props ) {
                     headers : {Auth: auth},
                 })
                 .then(res => {
+                    const curTime = Date.now();
                     let rawData = res.data.data;
                     if(rawData !== null){
                         rawData.map(item => {
                             item['details'] = JSON.parse(item.details) ;
                         })
-                        //console.log(rawData);
                         let newData = [];
                         let timeData = [];
                         rawData.map(item => { 
@@ -304,13 +306,12 @@ function MainScreen( props ) {
                                 carName: item.details.carName, 
                                 state: translateState(item.state), 
                                 time: item.created_time, 
-                                carImage: null
+                                carImage: null,
                             });
-                            const curTime = Date.now()
                             timeData.push(moment.duration(moment(item.created_time).add(48, 'hours').diff(moment(curTime))).asSeconds());
                         });
-                        setMyOrderList(newData);
-                        setOrderTimeList(timeData);
+                        setMyOrderList(newData.reverse());
+                        setOrderTimeList(timeData.reverse());
                         //console.log(newData);
                     }
                     else{
@@ -549,7 +550,7 @@ function MainScreen( props ) {
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                             subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
                                         <Card.Content style={{flexDirection: 'row'}}>
-                                            <Text>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>
+                                            {item.state <= 2 && <Text>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                         </Card.Content>
                                         {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{CancelOrder(item.orderId)}}>
                                             <Icon name="close-outline" size={25} color={'black'}></Icon>
@@ -581,7 +582,7 @@ function MainScreen( props ) {
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                                         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
                                                     <Card.Content>
-                                                    <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>
+                                                    { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                                     </Card.Content>
                                                 </View>
                                             </TextRow>

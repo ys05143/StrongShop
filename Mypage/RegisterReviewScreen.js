@@ -2,24 +2,67 @@ import React from 'react';
 import { View, Text, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
-import { Button, Title } from 'react-native-paper';
+import { Button, Title, List, Divider } from 'react-native-paper';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import _ from 'lodash';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
+import Accordion from 'react-native-collapsible/Accordion';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 //for server
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+const styles = {
+    listAccordionStyle : {
+        backgroundColor: 'white' ,
+        borderTopWidth: 1 ,
+        borderTopColor: 'lightgray'        
+    } ,
+    listStyle1 : {
+        fontSize: 15 , 
+        fontWeight: 'bold',
+    } ,
+    listStyle : {
+        fontWeight: 'bold',
+        fontSize: 13 , 
+    } ,
+    itemText: {
+        fontSize: 13 ,
+        fontWeight: 'bold' ,
+        alignSelf: 'center'
+    } ,
+    labelStyle : {
+        
+    },
+    total : {
+        borderBottomWidth: 1 , 
+        borderColor: 'lightgray',
+    },
+    totalprice : {
+        fontWeight: 'bold',
+        fontSize: 15 , 
+    } ,
+}
 
 const InfoView = styled.View`
     width: 100%;
-    height: 150px;
-    background-color: lightgray;
-    border-radius: 10px;
-    padding: 5px 10px;
+    flex-direction: row;
+    padding-left: 10px;
+    height: 50px;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-color: lightgray;
+`;
+const DetailView = styled.View`
+    width: 100%;
+    padding: 10px 15px;
+    background-color: 'rgb(246,246,246)';
+    height: 200px;
 `;
 const AddImgView = styled.TouchableOpacity`
     width: 100px;
@@ -66,11 +109,12 @@ const sendDATA = {
 function RegisterReviewScreen(props) {
     const [companyName, setCompanyName] = React.useState(props.route.params.companyName);
     const [completedContractId, setCompletedContractId] = React.useState(props.route.params.completedContractId);
-    const [receipt, setReceipt] = React.useState(props.route.params.receipt);
+    const [receipt, setReceipt] = React.useState(JSON.parse(props.route.params.receipt));
     const [img, setImg] = React.useState([]);
     const [imgFormData, setImgFormData] = React.useState();
     const [text, setText] = React.useState(null);
     const [isSending, setIsSending] = React.useState(false);
+    const [activeSections, setActiveSections] = React.useState([]);
 
     function ImgPick(){
         MultipleImagePicker.openPicker({
@@ -145,21 +189,126 @@ function RegisterReviewScreen(props) {
         }
     }
 
+    function ReceiptView(props){
+        //for acodian
+        const [activeSections, setActiveSections] = React.useState([]);
+    
+        function _renderHeader (section, index, isActive) {
+            return (
+                <InfoView>
+                    <Text style={{fontSize: 18}}>{'시공내역'}</Text>
+                    <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black'></MaterialIcons>
+                </InfoView>
+            );
+        };
+    
+        const _renderContent = section => {
+            const item = section;
+            return(
+                <DetailView>
+                    <ScrollView>
+                    {
+                        item.tinting != null && (
+                            <View style={styles.total}>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='틴팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.tinting} right={ props => <Text style={styles.itemText}>{item.tintingPrice}{'만원'}</Text>} />
+                            </View>
+                        )
+                    }
+                    {
+                        item.ppf != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='PPF' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.ppf} right={props => <Text style={styles.itemText}>{item.ppfPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.blackbox != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='블랙박스' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.blackbox} right={props => <Text style={styles.itemText}>{item.blackboxPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.battery != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='보조배터리' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.battery} right={props => <Text style={styles.itemText}>{item.batteryPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.afterblow != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='애프터블로우' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.afterblow} right={props => <Text style={styles.itemText}>{item.afterblowPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.soundproof != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='방음' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.soundproof} right={props => <Text style={styles.itemText}>{item.soundproofPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.wrapping != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='랩핑' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.wrapping} right={props => <Text style={styles.itemText}>{item.wrappingPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.glasscoating != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.glasscoating} right={props => <Text style={styles.itemText}>{item.glasscoatingPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    {
+                        item.undercoating != null && (
+                            <>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.undercoating} right={props => <Text style={styles.itemText}>{item.undercoatingPrice}{' 만원'}</Text>} />
+                            </>
+                        )
+                    }
+                    <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{item.totalPrice}{' 만원'}</Text>}/>
+                    </ScrollView>
+                </DetailView>
+            )
+        };
+    
+        const _updateSections = activeSections => {
+            setActiveSections(activeSections);
+        };
+    
+        return(
+            <Accordion
+            sections={props.item}
+            activeSections={activeSections}
+            renderHeader={_renderHeader}
+            renderContent={_renderContent}
+            onChange={_updateSections}
+            underlayColor='transparent'
+            />
+        );
+    }
+
     return(
+        <KeyboardAwareScrollView>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{companyName}</Text>
             </View>
-            <View style={{alignItems: 'center', paddingHorizontal: 10, marginTop: 5}}>
-                <InfoView>
-                    <ScrollView>
-                        <Row style={{alignItems: 'center'}}>
-                            <Icon name={'ellipse'} style={{marginRight: 5}}/>
-                            <Title>시공내역</Title>
-                        </Row>
-                        <Text style={{fontSize: 15}}>{receipt}</Text>
-                    </ScrollView>
-                </InfoView>
+            <View>
+                <ReceiptView item={[receipt]} key={receipt}></ReceiptView>
             </View>
             <View style={{height: 120, paddingVertical: 10}}>
                 <ScrollView horizontal={true}>
@@ -195,6 +344,7 @@ function RegisterReviewScreen(props) {
                     <ActivityIndicator color= {Color.main}/>
                 </View>}
         </TotalView>
+        </KeyboardAwareScrollView>
     )
 }
 export default RegisterReviewScreen;

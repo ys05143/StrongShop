@@ -1,13 +1,16 @@
 import React from 'react'
 import styled from 'styled-components/native';
-import { Text, View, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Card, Provider as PaperProvider } from 'react-native-paper';
 import _ from 'lodash';
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
+import { useIsFocused } from '@react-navigation/native';
 //component
 import TotalView from '../components/TotalView';
+//constant
+import Color from '../constants/Color';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -74,9 +77,16 @@ function RecordScreen(props) {
     const [recordData, setRecordData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
 
-    function gotoRegisterReview(contractId, userName, companyName, receipt){
-        props.navigation.navigate("RegisterReviewScreen", {contractId: contractId, userName: userName, companyName: companyName, receipt: receipt});
+    function gotoRegisterReview(completedContractId, companyName, receipt){
+        props.navigation.navigate("RegisterReviewScreen", {completedContractId: completedContractId, companyName: companyName, receipt: receipt});
     }
+
+    const isFocused = useIsFocused();
+    React.useEffect(()=>{
+        if(isFocused) {
+            getData();
+        }
+    },[isFocused]);
 
     async function getData(){
         try{
@@ -85,23 +95,26 @@ function RecordScreen(props) {
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
-                    url : `${server.url}/api/`,
+                    url : `${server.url}/api/completedcontract`,
                     headers : {Auth: auth},
-                })
+                }).catch(e=>console.log(e));
                 const rawData = response.data.data;
                 console.log(rawData);
                 let record = [];
                 rawData.map(item => {
-                    let detail = JSON.parse(item.detail);
-                    detail.
+                    console.log("hh");
                     record.push({
+                        completedContractId: item.id,
                         companyImage: item.company_thumbnail_image,
                         date: item.createdtime,
-                        companyName: company_name,
-                        price: item.detail, 
-                        receipt: item.detail,
+                        companyName: item.company_name,
+                        price: JSON.parse(item.details).totalPrice*10000, 
+                        receipt: item.details,
+                        carName: JSON.parse(item.details).carName,
+                        reviewStatus: item.reviewStatus === "NOT_WRITTEN" ? false : true,
                     })
                 })
+                console.log(record);
                 setRecordData(record);
             }
             else{
@@ -141,10 +154,10 @@ function RecordScreen(props) {
                                     titleStyle={{fontWeight: 'bold', fontSize: 20 , padding: 10}} 
                                     subtitleStyle={{ fontSize: 17 , padding: 10 }}
                                     subtitle={item.carName} 
-                                    right={(props) => <TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
-                                                                        onPress={()=>{gotoRegisterReview(item.contractId, item.userName, item.companyName, item.receipt);}}>
+                                    right={(props) => !item.reviewStatus &&<TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
+                                                                        onPress={()=>{gotoRegisterReview(item.completedContractId, item.companyName, item.receipt);}}>
                                                             <Text>리뷰쓰기</Text>           
-                                                        </TouchableOpacity>}/> 
+                                                        </TouchableOpacity>}/>
                         <Card.Content>
                             <Text style={{fontSize: 20 , padding: 10}}>{moment(item.date).format('YYYY-MM-DD')}</Text>
                         </Card.Content>
@@ -166,9 +179,12 @@ function RecordScreen(props) {
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
                 <View style={{width: 15}}/>
             </TopBar>
-            <FlatList  data={DATA}
+            {!isLoading ? <FlatList  data={recordData}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.contractId}/>
+                    keyExtractor={(item) => item.completedContractId}/>:
+                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                        <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
+                    </View>}
         </TotalView>
     );
 }

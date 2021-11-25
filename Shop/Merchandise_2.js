@@ -99,7 +99,7 @@ function Merchandise_2(props){
     //이후 asyncstorage 캐시도 필요할듯.
     //tinting은 처음에 무조건 받아오고 나머지는 클릭하면 받아오도록
     const [show, setShow] = React.useState('tinting');
-    const [productData, setProductData] = React.useState(DATA)
+    const [productData, setProductData] = React.useState([])
     const [isLoading, setIsLoading] = React.useState(false);
     
     const isFocused = useIsFocused();
@@ -111,12 +111,14 @@ function Merchandise_2(props){
         try{
             setIsLoading(true);
             const auth = await checkJwt();
+            console.log(`${server.url}/api/product/${props.companyId}`);
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
                     url : `${server.url}/api/product/${props.companyId}`,
                     headers : {Auth: auth},
-                })
+                }).catch(e=>{console.log(e)});
+
                 const rawData = response.data.data;
                 console.log("product",rawData);
                 const newData = { 
@@ -224,33 +226,6 @@ function Merchandise_2(props){
         //체크 후 필요시 요청
         //setTimeout(()=>{setIsLoading(false)}, 2000);
         setIsLoading(false);
-    }
-
-    async function getData(){
-        try{
-            const auth = await checkJwt();
-            if(auth !== null){
-                const response = await axios({
-                    method: 'GET',
-                    url : `${server.url}/api/`,
-                    headers : {Auth: auth},
-                })
-            }
-            else{
-                console.log("no login");
-            }
-        }
-        catch{e=>{
-            //console.log(e);
-            Alert.alert(
-                '오류',
-                'IndroduceShop 오류',
-                [
-                    {text: 'OK', onPress: () => {}},
-                ],
-                { cancelable: false }
-            );}
-        }  
     }
 
     return(

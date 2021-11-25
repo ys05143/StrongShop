@@ -94,7 +94,7 @@ function PackageScreen_5(props){
                 if(rawData.length !== 0){
                     //details만 parsing
                     rawData.map(item => {
-                        item['detail'] = JSON.parse(item.detail) ;
+                        item['detail'] = JSON.parse(item.detail);
                     });
                     //내가 사용할 DATA만들기
                     let newData = [];

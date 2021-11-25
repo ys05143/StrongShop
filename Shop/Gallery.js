@@ -109,7 +109,7 @@ const DATA = [{
 
 function Gallery(props){
     const [isRefreshing, setIsRefreshing] = React.useState(false);
-    const [galleryData, setGalleryData] = React.useState(DATA);
+    const [galleryData, setGalleryData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     
     const isFocused = useIsFocused();
@@ -253,7 +253,7 @@ function Gallery(props){
 
     return(
         <Total>
-            {!isLoading && <View style={{flex: 1}}>
+            {!isLoading ? <View style={{flex: 1}}>
                 <FlatList
                     data={galleryData}
                     renderItem={renderItem}
@@ -263,6 +263,9 @@ function Gallery(props){
                     onRefresh={()=>{console.log("refresh")}}
                     refreshing={isRefreshing}
                     />
+            </View>:
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
             </View>}
         </Total>
     );

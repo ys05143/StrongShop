@@ -112,7 +112,7 @@ const DATA = [{
 
 function ReviewList(props){
     const [isRefreshing, setIsRefreshing] = React.useState(false);
-    const [reviewData, setReviewData] = React.useState(DATA);
+    const [reviewData, setReviewData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     
     const isFocused = useIsFocused();
@@ -255,7 +255,7 @@ function ReviewList(props){
 
     return(
         <Total>
-            {!isLoading && <View>
+            {!isLoading ? <View>
                 <FlatList data={reviewData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.reviewId}
@@ -264,6 +264,9 @@ function ReviewList(props){
                     onRefresh={()=>{console.log("refresh")}}
                     refreshing={isRefreshing}
                     />
+            </View>:
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
             </View>}
         </Total>
     )
