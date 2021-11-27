@@ -1,7 +1,6 @@
 import React from 'react' ;
 import styled from 'styled-components/native';
 import { Title , Button , Text, } from 'react-native-paper';
-import axios from 'axios';
 import { ActivityIndicator, Alert, ScrollView, TextInput, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from '@react-native-seoul/kakao-login';
@@ -18,7 +17,10 @@ import TotalView from '../components/TotalView';
 //constants
 import Color from '../constants/Color';
 //server
+import axios from 'axios';
 import server from '../server';
+import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
 
 const View = styled.View`
     flex : 1 ;
@@ -98,7 +100,7 @@ function LoginScreen(props) {
         });
     },[]);
 
-    // 카카오 AccessToken => 서버 
+    // 카카오 AccessToken을 서버로 전달
     function requestAccessToken(accessToken, name) {
         axios({
             method : 'GET' ,
@@ -132,15 +134,16 @@ function LoginScreen(props) {
                 .catch ( e => { 
                     //
                 })
-
             }
 
         })
         .catch( e =>  {
             // 서버 통신에러
+            checkErrorCode(e);
         })
     }
 
+    //bottom sheet 에서 만들어지 정보를 서버에 전달
     function requestSignIn(name) {
         console.log(`${server.url}/api/login/user/${name}`);
         // 서버에게 dtoData 전달
@@ -155,7 +158,7 @@ function LoginScreen(props) {
             }
         })
         .then(async(res) =>{
-
+            console.log(res);
             // 가입성공
             if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
@@ -175,6 +178,7 @@ function LoginScreen(props) {
         })
         .catch(e => {
             //
+            checkErrorCode(e);
         })
     }
 
@@ -225,21 +229,45 @@ function LoginScreen(props) {
     }
 
     async function logOut(){
-        await AsyncStorage.removeItem('auth', ()=>{
+        const auth = await checkJwt();
+        if(auth !== null){
+            axios({
+                method : 'PUT' ,
+                url : `${server.url}/api/logout/user` ,
+                headers : {Auth: auth},
+            })
+            .then(res => {
+                console.log(res);
+                AsyncStorage.removeItem('auth', ()=>{
+                    Alert.alert(
+                        '로그아웃',
+                        '로그아웃 하였습니다.',
+                        [
+                            {text: '확인', onPress: async() => {
+                                    const allKey = await AsyncStorage.getAllKeys();
+                                    console.log(allKey);
+                                    props.navigation.navigate("MainScreen");
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    );
+                });
+            })
+            .catch(e=>{
+                checkErrorCode(e);
+            })
+        }
+        else {
             Alert.alert(
-                '로그아웃',
-                '로그아웃 하였습니다.',
+                '오류',
+                '로그인상태가 아닙니다.',
                 [
-                    {text: 'OK', onPress: async() => {
-                            const allKey = await AsyncStorage.getAllKeys();
-                            console.log(allKey);
-                            //props.navigation.navigate("MainScreen");
-                        }
-                    },
+                    {text: '확인', onPress: () => {} },
                 ],
                 { cancelable: false }
             );
-        });
+        }
     }
 
     return(
@@ -289,7 +317,7 @@ function LoginScreen(props) {
                 </BottomSheetModal> 
             </View>
             <Icon name={'chevron-back-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginLeft: 10}} color={'white'} onPress={()=>{props.navigation.goBack();}}/>
-            <Icon name={'power-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginRight: 10, alignSelf: 'flex-end'}} color={'white'} onPress={()=>{logOut();}}/>
+            <Icon name={'power-outline'} size={25} style={{position: 'absolute', paddingTop: 10, paddingRight: 10, alignSelf: 'flex-end'}} color={'white'} onPress={()=>{logOut();}}/>
         </TotalView>
         </BottomSheetModalProvider>
     );

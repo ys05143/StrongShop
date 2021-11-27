@@ -61,9 +61,9 @@ function Receipt(props){
                     await AsyncStorage.removeItem('BidOrder', ()=>{
                         Alert.alert(
                             '완료',
-                            '견적 등록을 완료했습니다.',
+                            '지금부터 입찰이 시작됩니다!',
                             [
-                                {text: 'OK', onPress: () => {
+                                {text: '확인', onPress: () => {
                                         console.log("remove async Bid")
                                         props.navigation.navigate("MainScreen");
                                     }
@@ -79,7 +79,7 @@ function Receipt(props){
                         '실패',
                         '로그인이 필요합니다.',
                         [
-                            {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
+                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
                         ],
                         { cancelable: false }
                     );
@@ -90,7 +90,7 @@ function Receipt(props){
                     '실패',
                     '작성한 견적이 없습니다.',
                     [
-                        {text: 'OK', onPress: () => {}},
+                        {text: '확인', onPress: () => {}},
                     ],
                     { cancelable: false }
                 );
@@ -102,7 +102,7 @@ function Receipt(props){
                 '오류',
                 '견적 등록을 실패했습니다.',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -112,9 +112,9 @@ function Receipt(props){
     function finalCheck(){
         Alert.alert(
             '확인',
-            '이 업체로 선택하시겠습니까?',
+            '입찰을 시작하시겠습니까',
             [
-                {text: '네', onPress: async () => {
+                {text: '예', onPress: async () => {
                     finishOrder();
                 }},
                 {text: '아니요', onPress: () => {}},
@@ -309,10 +309,10 @@ function Receipt(props){
                     <ActivityIndicator size = 'small' color= {Color.main}/>
                 </View>}
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendModal();}}>
-                    <Text>수정</Text>
+                <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{sendModal();}}>
+                    <Text>이전</Text>
                 </Button>
-                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{finalCheck();}}>
+                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
                     <Text>완료</Text>
                 </Button>
             </View>

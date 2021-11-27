@@ -50,7 +50,7 @@ function AlarmScreen(props){
                 '완료',
                 '알람을 모두 삭제했습니다',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -76,12 +76,12 @@ function AlarmScreen(props){
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{padding: 5}}>
-                    <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>알림</Text>
-                <TouchableOpacity>
-                    <Icon name="trash-outline" size={25} color={'black'} onPress={()=>{ClearAlarmList();}}></Icon>
+                <TouchableOpacity onPress={()=>{ClearAlarmList();}}>
+                    <Icon name="trash-outline" size={25} color={'black'}></Icon>
                 </TouchableOpacity>
             </TopBar>
             {!isLoading ? <FlatList

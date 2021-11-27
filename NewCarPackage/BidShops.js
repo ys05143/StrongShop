@@ -81,7 +81,7 @@ function BidShop(props, {navigation}) {
                 '오류',
                 'BidShop 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -93,7 +93,7 @@ function BidShop(props, {navigation}) {
             '확인',
             '이 업체로 선택하시겠습니까?',
             [
-                {text: '네', onPress: async () => {
+                {text: '예', onPress: async () => {
                     sendData(orderId, bidId);
                 }},
                 {text: '아니요', onPress: () => {}},

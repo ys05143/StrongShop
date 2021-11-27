@@ -146,7 +146,7 @@ function Merchandise_2(props){
                 '오류',
                 'ReviewList 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -242,8 +242,7 @@ function Merchandise_2(props){
                 )}
             </Option>
             <View style={{width: '100%'}}>
-                <ScrollView scrollEnabled={true}>
-                    {isLoading && <ActivityIndicator size = 'large' color= {Color.main}/>}
+                {!isLoading ? <ScrollView scrollEnabled={true}>
                     {(show === 'tinting' && !isLoading) && <ProductDetail list={productData.tinting} title={'틴팅'}/>}
                     {(show === 'blackBox' && !isLoading) && <ProductDetail list ={productData.blackbox} title={'블랙박스'}/>}
                     {(show === 'glassCoating' && !isLoading) && <ProductDetail list ={productData.glasscoating} title={'유리막코팅'}/>}
@@ -253,7 +252,10 @@ function Merchandise_2(props){
                     {(show === 'battery' && !isLoading) && <ProductDetail list ={productData.deafening} title={'보조배터리'}/>}
                     {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.deafening} title={'랩핑'}/>}
                     {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.deafening} title={'기타'}/>}
-                </ScrollView> 
+                </ScrollView> :
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 20}}/>
+                </View>}
             </View>          
         </Total>
     )

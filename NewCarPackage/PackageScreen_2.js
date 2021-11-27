@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert } from 'react-native';
+import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert, TouchableWithoutFeedback } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { Button, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -54,7 +54,7 @@ const Btn = styled.TouchableOpacity`
 ///////////////////////////////////
 const SearchBar = styled.TouchableOpacity`
     flex-direction: row;
-    background-color: #D5D5D5;
+    background-color: #e5e5e5;
     width: 90%;
     height: 50px;
     border-radius: 10px;
@@ -164,7 +164,7 @@ function PackageScreen_2 (props, {navigation}) {
                     '경고',
                     '차량을 입력해주세요.',
                     [
-                      {text: 'OK', onPress: () => {}},
+                      {text: '확인', onPress: () => {}},
                     ],
                     { cancelable: false }
                   );
@@ -217,7 +217,7 @@ function PackageScreen_2 (props, {navigation}) {
             '경고',
             '입력을 취소하시겠습니까?',
             [
-              {text: '네', onPress: () => {
+              {text: '예', onPress: () => {
                 //지금 까지의 입력 싹 다 취소
                 setSearch(null);
                 setResult(null);
@@ -254,8 +254,8 @@ function PackageScreen_2 (props, {navigation}) {
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>취소</Button>
-                            <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
+                            <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>다음</Button>
                         </Row>
                     </BtnView>
                 </ContentView>
@@ -264,11 +264,13 @@ function PackageScreen_2 (props, {navigation}) {
                 </View>
             </TotalView>
             <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={searchModal}
-                    onRequestClose={() => {setSearchModal(!searchModal);}}
-                >
+                onDismiss={false}
+                animationType="slide"
+                transparent={true}
+                visible={searchModal}
+                onRequestClose={() => {setSearchModal(!searchModal);}}
+            >
+                <TouchableWithoutFeedback  onPress={()=>setSearchModal(false)}>
                     <ModalView>
                         <View style={{width: '90%'}}>
                             <SearchModal getModal={getSearchModal}
@@ -276,6 +278,7 @@ function PackageScreen_2 (props, {navigation}) {
                                         search={search}/>
                         </View>
                     </ModalView>
+                </TouchableWithoutFeedback>
             </Modal>
         </PaperProvider>
     );

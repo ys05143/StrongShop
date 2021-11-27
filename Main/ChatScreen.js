@@ -17,6 +17,7 @@ import storage from "../function/storage";
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import checkErrorCode from "../function/checkErrorCode";
 
 function ChatScreen(props){
     const [messages, setMessages] = React.useState([]);
@@ -161,6 +162,7 @@ function ChatScreen(props){
             //서버로 제대로 전달이 되었다면 보내는 방향으로
             setDisableSend(true);
             const newReference = db.push();
+            msg[0].createdAt = moment( msg[0].createdAt ).format('YYYY-MM-DD kk:mm:ss') ;
             // 화면에 표시
             setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
             
@@ -221,18 +223,26 @@ function ChatScreen(props){
             
         }, [])
 
+    function finalChatNum(){
+        db.once('value', snapshot => {
+            console.log(snapshot.numChildren());
+            storage.store(`chat${contractId}`, snapshot.numChildren());
+        });
+        db.off();
+    }
+
 
     return(
         <TotalView color={'white'} notchColor={Color.main} homeIndicatorColor={'white'}>
             <TopBar style={{backgroundColor: Color.main}}>
-                <TouchableOpacity>
-                    <Icon name="chevron-back-outline" size={30} color={'white'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                <TouchableOpacity onPress={()=>{finalChatNum(); props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
                 </TouchableOpacity>
                 <View style={{width: '60%'}}>
                     <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{props.route.params.companyName}</Text>
                 </View>
-                <TouchableOpacity>
-                    <Icon name="home-outline" size={25} color={'white'} onPress={()=>{props.navigation.navigate("MainScreen")}}></Icon>
+                <TouchableOpacity onPress={()=>{props.navigation.navigate("MainScreen")}}>
+                    <Icon name="home-outline" size={25} color={'white'}></Icon>
                 </TouchableOpacity>
             </TopBar>
             <GiftedChat

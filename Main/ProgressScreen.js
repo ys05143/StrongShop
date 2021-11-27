@@ -1,19 +1,22 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Modal , Portal , Provider}  from 'react-native-paper';
+import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Modal , Portal , Provider, FAB}  from 'react-native-paper';
 import { FlatList , ScrollView, Alert, Text, ActivityIndicator } from 'react-native';
 import Color from '../constants/Color';
 import FastImage from 'react-native-fast-image';
-import _ from 'lodash';
+import _, { add } from 'lodash';
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 //import { request , PERMISSIONS } from 'react-native-permissions';
 import Swiper  from 'react-native-swiper';
+import database from '@react-native-firebase/database';
+import storage from '../function/storage';
 //for server
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
 
 const View = styled.View``;
 const Row = styled.View`
@@ -109,14 +112,34 @@ const DATA=[
 
 function ProgressScreen( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
-    const[contractId, setContractId] = React.useState();
     const[completedContractId, setCompletedContractId] = React.useState();
+    const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
     const[refresh,setRefresh] = React.useState(false);
     const[visible,setVisible] = React.useState(false);
     const[selectedImage, setSelectedImage] = React.useState(null);
     const[shopData, setShopData] = React.useState(DATA);
     const[isLoading, setIsLoading] = React.useState(false);
+    const[addChat, setAddChat] = React.useState(false);
+    const[first, setFirst] = React.useState(true);
+
+    async function rdbOn(id){
+        console.log(`chat${id}`);
+        database().goOnline();
+        database().ref(`chat${id}`).on('value', snapshot => {
+            //console.log(snapshot.numChildren());
+            storage.fetch(`chat${id}`)
+            .then(res=>{
+                console.log(addChat);
+                if(snapshot.numChildren() > res) setAddChat(true);
+            });
+        });
+    }
+
+    function rdbOff(id){
+        database().ref(`chat${id}`).off
+        setAddChat(false);
+    }
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -142,16 +165,17 @@ function ProgressScreen( props ) {
             '확인',
             '출고를 확정하시겠습니까?',
             [
-              {text: '네', onPress: async () => {
+              {text: '예', onPress: async () => {
                 const auth = await checkJwt();
                 if(auth !== null){
                     const response = await axios({
                         method: 'PUT',
                         url : `${server.url}/api/contract/7/${contractId}` ,
                         headers : {Auth: auth},
-                    });
+                    }).catch(e=>checkErrorCode(e))
                     console.log(response);
                     const receiptDetails = response.data.data.details;
+                    rdbOff(contractId);
                     props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
                 }
               }},
@@ -171,13 +195,14 @@ function ProgressScreen( props ) {
                     url : `${server.url}/api/contract/3/${orderId}`,
                     headers : {Auth: auth},
                 })
-                .catch(
-                    e=>{console.log(e);}
-                );
+                .catch(e=>{
+                    checkErrorCode(e);
+                });
                 let rawData = response.data.data;
                 console.log('state:',state,rawData);
 
                 if(rawData !== null){
+                    await rdbOn(rawData.contract_id);
                     let newData = shopData;
                     if(state >= 3){
                         newData[0] = {companyName: rawData.company_name, contractId: rawData.contract_id, companyId: rawData.company_id};
@@ -191,7 +216,7 @@ function ProgressScreen( props ) {
                             headers : {Auth: auth},
                         })
                         .catch(
-                            e=>{console.log(e);}
+                            e=>{checkErrorCode(e);}
                         );
                         let rawImg = img_res.data.data.imageUrlResponseDtos;
                         imageList=[];
@@ -207,7 +232,7 @@ function ProgressScreen( props ) {
                             headers : {Auth: auth},
                         })
                         .catch(
-                            e=>{console.log(e);}
+                            e=>{checkErrorCode(e);}
                         );
                         console.log(img_res.data.data.responseDtos);
                         let rawImg = img_res.data.data.responseDtos;
@@ -232,7 +257,7 @@ function ProgressScreen( props ) {
                     '실패',
                     '로그인이 필요합니다.',
                     [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen");}},
+                        {text: '확인', onPress: () => {rdbOff();props.navigation.navigate("LoginScreen");}},
                     ],
                     { cancelable: false }
                 );
@@ -244,7 +269,7 @@ function ProgressScreen( props ) {
                 '오류',
                 'ProgressScreen get 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -254,36 +279,48 @@ function ProgressScreen( props ) {
 
     async function NextState(){
         try{
-            const auth = await checkJwt();
-            if(auth !== null){
-                const response = await axios({
-                    method: 'PUT',
-                    url : `${server.url}/api/contract/${state}/${orderId}` ,
-                    data : {
-                        orderId: orderId
-                    },
-                    headers : {Auth: auth},
-                });
-                console.log(response);
-                setState(state+1);
-            }
-            else{
-                Alert.alert(
-                    '실패',
-                    '로그인이 필요합니다.',
-                    [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
-                    ],
-                    { cancelable: false }
-                );
-            }
+            Alert.alert(
+                '승인하시겠습니까?',
+                '되돌리실 수 없습니다.',
+                [
+                    {text: '예', onPress: async () => {
+                        const auth = await checkJwt();
+                        if(auth !== null){
+                            const response = await axios({
+                                method: 'PUT',
+                                url : `${server.url}/api/contract/${state}/${orderId}` ,
+                                data : {
+                                    orderId: orderId
+                                },
+                                headers : {Auth: auth},
+                            }).catch(e=>{
+                                checkErrorCode(e);
+                            })
+                            console.log(response);
+                            setState(state+1);
+                        }
+                        else{
+                            Alert.alert(
+                                '실패',
+                                '로그인이 필요합니다.',
+                                [
+                                    {text: '확인', onPress: () => {rdbOff();props.navigation.navigate("LoginScreen")}},
+                                ],
+                                { cancelable: false }
+                            );
+                        }
+                    }},
+                    {text: '아니요', onPress: () => {}},
+                ],
+                { cancelable: false }
+            );
         }
         catch{e => {  
             Alert.alert(
                 '오류',
                 'ProgressScreen Next 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -304,14 +341,12 @@ function ProgressScreen( props ) {
         </Portal>
 
         <View style={{flex:1}}>
+        {!isLoading ? <>
             <View>
                 <Appbar.Header style={{ backgroundColor: Color.main }}>
-                <Appbar.BackAction onPress={() => { props.navigation.goBack() }} />
+                <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(contractId); }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
-                <View>
-                    <Appbar.Action icon="chat" onPress={() => { props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
-                    <Badge size={12} style={{position: 'absolute'}}/>
-                </View>
+                
                 </Appbar.Header>  
                 <ProgressBar style={styles.progress} progress={(state-3)/4} color='red'  
                     theme = {{ animation : { scale : 5 }  }}
@@ -324,7 +359,7 @@ function ProgressScreen( props ) {
                 </Title>
             </View>
             
-            {!isLoading ? <SwiperView>
+            <SwiperView>
                 <Swiper horizontal={true} index={state-3}
                     showsButtons={true}
                     showsHorizontalScrollIndicator={true}
@@ -400,10 +435,16 @@ function ProgressScreen( props ) {
                     </SwiperView>}
                     
                 </Swiper>
-            </SwiperView> : 
+            </SwiperView>
+            <View style={{position: 'absolute', bottom: 50, alignSelf: 'flex-end', right: 30,}}>
+                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center'}} icon="chat" onPress={() => { rdbOff(contractId); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
+                {addChat && <Badge style={{position: 'absolute'}}/>}
+            </View>
+            </> : 
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>
             </View>}
+
         </View>
         </Provider>
     );

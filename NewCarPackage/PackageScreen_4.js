@@ -115,7 +115,7 @@ const REGION =[
         key: 'jeju',
     },];
 function PackageScreen_4(props){
-    const [text, setText] = React.useState(null);
+    const [text, setText] = React.useState('');
     //서버와 통신 전에 항상 start 조작하기
     const [searchModal, setSearchModal] = React.useState(false);
     const [selectedRegion, setSelectedRegion] = React.useState('seoul');
@@ -144,7 +144,7 @@ function PackageScreen_4(props){
                     '오류',
                     '오류가 발생했습니다.',
                     [
-                      {text: 'OK', onPress: () => {cancelRequire();}},
+                      {text: '확인', onPress: () => {cancelRequire();}},
                     ],
                     { cancelable: false }
                   );
@@ -173,7 +173,7 @@ function PackageScreen_4(props){
                     '오류',
                     '오류가 발생했습니다.',
                     [
-                      {text: 'OK', onPress: () => {cancelRequire();}},
+                      {text: '확인', onPress: () => {cancelRequire();}},
                     ],
                     { cancelable: false }
                   );
@@ -188,7 +188,7 @@ function PackageScreen_4(props){
                     '오류',
                     '오류가 발생했습니다.',
                     [
-                      {text: 'OK', onPress: () => {cancelRequire();}},
+                      {text: '확인', onPress: () => {cancelRequire();}},
                     ],
                     { cancelable: false }
                   );
@@ -213,7 +213,7 @@ function PackageScreen_4(props){
             '경고',
             '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
             [
-              {text: '네', onPress: () => {
+              {text: '예', onPress: () => {
                 setText(null);
                 setSelectedRegion(null);
                 props.navigation.navigate("MainScreen");
@@ -240,6 +240,9 @@ function PackageScreen_4(props){
             <ContentView>
                 {!isLoading ? 
                 <InputView>
+                    <View style={{width: '95%', alignItems: 'flex-end'}}>
+                       {text !==null && <Text style={{marginBottom: 5}}>{text.length+'/400'}</Text>}
+                    </View>
                     <Input multiline={true}
                             style={{textAlignVertical:'top'}}//only for android
                             value={text}
@@ -257,8 +260,8 @@ function PackageScreen_4(props){
                 : <ActivityIndicator size = 'large' color= {Color.main}/>}
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>완료</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>완료</Button>
                     </Row>
                 </BtnView>
             </ContentView>

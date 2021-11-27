@@ -76,7 +76,7 @@ function ShopScreen_1(props){
               '오류',
               'shopScreen 오류',
               [
-                  {text: 'OK', onPress: () => {}},
+                  {text: '확인', onPress: () => {}},
               ],
               { cancelable: false }
           );}

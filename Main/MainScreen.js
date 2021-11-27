@@ -17,6 +17,8 @@ import storage from '../function/storage';
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
+import TotalView from '../components/TotalView';
 
 const Row = styled.View`
     flex-direction: row;
@@ -160,7 +162,7 @@ function MainScreen( props ) {
           //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
           const index = remoteMessage.data.index;
           const alarmList = await storage.fetch("Alarm");
-        console.log('main Async',alarmList);
+        //console.log('main Async',alarmList);
         let newAlarm = alarmList !== null ? [...alarmList] : [];
         const length = newAlarm.length;
 
@@ -209,7 +211,7 @@ function MainScreen( props ) {
             index,
             '알림이 도착했습니다. 이동하시겠습니까?',
             [
-              {text: '네', onPress: async() => {
+              {text: '예', onPress: async() => {
                 props.navigation.navigate("AlarmScreen");
               }},
               {text: '아니요', onPress: () => {}}
@@ -321,7 +323,7 @@ function MainScreen( props ) {
                     setIsLoading(false);
                 })
                 .catch(e=>{
-                    console.log('[MainScreen] ',e);
+                    checkErrorCode(e);
                 })
             }
             else{
@@ -334,7 +336,7 @@ function MainScreen( props ) {
                 '오류',
                 'MainScreen 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -356,7 +358,7 @@ function MainScreen( props ) {
                     getData();
                 })
                 .catch(e=>{
-                    console.log('[MainScreen] ',e);
+                    checkErrorCode(e);
                 })
             }
             else{
@@ -368,7 +370,7 @@ function MainScreen( props ) {
                 '오류',
                 'MainScreen 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -398,7 +400,7 @@ function MainScreen( props ) {
                 '로그인 필요',
                 '로그인을 하셔야 합니다.',
                 [
-                    {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                    {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
                 ],
                 { cancelable: false }
             );
@@ -497,7 +499,8 @@ function MainScreen( props ) {
     }
 
     return(
-        <>
+        <TotalView notchColor={Color.main}>
+            <ScrollView>
             <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.Content title=''/>
                 <Appbar.Action icon="bell-outline" onPress={() => {props.navigation.navigate("AlarmScreen")}} />
@@ -597,9 +600,10 @@ function MainScreen( props ) {
                     )}     
                 </> :
                  <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
+                    <ActivityIndicator size = 'small' color= {Color.main}/>
                 </View>}
             </View>
+            </ScrollView>
 
             <PaperProvider>
                 <Portal>
@@ -608,14 +612,14 @@ function MainScreen( props ) {
                             <Paragraph>{'이전의 자료가 있습니다.\n이어서 하시겠습니까?'}</Paragraph>
                         </Dialog.Content>
                         <Dialog.Actions>
-                            <Button mode="contained" color={Color.main} style={{width: 70}} onPress={() => {OKExisting()}}>네</Button>
+                            <Button mode="contained" color={Color.main} style={{width: 70}} onPress={() => {OKExisting()}}>예</Button>
                             <Button mode="contained" color={Color.main} style={{marginLeft: 10, width: 70}} onPress={() => {CancelExisting()}}>아니요</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
             </PaperProvider>
             
-        </>
+        </TotalView>
     );
 }
 

@@ -102,7 +102,6 @@ function RecordScreen(props) {
                 console.log(rawData);
                 let record = [];
                 rawData.map(item => {
-                    console.log("hh");
                     record.push({
                         completedContractId: item.id,
                         companyImage: item.company_thumbnail_image,
@@ -122,7 +121,7 @@ function RecordScreen(props) {
                     '실패',
                     '로그인이 필요합니다.',
                     [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
                     ],
                     { cancelable: false }
                 );
@@ -134,7 +133,7 @@ function RecordScreen(props) {
                 '오류',
                 '과거 시공내역 조회 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -173,8 +172,8 @@ function RecordScreen(props) {
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity>
-                    <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
                 <View style={{width: 15}}/>

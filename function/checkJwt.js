@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import storage from "./storage";
 import {Alert} from 'react-native';
 
-async function checkJwt(props){
+async function checkJwt(){
     try{
         const isToken = await AsyncStorage.getAllKeys();
         if(isToken.filter(item=>item === 'auth').length !== 0 ){

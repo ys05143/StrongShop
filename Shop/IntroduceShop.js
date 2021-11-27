@@ -1,10 +1,12 @@
 import React from 'react';
-import { Text,Animated,PanResponder,View, ScrollView, Alert } from 'react-native';
+import { Text,Animated,PanResponder,View, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import styled from 'styled-components/native';
 import { useIsFocused } from '@react-navigation/native';
 //constants
 import AppWindow from '../constants/AppWindow';
+//constant
+import Color from '../constants/Color';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -45,6 +47,10 @@ const DATA = {
     region : '',
 }
 
+const Total = styled.View`
+    flex: 1;
+`;
+
 function IntroduceShop(props){ 
     const [isLoading, setIsLoading] = React.useState(false);
     const [infoData, setInfoData] = React.useState(DATA);
@@ -84,7 +90,7 @@ function IntroduceShop(props){
                 '오류',
                 'ReviewList 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -175,8 +181,8 @@ function IntroduceShop(props){
     // });
 
     return(
-        <View>
-            <ScrollView scrollEnabled={true}>
+        <Total>
+            {!isLoading ? <ScrollView scrollEnabled={true}>
                 <IntroView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
                     <View style={{width: '100%', alignItems: 'center'}}>
@@ -202,8 +208,11 @@ function IntroduceShop(props){
                         </MapView>
                     </View>
                 </AddressView>}
-            </ScrollView>
-        </View>
+            </ScrollView>:
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size = 'small' color= {Color.main}/>
+            </View>}
+        </Total>
     )
 
     

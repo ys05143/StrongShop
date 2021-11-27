@@ -56,7 +56,7 @@ function SearchModal(props){
                         </Candidate>)})}
                 </ScrollView>
             </SearchView>
-            <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{sendText();
+            <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{sendText();
                                                                                                                                                                         sendModal();}}>
                 <Text>완료</Text>
             </Button>

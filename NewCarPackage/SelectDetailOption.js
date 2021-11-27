@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Modal, View, TouchableOpacity } from 'react-native';
+import { Text, Modal, View, TouchableOpacity, Button } from 'react-native';
 import styled from 'styled-components/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon  from "react-native-vector-icons/Ionicons";
@@ -53,12 +53,11 @@ function SelectDetailOption (props){
         <>
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <TouchableOpacity>
-                <Icon onPress={()=>{ if(touchable) {sendChoose(!isChoose);
-                                    setIsChoose(!isChoose)}}} name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={25} color= 'gray'></Icon>
+                <TouchableOpacity onPress={()=>{ if(touchable) {sendChoose(!isChoose);
+                                    setIsChoose(!isChoose)}}} >
+                <Icon name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={30} color= 'gray'></Icon>
                 </TouchableOpacity>
                 <SelectName>{props.name}</SelectName>
-                <Icon name="help-circle-outline" size={18} style={{color: 'gray'}} onPress={()=>{setModal(true)}}></Icon>
             </Row>
         </SelectView>
 

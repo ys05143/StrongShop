@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Avatar, Card } from 'react-native-paper';
-import { Text,Image, FlatList,View, Animated, PanResponder, Alert } from 'react-native';
+import { Text,Image, FlatList,View, Animated, PanResponder, Alert, ActivityIndicator } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import AppWindow from '../constants/AppWindow';
 import { useIsFocused } from '@react-navigation/native';
 //component
 import Row from '../components/Row';
+//constant
+import Color from '../constants/Color';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -24,6 +26,7 @@ const Total = styled.View`
     width: 100%;
     padding-top: 10px;
     align-items: center;
+    flex: 1;
 `;
 const ReviewView = styled.View`
     width: ${WIDTH*0.9}px;
@@ -158,7 +161,7 @@ function ReviewList(props){
                 '오류',
                 'ReviewList 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -266,7 +269,7 @@ function ReviewList(props){
                     />
             </View>:
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
+                <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
         </Total>
     )

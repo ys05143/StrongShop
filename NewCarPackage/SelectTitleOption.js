@@ -10,6 +10,7 @@ import ModalView from '../components/ModalView';
 import Description from './Description';
 //constant
 import AppWindow from '../constants/AppWindow';
+import Color from '../constants/Color';
 
 const HEIGHT = AppWindow.height;
 
@@ -46,12 +47,12 @@ function Select4Screen3_3 (props){
         <>
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <TouchableOpacity>
-                <Icon onPress={()=>{ sendChoose(!isChoose);
-                                    setIsChoose(!isChoose)}} name={isChoose===false?"square-outline": "checkbox"} size={25} color= 'gray'></Icon>
+                <TouchableOpacity onPress={()=>{ sendChoose(!isChoose);
+                                    setIsChoose(!isChoose)}} >
+                    <Icon name={isChoose===false?"square-outline": "checkbox"} size={30} color= 'gray'></Icon>
                 </TouchableOpacity>
                 <SelectName>{props.name}</SelectName>
-                <Icon name="help-circle-outline" size={20} style={{color: 'gray'}} onPress={()=>{setModal(true)}}></Icon>
+                <Icon name="help-circle-outline" size={25} style={{color: 'rgb(200,0,0)'}} onPress={()=>{setModal(true)}}></Icon>
             </Row>
         </SelectView>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Title, List, Divider } from 'react-native-paper';
@@ -130,7 +130,7 @@ function RegisterReviewScreen(props) {
             images.map((image)=>{
                 let name = image.fileName;
                 let type = "multipart/form-data";
-                let imgUri = image.path;
+                let imgUri = Platform.OS === 'ios' ? image.path : "file://"+ image.path;
                 formdata.append("files", { name: name , type: type, uri: imgUri });
             });
             setImgFormData(formdata);
@@ -158,7 +158,7 @@ function RegisterReviewScreen(props) {
                         '성공',
                         '리뷰 등록에 성공했습니다.',
                         [
-                            {text: 'OK', onPress: () => {props.navigation.replace("MainScreen");}},
+                            {text: '확인', onPress: () => {props.navigation.replace("MainScreen");}},
                         ],
                         { cancelable: false }
                     );
@@ -169,7 +169,7 @@ function RegisterReviewScreen(props) {
                     '실패',
                     '로그인이 필요합니다.',
                     [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
                     ],
                     { cancelable: false }
                 );
@@ -181,7 +181,7 @@ function RegisterReviewScreen(props) {
                 '오류',
                 '리뷰 등록을 실패했습니다.',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );

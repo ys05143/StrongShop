@@ -1,10 +1,11 @@
 import React from 'react';
-import { Text, View, Image, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { Text, View, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Avatar, Badge, Switch } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //component
 import TotalView from '../components/TotalView';
 import TopBar from '../components/TopBar';
@@ -15,6 +16,7 @@ import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import { useIsFocused } from '@react-navigation/native';
+import checkErrorCode from '../function/checkErrorCode';
 
 const ProfileView = styled.View`
     width: 100%;
@@ -154,7 +156,7 @@ function MyPageScreen(props){
                 '오류',
                 'mypageScreen 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -169,17 +171,105 @@ function MyPageScreen(props){
             props.navigation.navigate("MainScreen");
         }
     }
+
+    async function logOut(){
+        const auth = await checkJwt();
+        if(auth !== null){
+            axios({
+                method : 'PUT' ,
+                url : `${server.url}/api/logout/user` ,
+                headers : {Auth: auth},
+            })
+            .then(res => {
+                console.log(res);
+                AsyncStorage.removeItem('auth', ()=>{
+                    Alert.alert(
+                        '로그아웃',
+                        '로그아웃 하였습니다.',
+                        [
+                            {text: '확인', onPress: async() => {
+                                    const allKey = await AsyncStorage.getAllKeys();
+                                    console.log(allKey);
+                                    props.navigation.popToTop();
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    );
+                });
+            })
+            .catch(e=>{
+                console.log(e);
+            })
+        }
+        else {
+            Alert.alert(
+                '오류',
+                '로그인상태가 아닙니다.',
+                [
+                    {text: '확인', onPress: () => {} },
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+
+    async function deleteUser(){
+        const auth = await checkJwt();
+        if(auth !== null){
+            axios({
+                method : 'DELETE' ,
+                url : `${server.url}/api/user` ,
+                headers : {Auth: auth},
+            })
+            .then(res => {
+                console.log(res);
+                AsyncStorage.removeItem('auth', ()=>{
+                    Alert.alert(
+                        '회원 탈퇴',
+                        '회원탈퇴를 완료하였습니다.',
+                        [
+                            {text: '확인', onPress: async () => {
+                                    const allKey = await AsyncStorage.getAllKeys();
+                                    console.log(allKey);
+                                    props.navigation.popToTop();
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    );
+                });
+            })
+            .catch(e=>{
+                checkErrorCode(e);
+            })
+        }
+        else {
+            Alert.alert(
+                '오류',
+                '로그인상태가 아닙니다.',
+                [
+                    {text: '확인', onPress: () => {} },
+                ],
+                { cancelable: false }
+            );
+        }
+    }
     
     return(
         <TotalView notchColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{padding: 5}}>
-                    <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
-                <TouchableOpacity>
-                    <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{sendData();}}>{afterUpdate ? '저장': '확인'}</Text>
+                {afterUpdate ? <TouchableOpacity onPress={()=>{sendData();}}>
+                    <Text style={{fontSize: 15, marginRight: 5}}>{'저장'}</Text>
+                </TouchableOpacity> : 
+                <TouchableOpacity onPress={()=>{logOut();}}>
+                    <Text style={{fontSize: 15, marginRight: 5}}>{'로그아웃'}</Text>
                 </TouchableOpacity>
+                }
             </TopBar>
             <ProfileView>
                 <ProfileImg>
@@ -232,6 +322,14 @@ function MyPageScreen(props){
                     <Icon name="chevron-forward-outline" size={20} color={'black'}></Icon>
                 </Record>
             </RecordView>
+            <View style={{marginTop: 10, alignItems: 'flex-end', paddingHorizontal: 15}}>
+                <TouchableOpacity style={{height: 20, justifyContent: 'center'}} onPress={()=>{deleteUser();}}>
+                    <Text style={{color: 'gray'}}>회원탈퇴</Text>
+                </TouchableOpacity>
+            </View>
+            {isLoading && <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)', position: 'absolute'}}>
+                <ActivityIndicator color= {Color.main}/>
+            </View>}
         </TotalView>
     );
 }

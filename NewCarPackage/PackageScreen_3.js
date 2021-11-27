@@ -67,7 +67,7 @@ const AllSelectView = styled.View`
 const SelectInSwiper = styled.View`
     width: ${WIDTH*0.9-40}px;
     background-color: white;
-    padding: 5px;
+    padding: 5px 10px;
 `;
 
 const OptionName = styled.TouchableOpacity`
@@ -534,7 +534,7 @@ function PackageScreen_3(props) {
                 '오류',
                 '오류가 발생했습니다.',
                 [
-                  {text: 'OK', onPress: () => {cancelOptions();}},
+                  {text: '확인', onPress: () => {cancelOptions();}},
                 ],
                 { cancelable: false }
               );
@@ -549,7 +549,7 @@ function PackageScreen_3(props) {
                     '경고',
                     '시공을 입력해주세요.',
                     [
-                      {text: 'OK', onPress: () => {}},
+                      {text: '확인', onPress: () => {}},
                     ],
                     { cancelable: false }
                   );
@@ -569,7 +569,7 @@ function PackageScreen_3(props) {
                         '오류',
                         '오류가 발생했습니다.',
                         [
-                          {text: 'OK', onPress: () => {cancelOptions();}},
+                          {text: '확인', onPress: () => {cancelOptions();}},
                         ],
                         { cancelable: false }
                       );
@@ -594,7 +594,7 @@ function PackageScreen_3(props) {
             '경고',
             '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
             [
-              {text: '네', onPress: () => {
+              {text: '예', onPress: () => {
                 props.navigation.navigate("MainScreen");
               }},
               {text: '아니요', onPress: () => {}}
@@ -790,8 +790,8 @@ function PackageScreen_3(props) {
                 </AllSelectView>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>다음</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>다음</Button>
                     </Row>
                 </BtnView>
             </ContentView>

@@ -4,6 +4,8 @@ import { Text, View, Image, Animated,ScrollView, PanResponder, ActivityIndicator
 import AppWindow from '../constants/AppWindow';
 import FastImage from 'react-native-fast-image';
 import { useIsFocused } from '@react-navigation/native';
+//constant
+import Color from '../constants/Color';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -151,7 +153,7 @@ function Gallery(props){
                 '오류',
                 'gallery 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
             );}
@@ -265,7 +267,7 @@ function Gallery(props){
                     />
             </View>:
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
+                <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
         </Total>
     );
