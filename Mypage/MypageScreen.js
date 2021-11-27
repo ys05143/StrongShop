@@ -182,7 +182,7 @@ function MyPageScreen(props){
                 headers : {Auth: auth},
             })
             .then(res => {
-                console.log(res);
+                //console.log(res);
                 AsyncStorage.removeItem('auth', ()=>{
                     Alert.alert(
                         '로그아웃',

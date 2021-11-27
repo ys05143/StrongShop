@@ -102,6 +102,10 @@ function LoginScreen(props) {
 
     // 카카오 AccessToken을 서버로 전달
     function requestAccessToken(accessToken, name) {
+        console.log(accessToken);
+        console.log(`${server.url}/api/login/user/${name}`);
+        console.log(name);
+        console.log(fcmToken);
         axios({
             method : 'GET' ,
             url : `${server.url}/api/login/user/${name}` ,
@@ -111,8 +115,6 @@ function LoginScreen(props) {
             } ,
         })
         .then( async (res) =>  {
-            // 캐시삭제
-            //AsyncStorage.clear();
             // 회원가입 필요
             if ( res.data.statusCode == 201 ) {
                 // 추가정보를 사용자로부터 받음.
@@ -129,16 +131,17 @@ function LoginScreen(props) {
                 .then( res => {
                     if ( res != null ) ;
                     //로그인 화면 지우기
-                    props.navigation.goBack(); 
+                    props.navigation.popToTop(); 
                 })
                 .catch ( e => { 
-                    //
+                    Alert.alert('다시 시도해주세요.');
                 })
             }
 
         })
         .catch( e =>  {
             // 서버 통신에러
+            console.log(e);
             checkErrorCode(e);
         })
     }

@@ -296,7 +296,7 @@ function MainScreen( props ) {
                 .then(res => {
                     const curTime = Date.now();
                     let rawData = res.data.data;
-                    console.log(rawData);
+                    //console.log(rawData);
                     if(rawData !== null){
                         rawData.map(item => {
                             item['details'] = JSON.parse(item.details) ;
