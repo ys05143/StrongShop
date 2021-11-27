@@ -41,14 +41,35 @@ function ChatScreen(props){
 
             let end = 0 ;
             await db
+            .orderByChild('createdAt')
             .once('value', snapshot => {
+                if(snapshot.toJSON() !== null){
+                    let tmp =  snapshot.toJSON() ;
+                    let Data = Object.values(snapshot.toJSON()) ;
+        
+                    Object.keys( tmp )
+                    .map( (item,index) => {
+                        // 상대방의 메시지를 읽지 않았을때
+                        // if ( Data[index].user._id == 2 && Data[index].received == false )
+                        if ( Data[index].user._id == 1  )
+                            database().ref(`chat${ contractId }/${item}`).update({ received : true })
+                            .then( () => {  
+        
+                            })
+                            .catch( e => { }) 
+                    }) ;
+
+                }
+
                 end = snapshot.numChildren() ;
                 if ( !snapshot.exists()  ) {
                     reject();
                 }
                 else {
                     records = Object.values(snapshot?.val());
-                    records = _.orderBy(records,'createdAt','asc') ;
+                    records = _.sortBy(records, function(dateObj) {
+                        return dateObj.createdAt
+                    });
                     records.map((record)=>{
                         msg = [{
                             _id : record._id ,
@@ -62,28 +83,15 @@ function ChatScreen(props){
                     
                 }
 
-                // 처음 메시지 개수만큼 먼저 snapshot callback 실행 !
-                // 
-               
-                // 새로운 메시지
-                // else {
-                //     resolve();
-                //     console.log( snapshot.val() ) ;
-                //     //메시지 전송 성공 시
-                //     setMessages(previousMessages => (
-                //         previousMessages.filter( message => message._id !== snapshot._id ) ) ) ;
-
-                //     newMsg = { ...snapshot , sent: true }
-                //     setMessages(previousMessages =>  GiftedChat.append(previousMessages,newMsg));
-                // }
-
             });    
             
             resolve(end);
 
+
+
+
         });
     } ;
- 
 
     // 화면 처음 실행 시
     React.useEffect( () => {
@@ -100,19 +108,19 @@ function ChatScreen(props){
 
             // 메시지 핸들러
             db.on('child_added', snapshot =>  {
-                record =  snapshot.toJSON() ;
-
+                record =  snapshot.toJSON();
                 start = start + 1 ; 
                 // NEW
                 if ( start > end && record.user._id != 2 ) {
-                        msg = [{
-                            _id : record._id ,
-                            text : record.text ,
-                            user : record.user ,
-                            createdAt : record.createdAt,
-                            sent: true
-                        }] ;
-                        setMessages( previousMessages => GiftedChat.append(previousMessages,msg) ) ;
+                    database().ref(`chat${ contractId }/${snapshot.key}`).update({ received : true })
+                    msg = [{
+                        _id : record._id ,
+                        text : record.text ,
+                        user : record.user ,
+                        createdAt : record.createdAt,
+                        sent: true
+                    }] ;
+                    setMessages( previousMessages => GiftedChat.append(previousMessages,msg) ) ;
                 }
             })
 
@@ -129,9 +137,9 @@ function ChatScreen(props){
             // 메시지 핸들러
             db.on('child_added', snapshot =>  {
                 record = snapshot.toJSON();
-                console.log(record);
                 // NEW
                 if (record.user._id != 2 ) {
+                    database().ref(`chat${ contractId }/${snapshot.key}`).update({ received : true });
                     msg = [{
                         _id : record._id ,
                         text : record.text ,
@@ -143,10 +151,9 @@ function ChatScreen(props){
                 }
             })
 
-
             setMessages( previousMessages => GiftedChat.append(previousMessages,{
                 _id : 400 ,
-                text : '고객님에게 메시지를 보내보세요.' , 
+                text : '업체에게 메시지를 보내보세요.' , 
                 sent : true ,
                 system : true ,
             }))
@@ -158,14 +165,12 @@ function ChatScreen(props){
             // 인터넷 끊겼을 때 (테스트)
             // database().goOffline();
     
-    
             //서버로 제대로 전달이 되었다면 보내는 방향으로
             setDisableSend(true);
             const newReference = db.push();
             msg[0].createdAt = moment( msg[0].createdAt ).format('YYYY-MM-DD kk:mm:ss') ;
             // 화면에 표시
             setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
-            
     
             storage.fetch('auth')
             .then( res => {
@@ -216,18 +221,15 @@ function ChatScreen(props){
             })
             .catch(e =>{
                 console.log("no login");
-            }
-            )
-    
-            
-            
+            })
+
         }, [])
 
-    function finalChatNum(){
-        db.once('value', snapshot => {
-            console.log(snapshot.numChildren());
-            storage.store(`chat${contractId}`, snapshot.numChildren());
-        });
+    function finalChatNum(){ // 채팅화면을 나가기 직전에 전체 채팅갯수 저장
+        // db.once('value', snapshot => {
+        //     console.log(snapshot.numChildren());
+        //     storage.store(`chat${contractId}`, snapshot.numChildren());
+        // });
         db.off();
     }
 

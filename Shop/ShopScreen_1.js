@@ -31,6 +31,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 ///////////////////////////////
 const Intro = styled.TouchableOpacity`
     justify-content: center;
+
 `;
 
 const Tab = createMaterialTopTabNavigator();
@@ -195,9 +196,10 @@ function ShopScreen_1(props){
                 transform: [{ translateY: imageTranslateY }],
               }
             ]}>
-              <Intro onPress={()=>{moveTab();}} disabled={!totalFirst}>
+              {/* <TouchableOpacity onPress={()=>{moveTab();}} disabled={!totalFirst} style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={{color: 'black', fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{shopData.companyName}</Text>
-              </Intro>
+                <Icon name="chevron-up-outline" color={'black'} size={20} style={{marginLeft: 5}}/>
+              </TouchableOpacity> */}
           </Animated.View>}
         </Animated.View>
         <View>
@@ -209,16 +211,17 @@ function ShopScreen_1(props){
             },
             ]}>
             <Animated.View
-              style={[null,{
-                opacity: textOpacity,
-              }]}>
-              <Intro onPress={()=>{moveTab();}} disabled={totalFirst}>
-                <Text style={styles.title}>{shopData.companyName}</Text>
-              </Intro>
+              // style={[null,{
+              //   opacity: textOpacity,
+              // }]}
+              >
+              {(!isLoading )&& <TouchableOpacity style={{marginLeft: 5, flexDirection:'row', alignItems: 'center'}} onPress={()=>{moveTab();}}>
+                <View onPress={()=>{moveTab();}} style={{justifyContent: 'center'}}>
+                  <Text style={styles.title}>{shopData.companyName}</Text>
+                </View>
+                <Icon name={totalFirst ? "chevron-up-outline": "chevron-down-outline"} color={'black'} size={25}/>
+              </TouchableOpacity>}
             </Animated.View>
-            {(!totalFirst && !isLoading )&& <TouchableOpacity style={{marginLeft: 5}} onPress={()=>{moveTab();}}>
-              <Icon name="chevron-down-outline" color={'black'} size={25}/>
-            </TouchableOpacity>}
           </Animated.View>
           <View style={{width: 35, position: 'absolute' , height: HEADER_MIN_HEIGHT, justifyContent: 'center'}}>
             <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>

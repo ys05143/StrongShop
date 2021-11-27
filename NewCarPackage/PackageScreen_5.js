@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, ScrollView, Alert } from 'react-native';
+import { Text, View, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
@@ -72,6 +72,7 @@ const DATA = [{
 function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [bidList, setBidList] = React.useState([]);
+    const [isSending, setIsSending] = React.useState(false);
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -194,7 +195,7 @@ function PackageScreen_5(props){
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
                             return(
-                                <BidShops key={item.bidId} item={[item]} navigation={props.navigation} orderId={orderId}></BidShops>
+                                <BidShops key={item.bidId} item={[item]} navigation={props.navigation} orderId={orderId} getSending={setIsSending}></BidShops>
                             )
                         })}
                     </ScrollView>:
@@ -208,7 +209,9 @@ function PackageScreen_5(props){
                     </Row>
                 </BtnView>
             </ContentView>
-
+            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute'}}>
+                <ActivityIndicator size = 'large' color= {Color.main}/>
+            </View>}
         </TotalView>
     );
 }

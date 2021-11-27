@@ -111,8 +111,8 @@ function RegisterReviewScreen(props) {
     const [completedContractId, setCompletedContractId] = React.useState(props.route.params.completedContractId);
     const [receipt, setReceipt] = React.useState(JSON.parse(props.route.params.receipt));
     const [img, setImg] = React.useState([]);
-    const [imgFormData, setImgFormData] = React.useState();
-    const [text, setText] = React.useState(null);
+    const [imgFormData, setImgFormData] = React.useState(null);
+    const [text, setText] = React.useState('');
     const [isSending, setIsSending] = React.useState(false);
     const [activeSections, setActiveSections] = React.useState([]);
 
@@ -121,6 +121,7 @@ function RegisterReviewScreen(props) {
             mediaType: 'image', 
             selectedAssets: img,
             doneTitle: "완료",
+            singleSelectedMode: true,
         })
         .then(images => {
             setImg(images);
@@ -134,47 +135,60 @@ function RegisterReviewScreen(props) {
                 formdata.append("files", { name: name , type: type, uri: imgUri });
             });
             setImgFormData(formdata);
-            console.log(formdata);
+            //console.log(formdata);
         })
         .catch(error => {
-            console.log(error);
+            //console.log(error);
         });
     }
 
     async function SendData(){
         try{
             setIsSending(true);
-            let newFormData = imgFormData;
-            newFormData.append("content", text);
-            newFormData.append("rating", "5");
-            console.log(newFormData);
-            console.log(`${server.url}/api/review/${completedContractId}`);
-            const auth = await checkJwt();
-            if(auth !== null){   
-                const response = await axios.post(`${server.url}/api/review/${completedContractId}`, newFormData, {
-                    headers: {'content-type': 'multipart/form-data' , Auth: auth }
-                }).then(res=>{
-                    Alert.alert(
-                        '성공',
-                        '리뷰 등록에 성공했습니다.',
-                        [
-                            {text: '확인', onPress: () => {props.navigation.replace("MainScreen");}},
-                        ],
-                        { cancelable: false }
-                    );
-                });
-            }
-            else{
+            if(imgFormData === null){
                 Alert.alert(
                     '실패',
-                    '로그인이 필요합니다.',
+                    '이미지를 추가해주세요.',
                     [
-                        {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        {text: '확인', onPress: () => {}},
                     ],
                     { cancelable: false }
                 );
+                setIsSending(false);
             }
-            setIsSending(false);
+            else{
+                let newFormData = imgFormData;
+                newFormData.append("content", text);
+                newFormData.append("rating", "5");
+                console.log(newFormData);
+                //console.log(`${server.url}/api/review/${completedContractId}`);
+                const auth = await checkJwt();
+                if(auth !== null){   
+                    const response = await axios.post(`${server.url}/api/review/${completedContractId}`, newFormData, {
+                        headers: {'content-type': 'multipart/form-data' , Auth: auth }
+                    }).then(res=>{
+                        Alert.alert(
+                            '성공',
+                            '리뷰 등록에 성공했습니다.',
+                            [
+                                {text: '확인', onPress: () => {props.navigation.replace("MainScreen");}},
+                            ],
+                            { cancelable: false }
+                        );
+                    });
+                }
+                else{
+                    Alert.alert(
+                        '실패',
+                        '로그인이 필요합니다.',
+                        [
+                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+                setIsSending(false);
+            }
         }
         catch{
             Alert.alert(
@@ -185,7 +199,7 @@ function RegisterReviewScreen(props) {
                 ],
                 { cancelable: false }
             );
-            //setIsSending(false);
+            setIsSending(false);
         }
     }
 
@@ -217,66 +231,66 @@ function RegisterReviewScreen(props) {
                     }
                     {
                         item.ppf != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='PPF' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.ppf} right={props => <Text style={styles.itemText}>{item.ppfPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.blackbox != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='블랙박스' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.blackbox} right={props => <Text style={styles.itemText}>{item.blackboxPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.battery != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='보조배터리' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.battery} right={props => <Text style={styles.itemText}>{item.batteryPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.afterblow != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='애프터블로우' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.afterblow} right={props => <Text style={styles.itemText}>{item.afterblowPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.soundproof != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='방음' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.soundproof} right={props => <Text style={styles.itemText}>{item.soundproofPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.wrapping != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='랩핑' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.wrapping} right={props => <Text style={styles.itemText}>{item.wrappingPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.glasscoating != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.glasscoating} right={props => <Text style={styles.itemText}>{item.glasscoatingPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     {
                         item.undercoating != null && (
-                            <>
+                            <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
                                 <List.Item titleStyle={styles.listStyle} title ={item.undercoating} right={props => <Text style={styles.itemText}>{item.undercoatingPrice}{' 만원'}</Text>} />
-                            </>
+                            </View>
                         )
                     }
                     <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{item.totalPrice}{' 만원'}</Text>}/>
@@ -335,7 +349,7 @@ function RegisterReviewScreen(props) {
             </TextView>
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("MainScreen")}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
+                    <Button mode={"contained"} onPress={() => {props.navigation.popToTop();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
                     <Button mode={"contained"} onPress={() => {SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
                 </Row>
             </BtnView>

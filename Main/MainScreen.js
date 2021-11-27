@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider, Badge } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
@@ -296,6 +296,7 @@ function MainScreen( props ) {
                 .then(res => {
                     const curTime = Date.now();
                     let rawData = res.data.data;
+                    console.log(rawData);
                     if(rawData !== null){
                         rawData.map(item => {
                             item['details'] = JSON.parse(item.details) ;
@@ -309,6 +310,7 @@ function MainScreen( props ) {
                                 state: translateState(item.state), 
                                 time: item.created_time, 
                                 carImage: null,
+                                bidNum: item.bidcount,
                             });
                             timeData.push(moment.duration(moment(item.created_time).add(48, 'hours').diff(moment(curTime))).asSeconds());
                         });
@@ -498,6 +500,21 @@ function MainScreen( props ) {
         };
     }
 
+    function askCancelOptions(orderId){
+        Alert.alert(
+            '확인',
+            '신청하신 입찰이 취소하시겠습니까?',
+            [
+              {text: '예', onPress: () => {
+                CancelOrder(orderId);
+              }},
+              {text: '아니요', onPress: () => {}}
+            ],
+            { cancelable: true }
+        );
+    
+    }
+
     return(
         <TotalView notchColor={Color.main}>
             <ScrollView>
@@ -546,19 +563,22 @@ function MainScreen( props ) {
                             {
                             myOrderList.map((item, index) =>{
                                 return(
-                                    <Card key={item.orderId} style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                    <View key={item.orderId}>
+                                    <Card style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                         <View style={styles.cover}>
                                             <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                         </View>
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
+                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
                                         <Card.Content style={{flexDirection: 'row'}}>
                                             {item.state <= 2 && <Text>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                         </Card.Content>
-                                        {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{CancelOrder(item.orderId)}}>
+                                        {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
                                             <Icon name="close-outline" size={25} color={'black'}></Icon>
                                         </TouchableOpacity>}
                                     </Card> 
+                                    {item.state <=2 && <Badge style={{position: 'absolute'}}>{item.bidNum}</Badge>}
+                                    </View>
                                 )
                             })
                             }
@@ -579,7 +599,8 @@ function MainScreen( props ) {
                                                 <View style={{ flex: 3 }}>
                                                     <View style={{flex: 1}}>
                                                         <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                                    </View>  
+                                                    </View>
+                                                    {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
                                                 </View>
                                                 <View style={{ flex: 2 }}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
@@ -589,9 +610,10 @@ function MainScreen( props ) {
                                                     </Card.Content>
                                                 </View>
                                             </TextRow>
-                                            {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{CancelOrder(item.orderId)}}>
+                                            {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
                                                 <Icon name="close-outline" size={30} color={'black'}></Icon>
                                             </TouchableOpacity>}
+                                            
                                         </Card> 
                                     )
                                 })

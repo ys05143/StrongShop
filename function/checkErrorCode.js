@@ -7,7 +7,7 @@ function CheckErrorCode(e) {
             '실패',
             '현재 진행중인 시공이 존재합니다.',
             [
-                {text: 'OK', onPress: () => {}},
+                {text: '확인', onPress: () => {}},
             ],
             { cancelable: false }
         );
@@ -17,13 +17,20 @@ function CheckErrorCode(e) {
             '현재 다른 기기에서 로그인 중입니다.',
             '기존 기기에서 로그아웃 후 이용 가능합니다.',
             [
-                {text: 'OK', onPress: () => {}},
+                {text: '확인', onPress: () => {}},
             ],
             { cancelable: false }
         );
     }
     else{
-        console.log(e);
+        Alert.alert(
+            '오류',
+            '앱을 다시 실행해주십시오.',
+            [
+                {text: '확인', onPress: () => {}},
+            ],
+            { cancelable: false }
+        );
     }
 }
 

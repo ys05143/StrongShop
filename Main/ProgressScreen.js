@@ -1,17 +1,20 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Modal , Portal , Provider, FAB}  from 'react-native-paper';
-import { FlatList , ScrollView, Alert, Text, ActivityIndicator } from 'react-native';
+import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Portal , Provider, FAB, Divider}  from 'react-native-paper';
+import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal } from 'react-native';
 import Color from '../constants/Color';
 import FastImage from 'react-native-fast-image';
 import _, { add } from 'lodash';
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 //import { request , PERMISSIONS } from 'react-native-permissions';
 import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import storage from '../function/storage';
+import ModalView from '../components/ModalView';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -41,6 +44,34 @@ const InfoView = styled.View`
 `;
 
 const styles = {
+    listAccordionStyle : {
+        backgroundColor: 'white' ,
+        borderTopWidth: 1 ,
+        borderTopColor: 'lightgray'        
+    } ,
+    listStyle1 : {
+        fontSize: 15 , 
+        fontWeight: 'bold',
+    } ,
+    listStyle : {
+        fontWeight: 'bold',
+        fontSize: 13 , 
+    } ,
+    itemText: {
+        fontSize: 13 ,
+        fontWeight: 'bold' ,
+        alignSelf: 'center'
+    } ,
+    labelStyle : {
+    },
+    total : {
+        borderBottomWidth: 1 , 
+        borderColor: 'lightgray',
+    },
+    totalprice : {
+        fontWeight: 'bold',
+        fontSize: 15 , 
+    } ,
     title : {
         fontFamily : 'DoHyeon-Regular' ,
         fontSize: 30 ,
@@ -112,33 +143,50 @@ const DATA=[
 
 function ProgressScreen( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
-    const[completedContractId, setCompletedContractId] = React.useState();
     const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
     const[refresh,setRefresh] = React.useState(false);
-    const[visible,setVisible] = React.useState(false);
-    const[selectedImage, setSelectedImage] = React.useState(null);
+    const[visibleInspection,setVisibleInspection] = React.useState(false);
+    const[visibleConstruction, setVisibleConstruction] = React.useState(false);
+    const[inspectionImages, setInspectionImages] = React.useState([]);
+    const[constructionImages, setConstructionImages] = React.useState([]);
+    const[inspectionIndex, setInspectionIndex] = React.useState(0);
+    const[constructionIndex, setConstructionIndex] = React.useState(0);
     const[shopData, setShopData] = React.useState(DATA);
     const[isLoading, setIsLoading] = React.useState(false);
-    const[addChat, setAddChat] = React.useState(false);
-    const[first, setFirst] = React.useState(true);
+    const[addChatNum, setAddChatNum] = React.useState(0);
 
-    async function rdbOn(id){
-        console.log(`chat${id}`);
-        database().goOnline();
+    // async function rdbOn(id){ //캐시를 이용해서 읽지 않은 채팅 감지
+    //     console.log(`chat${id}`);
+    //     database().goOnline();
+    //     database().ref(`chat${id}`).on('value', snapshot => {
+    //         //console.log(snapshot.numChildren());
+    //         storage.fetch(`chat${id}`)
+    //         .then(res=>{
+    //             console.log(addChat);
+    //             if(snapshot.numChildren() > res) setAddChat(true);
+    //         });
+    //     });
+    // }
+
+    async function checkAddChat(id){
         database().ref(`chat${id}`).on('value', snapshot => {
-            //console.log(snapshot.numChildren());
-            storage.fetch(`chat${id}`)
-            .then(res=>{
-                console.log(addChat);
-                if(snapshot.numChildren() > res) setAddChat(true);
-            });
+            if( snapshot.toJSON() === null){
+                setAddChatNum(0);
+            }
+            else{
+                const record = Object.values(snapshot.toJSON());
+                let count = 0;
+                record.map((item)=>{
+                    if(item.user !== 2 && item.received !== true) count = count+1;
+                });
+                setAddChatNum(count);
+            }
         });
     }
 
     function rdbOff(id){
         database().ref(`chat${id}`).off
-        setAddChat(false);
     }
 
     const isFocused = useIsFocused();
@@ -152,15 +200,23 @@ function ProgressScreen( props ) {
         }
     },[isFocused, state])
 
-    const RenderItem = ({item}) =>  {
+    const RenderItemInspection = ({item}) =>  {
         return(
-            <CButton onPress={ () =>  { setSelectedImage(item); setVisible(true) }}>
+            <CButton onPress={ () =>  { setVisibleInspection(true) }}>
+                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
+            </CButton>
+        )
+    }
+    const RenderItemConstruction = ({item}) =>  {
+        return(
+            <CButton onPress={ () =>  {setVisibleConstruction(true) }}>
                 <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
             </CButton>
         )
     }
 
     async function FinalConfirm(){
+        setIsLoading(true);
         Alert.alert(
             '확인',
             '출고를 확정하시겠습니까?',
@@ -173,7 +229,7 @@ function ProgressScreen( props ) {
                         url : `${server.url}/api/contract/7/${contractId}` ,
                         headers : {Auth: auth},
                     }).catch(e=>checkErrorCode(e))
-                    console.log(response);
+                    //console.log(response);
                     const receiptDetails = response.data.data.details;
                     rdbOff(contractId);
                     props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
@@ -183,6 +239,7 @@ function ProgressScreen( props ) {
             ],
             { cancelable: true }
         );
+        setIsLoading(false);
     }
 
     async function getData(){
@@ -202,11 +259,11 @@ function ProgressScreen( props ) {
                 console.log('state:',state,rawData);
 
                 if(rawData !== null){
-                    await rdbOn(rawData.contract_id);
+                    await checkAddChat(rawData.contract_id);
                     let newData = shopData;
                     if(state >= 3){
                         newData[0] = {companyName: rawData.company_name, contractId: rawData.contract_id, companyId: rawData.company_id};
-                        newData[1] = {shipmentLocation: rawData.shipment_location, receipt: rawData.receipt};
+                        newData[1] = {shipmentLocation: rawData.shipment_location, receipt: JSON.parse(rawData.receipt)};
                         setContractId(rawData.contract_id);
                     }
                     if(state >= 4){
@@ -219,11 +276,15 @@ function ProgressScreen( props ) {
                             e=>{checkErrorCode(e);}
                         );
                         let rawImg = img_res.data.data.imageUrlResponseDtos;
+                        //console.log(rawImg);
                         imageList=[];
+                        images=[];
                         rawImg.map(item => {
                             imageList.push(item.imageUrl);
+                            images.push({url: item.imageUrl,});
                         })
                         newData[2] = {inspectionImages: imageList};
+                        setInspectionImages(images);
                     }
                     if(state >= 6){
                         const img_res = await axios({
@@ -234,16 +295,18 @@ function ProgressScreen( props ) {
                         .catch(
                             e=>{checkErrorCode(e);}
                         );
-                        console.log(img_res.data.data.responseDtos);
                         let rawImg = img_res.data.data.responseDtos;
                         imageList=[];
+                        images=[];
                         rawImg.map(item => {
                             imageList.push(item.imageUrl);
+                            images.push({url: item.imageUrl});
                         })
                         newData[3] = {constructionImages: imageList};
+                        setConstructionImages(images);
                     }
                     if(state >= 7){
-                        newData[4] = {shipmentLocation: rawData.shipment_location, receipt: rawData.receipt};
+                        newData[4] = {shipmentLocation: rawData.shipment_location, receipt: JSON.parse(rawData.receipt)};
                     }
                     setShopData(newData);
                     //console.log("newData", newData);
@@ -279,6 +342,7 @@ function ProgressScreen( props ) {
 
     async function NextState(){
         try{
+            setIsLoading(true);
             Alert.alert(
                 '승인하시겠습니까?',
                 '되돌리실 수 없습니다.',
@@ -314,6 +378,7 @@ function ProgressScreen( props ) {
                 ],
                 { cancelable: false }
             );
+            setIsLoading(false);
         }
         catch{e => {  
             Alert.alert(
@@ -328,17 +393,26 @@ function ProgressScreen( props ) {
         }}
     }
 
+    function ReceiptView(props){
+        let item = JSON.parse(props.receipt);
+        return(
+            <>
+            </>
+        )
+    }
+
     return(
         <Provider>
         {/* 사진 상세보기 */}
-        <Portal>
-        <Modal visible={visible} onDismiss={() => { setVisible(false) }} contentContainerStyle={{ width: '100%', height: 500 , backgroundColor: 'transparent' }}>
-            <IconButton icon='close' style={{ alignSelf: 'flex-end'}} color={'white'} onPress={ () => { setVisible(false) }} />
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <FastImage source={{ uri : selectedImage }} style={{ width: '95%' , height: '100%' }} resizeMode='contain'/>
-            </View>
+        <Modal visible={visibleInspection} transparent={true}>
+            <ImageViewer imageUrls={inspectionImages}/>
+            <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleInspection(false) }} />
         </Modal>
-        </Portal>
+
+        <Modal visible={visibleConstruction} transparent={true}>
+            <ImageViewer imageUrls={constructionImages}/>
+            <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
+        </Modal>
 
         <View style={{flex:1}}>
         {!isLoading ? <>
@@ -373,7 +447,7 @@ function ProgressScreen( props ) {
                 >  
                     {state >= 3 && <SwiperView>
                         <Title style={{ padding: 10 , color : state === 3 ? 'red' : 'black'}}>
-                        {'1단계: '}{progress[1].title}
+                            {'1단계: '}{progress[1].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
@@ -383,15 +457,17 @@ function ProgressScreen( props ) {
                     </SwiperView>}
                     
                     {state >= 4 && <SwiperView>
-                        <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
-                        {'2단계: '}{progress[2].title}
-                        </Title>
-                        {state === 5 && <Button mode={'contained'} color={Color.main} style={{marginTop: 10}} onPress={()=>{NextState();}}>승인</Button>}
+                        <Row>
+                            <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
+                                {'2단계: '}{progress[2].title}
+                            </Title>
+                            {state === 5 && <Button mode={"contained"} onPress={() => {NextState();}} contentStyle={{width: 100, height: 40}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10, width: 100, height: 40, }} labelStyle={{fontSize: 15}} color={Color.main}>승인</Button>}
+                        </Row>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
                                 data={shopData[2].inspectionImages}
                                 scrollEnabled={true}
-                                renderItem={RenderItem}
+                                renderItem={RenderItemInspection}
                                 keyExtractor={item => item}
                                 refreshControl={refresh}
                             />
@@ -400,13 +476,13 @@ function ProgressScreen( props ) {
 
                     {state >= 6 && <SwiperView>
                         <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
-                        {'3단계: '}{progress[3].title}
+                            {'3단계: '}{progress[3].title}
                         </Title>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
                                 data={shopData[3].constructionImages}
                                 scrollEnabled={true}
-                                renderItem={RenderItem}
+                                renderItem={RenderItemConstruction}
                                 keyExtractor={item => item}
                                 refreshControl={refresh}
                             />
@@ -415,7 +491,7 @@ function ProgressScreen( props ) {
 
                     {state >= 7 && <SwiperView>
                         <Title style={{ padding: 10 , color : state === 7 ? 'red' : 'black'}}>
-                        {'4단계: '}{progress[4].title}
+                            {'4단계: '}{progress[4].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
@@ -427,7 +503,81 @@ function ProgressScreen( props ) {
                                         <Icon name={'ellipse'} style={{marginRight: 5}}/>
                                         <Title>시공내역</Title>
                                     </Row>
-                                    <Text style={{fontSize: 15, marginRight: 5}}>{shopData[4].receipt}</Text>
+                                    {
+                                        shopData[4].receipt.tinting != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='틴팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.tinting} right={ props => <Text style={styles.itemText}>{shopData[4].receipt.tintingPrice}{'만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.ppf != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='PPF' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.ppf} right={props => <Text style={styles.itemText}>{shopData[4].receipt.ppfPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.blackbox != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='블랙박스' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.blackbox} right={props => <Text style={styles.itemText}>{shopData[4].receipt.blackboxPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.battery != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='보조배터리' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.battery} right={props => <Text style={styles.itemText}>{shopData[4].receipt.batteryPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.afterblow != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='애프터블로우' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.afterblow} right={props => <Text style={styles.itemText}>{shopData[4].receipt.afterblowPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.soundproof != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='방음' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.soundproof} right={props => <Text style={styles.itemText}>{shopData[4].receipt.soundproofPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.wrapping != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='랩핑' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.wrapping} right={props => <Text style={styles.itemText}>{shopData[4].receipt.wrappingPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.glasscoating != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.glasscoating} right={props => <Text style={styles.itemText}>{shopData[4].receipt.glasscoatingPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        shopData[4].receipt.undercoating != null && (
+                                            <>
+                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.undercoating} right={props => <Text style={styles.itemText}>{shopData[4].receipt.undercoatingPrice}{' 만원'}</Text>} />
+                                            </>
+                                        )
+                                    }
+                                    <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{shopData[4].receipt.totalPrice}{' 만원'}</Text>}/>
+                                    
+                                    
                                 </ScrollView>
                             </InfoView>
                             <Button style={{marginTop: 20}} mode={'contained'} color={Color.main} onPress={()=>{FinalConfirm()}}>출고 확정</Button>
@@ -438,7 +588,7 @@ function ProgressScreen( props ) {
             </SwiperView>
             <View style={{position: 'absolute', bottom: 50, alignSelf: 'flex-end', right: 30,}}>
                 <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center'}} icon="chat" onPress={() => { rdbOff(contractId); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
-                {addChat && <Badge style={{position: 'absolute'}}/>}
+                {addChatNum !== 0 && <Badge style={{position: 'absolute'}}>{addChatNum}</Badge>}
             </View>
             </> : 
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

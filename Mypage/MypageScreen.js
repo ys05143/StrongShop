@@ -174,6 +174,7 @@ function MyPageScreen(props){
 
     async function logOut(){
         const auth = await checkJwt();
+        setIsLoading(true);
         if(auth !== null){
             axios({
                 method : 'PUT' ,
@@ -191,6 +192,7 @@ function MyPageScreen(props){
                                     const allKey = await AsyncStorage.getAllKeys();
                                     console.log(allKey);
                                     props.navigation.popToTop();
+                                    setIsLoading(false);
                                 }
                             },
                         ],
@@ -199,7 +201,7 @@ function MyPageScreen(props){
                 });
             })
             .catch(e=>{
-                console.log(e);
+                checkErrorCode(e);
             })
         }
         else {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Avatar, Card } from 'react-native-paper';
+import { Avatar, Card, Divider } from 'react-native-paper';
 import { Text,Image, FlatList,View, Animated, PanResponder, Alert, ActivityIndicator } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import AppWindow from '../constants/AppWindow';
@@ -56,18 +56,18 @@ const Name = styled.Text`
 
 const ContentView = styled.View`
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px;
     background-color: white;
     justify-content: center;
 `;
 const Content = styled.Text`
-    margin-top: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 `;
 const ContentImg = styled.View`
     width: ${WIDTH*0.9-40}px;
     height: ${WIDTH*0.9-40}px;
-    border-radius: 15px;
     overflow: hidden;
 `;
 
@@ -250,6 +250,8 @@ function ReviewList(props){
                         <FastImage source={{uri: item.imageUrls[0].imageUrl}} style={{width:'100%', height: '100%'}} resizeMode='cover'></FastImage>
                     </ContentImg>
                     <Content>{item.content}</Content>
+                    <Divider style={{backgroundColor: 'black', height: 2, marginTop: 5}}/>
+                    <Content>{'사장님의 답변: '+item.reply}</Content>
                 </ContentView>
             </ReviewView>
             </View>
