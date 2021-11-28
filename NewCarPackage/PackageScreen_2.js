@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert, TouchableWithoutFeedback } from 'react-native';
+import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { Button, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -260,7 +260,9 @@ function PackageScreen_2 (props, {navigation}) {
                     </BtnView>
                 </ContentView>
                 <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                    <Icon name="close-outline" size={35} color={'black'} onPress={()=>{askCancelCarName();}}></Icon>
+                    <TouchableOpacity onPress={()=>{askCancelRequire();}}>
+                        <Icon name="close-outline" size={35} color={'black'}></Icon>
+                    </TouchableOpacity>    
                 </View>
             </TotalView>
             <Modal

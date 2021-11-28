@@ -53,11 +53,12 @@ function SelectDetailOption (props){
         <>
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <TouchableOpacity onPress={()=>{ if(touchable) {sendChoose(!isChoose);
+                <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>{ if(touchable) {sendChoose(!isChoose);
                                     setIsChoose(!isChoose)}}} >
-                <Icon name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={30} color= 'gray'></Icon>
+                    <Icon name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={30} color= 'gray'></Icon>
+                    <SelectName>{props.name}</SelectName>
                 </TouchableOpacity>
-                <SelectName>{props.name}</SelectName>
+                
             </Row>
         </SelectView>
 

@@ -47,11 +47,12 @@ function Select4Screen3_3 (props){
         <>
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <TouchableOpacity onPress={()=>{ sendChoose(!isChoose);
+                <TouchableOpacity style={{flexDirection: 'row'}} onPress={()=>{ sendChoose(!isChoose);
                                     setIsChoose(!isChoose)}} >
                     <Icon name={isChoose===false?"square-outline": "checkbox"} size={30} color= 'gray'></Icon>
+                    <SelectName>{props.name}</SelectName>
                 </TouchableOpacity>
-                <SelectName>{props.name}</SelectName>
+                
                 <Icon name="help-circle-outline" size={25} style={{color: 'rgb(200,0,0)'}} onPress={()=>{setModal(true)}}></Icon>
             </Row>
         </SelectView>

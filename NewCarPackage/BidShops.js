@@ -58,9 +58,12 @@ const DetailView = styled.View`
 function BidShop(props, {navigation}) {
     //for acodian
     const [activeSections, setActiveSections] = React.useState([]);
-
+    const [isSending, setIsSending] = React.useState(false)
+;
     async function sendData(orderId, bidId){
         try{
+            props.getSending(true);
+            setIsSending(true);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
@@ -90,7 +93,6 @@ function BidShop(props, {navigation}) {
     }
 
     function finalCheck(orderId, bidId){
-        props.getSending(true);
         Alert.alert(
             '확인',
             '이 업체로 선택하시겠습니까?',
@@ -98,7 +100,9 @@ function BidShop(props, {navigation}) {
                 {text: '예', onPress: async () => {
                     sendData(orderId, bidId);
                 }},
-                {text: '아니요', onPress: () => { props.getSending(false);}},
+                {text: '아니요', onPress: () => {
+                     props.getSending(false);
+                    }},
             ],
             { cancelable: false }
         );
@@ -205,7 +209,7 @@ function BidShop(props, {navigation}) {
                     }
                     <List.Item titleStyle={styles.listStyle} title ='최종가격: ' right={props => <Text style={styles.itemText}>{item.totalPrice}{' 만원'}</Text>}/>
                     <Divider style={{ margin: 10 , backgroundColor: 'black'}} />
-                    <Button mode={'contained'} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId)}}>선택하기</Button>
+                    <Button mode={'contained'} disabled={isSending} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
                 </DetailView>
             </View>
         );

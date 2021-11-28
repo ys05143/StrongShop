@@ -102,10 +102,6 @@ function LoginScreen(props) {
 
     // 카카오 AccessToken을 서버로 전달
     function requestAccessToken(accessToken, name) {
-        console.log(accessToken);
-        console.log(`${server.url}/api/login/user/${name}`);
-        console.log(name);
-        console.log(fcmToken);
         axios({
             method : 'GET' ,
             url : `${server.url}/api/login/user/${name}` ,
@@ -131,7 +127,7 @@ function LoginScreen(props) {
                 .then( res => {
                     if ( res != null ) ;
                     //로그인 화면 지우기
-                    props.navigation.popToTop(); 
+                    props.navigation.goBack(); 
                 })
                 .catch ( e => { 
                     Alert.alert('다시 시도해주세요.');
@@ -148,7 +144,7 @@ function LoginScreen(props) {
 
     //bottom sheet 에서 만들어지 정보를 서버에 전달
     function requestSignIn(name) {
-        console.log(`${server.url}/api/login/user/${name}`);
+        //console.log(`${server.url}/api/login/user/${name}`);
         // 서버에게 dtoData 전달
         axios({
             method: 'POST',
@@ -161,7 +157,7 @@ function LoginScreen(props) {
             }
         })
         .then(async(res) =>{
-            console.log(res);
+            //console.log(res);
             // 가입성공
             if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
@@ -189,10 +185,13 @@ function LoginScreen(props) {
     const handleKakaoLogin = async() =>  {
         // 카카오 인증요청
         setLoginVer('kakao');
-        const token = await login().catch(e=>{console.log(e) });
+        const token = await login().catch(e=>{console.log(e)});
         console.log(token);
         // 카카오 인증취소 / 인증실패 
-        if ( token == null ) return;
+        if ( token == null ) {
+            Alert.alert('다시 시도해주세요.');
+            return;
+        }
         const accessToken = 'Bearer ' + token.accessToken ;        
         try {
             // token 서버에게 전달 
@@ -249,7 +248,7 @@ function LoginScreen(props) {
                             {text: '확인', onPress: async() => {
                                     const allKey = await AsyncStorage.getAllKeys();
                                     console.log(allKey);
-                                    props.navigation.navigate("MainScreen");
+                                    props.navigation.popToTop();
                                 }
                             },
                         ],

@@ -77,11 +77,11 @@ const Record = styled.TouchableOpacity`
 `;
 
 const DATA = {
-    profileImg: 'https://picsum.photos/0',
-    userName: '허지훈',
-    phoneNum: '01012345678',
-    loginVer: 'KAKAO',
-    fcm: true,
+    profileImg: '',
+    userName: null,
+    phoneNum: null,
+    loginVer: '',
+    fcm: false,
 }
 
 function MyPageScreen(props){
@@ -134,7 +134,7 @@ function MyPageScreen(props){
                     headers : {Auth: auth},
                 })
                 const rawData = response.data.data;
-                console.log(rawData);
+                //console.log(rawData);
                 setMyData({
                     profileImg: rawData.thumbnail,
                     userName: rawData.nickname,
@@ -225,7 +225,7 @@ function MyPageScreen(props){
                 headers : {Auth: auth},
             })
             .then(res => {
-                console.log(res);
+                //console.log(res);
                 AsyncStorage.removeItem('auth', ()=>{
                     Alert.alert(
                         '회원 탈퇴',
@@ -261,15 +261,15 @@ function MyPageScreen(props){
     return(
         <TotalView notchColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.goBack()}}>
+                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
-                {afterUpdate ? <TouchableOpacity onPress={()=>{sendData();}}>
-                    <Text style={{fontSize: 15, marginRight: 5}}>{'저장'}</Text>
+                {afterUpdate ? <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 10}} onPress={()=>{sendData();}}>
+                    <Text style={{fontSize: 15}}>{'저장'}</Text>
                 </TouchableOpacity> : 
-                <TouchableOpacity onPress={()=>{logOut();}}>
-                    <Text style={{fontSize: 15, marginRight: 5}}>{'로그아웃'}</Text>
+                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 5}} onPress={()=>{logOut();}}>
+                    <Text style={{fontSize: 13}}>{'로그아웃'}</Text>
                 </TouchableOpacity>
                 }
             </TopBar>

@@ -43,6 +43,7 @@ function Receipt(props){
 
     async function finishOrder(){ // 서버에 오더 전송
         try{
+            setIsSending(true);
             if(receipt !== null){
                 const auth = await checkJwt();
                 if(auth !== null){
@@ -70,13 +71,14 @@ function Receipt(props){
                         );
                     });
                     sendModal(false);
+                    setIsSending(false);
                 }
                 else{
                     Alert.alert(
                         '실패',
                         '로그인이 필요합니다.',
                         [
-                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal();}},
+                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), sendModal(); setIsSending(false);}},
                         ],
                         { cancelable: false }
                     );
@@ -87,7 +89,7 @@ function Receipt(props){
                     '실패',
                     '작성한 견적이 없습니다.',
                     [
-                        {text: '확인', onPress: () => {}},
+                        {text: '확인', onPress: () => { setIsSending(false)}},
                     ],
                     { cancelable: false }
                 );
@@ -99,7 +101,7 @@ function Receipt(props){
                 '오류',
                 '견적 등록을 실패했습니다.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => { setIsSending(false)}},
                 ],
                 { cancelable: false }
             );
@@ -107,7 +109,6 @@ function Receipt(props){
     }
 
     function finalCheck(){
-        setIsSending(true);
         Alert.alert(
             '확인',
             '입찰을 시작하시겠습니까',
@@ -115,7 +116,7 @@ function Receipt(props){
                 {text: '예', onPress: () => {
                     finishOrder();
                 }},
-                {text: '아니요', onPress: () => { setIsSending(false)}},
+                {text: '아니요', onPress: () => {}},
             ],
             { cancelable: false }
         );
@@ -304,19 +305,18 @@ function Receipt(props){
                 </View>}
             </SearchView>}
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button mode="contained"  contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{sendModal();}}>
+                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{sendModal();}}>
                     <Text>이전</Text>
                 </Button>
-                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
+                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
                     <Text>완료</Text>
                 </Button>
             </View>
-            
-        </Total>
-        {isSending && 
+            {isSending && 
             <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500,}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
+        </Total>
         </>
     );
 }

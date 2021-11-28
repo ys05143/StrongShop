@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Portal , Provider, FAB, Divider}  from 'react-native-paper';
-import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal } from 'react-native';
+import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 import Color from '../constants/Color';
 import FastImage from 'react-native-fast-image';
 import _, { add } from 'lodash';
@@ -14,7 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import storage from '../function/storage';
-import ModalView from '../components/ModalView';
+import TopBar from '../components/TopBar';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -153,8 +153,9 @@ function ProgressScreen( props ) {
     const[inspectionIndex, setInspectionIndex] = React.useState(0);
     const[constructionIndex, setConstructionIndex] = React.useState(0);
     const[shopData, setShopData] = React.useState(DATA);
-    const[isLoading, setIsLoading] = React.useState(false);
+    const[isLoading, setIsLoading] = React.useState(true);
     const[addChatNum, setAddChatNum] = React.useState(0);
+    const[isSending, setIsSending] = React.useState(false);
 
     // async function rdbOn(id){ //캐시를 이용해서 읽지 않은 채팅 감지
     //     console.log(`chat${id}`);
@@ -216,14 +217,16 @@ function ProgressScreen( props ) {
     }
 
     async function FinalConfirm(){
-        setIsLoading(true);
         Alert.alert(
             '확인',
             '출고를 확정하시겠습니까?',
             [
               {text: '예', onPress: async () => {
-                const auth = await checkJwt();
-                if(auth !== null){
+                setIsLoading(true);
+                setIsSending(true);
+                setTimeout(async() => {
+                    const auth = await checkJwt();
+                    if(auth !== null){
                     const response = await axios({
                         method: 'PUT',
                         url : `${server.url}/api/contract/7/${contractId}` ,
@@ -234,12 +237,26 @@ function ProgressScreen( props ) {
                     rdbOff(contractId);
                     props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
                 }
+                }, 5000);
+                // const auth = await checkJwt();
+                // if(auth !== null){
+                //     const response = await axios({
+                //         method: 'PUT',
+                //         url : `${server.url}/api/contract/7/${contractId}` ,
+                //         headers : {Auth: auth},
+                //     }).catch(e=>checkErrorCode(e))
+                //     //console.log(response);
+                //     const receiptDetails = response.data.data.details;
+                //     rdbOff(contractId);
+                //     props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
+                // }
               }},
               {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
         setIsLoading(false);
+        setIsSending(false);
     }
 
     async function getData(){
@@ -342,7 +359,6 @@ function ProgressScreen( props ) {
 
     async function NextState(){
         try{
-            setIsLoading(true);
             Alert.alert(
                 '승인하시겠습니까?',
                 '되돌리실 수 없습니다.',
@@ -378,7 +394,7 @@ function ProgressScreen( props ) {
                 ],
                 { cancelable: false }
             );
-            setIsLoading(false);
+            setIsSending(false);
         }
         catch{e => {  
             Alert.alert(
@@ -391,14 +407,6 @@ function ProgressScreen( props ) {
             );
             console.log(e);
         }}
-    }
-
-    function ReceiptView(props){
-        let item = JSON.parse(props.receipt);
-        return(
-            <>
-            </>
-        )
     }
 
     return(
@@ -415,13 +423,21 @@ function ProgressScreen( props ) {
         </Modal>
 
         <View style={{flex:1}}>
-        {!isLoading ? <>
             <View>
-                <Appbar.Header style={{ backgroundColor: Color.main }}>
+                {/* <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(contractId); }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 
-                </Appbar.Header>  
+                </Appbar.Header>   */}
+                <TopBar style={{backgroundColor: Color.main}}>
+                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={() => { props.navigation.goBack(); rdbOff(contractId); }}>
+                        <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
+                    </TouchableOpacity>
+                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30, color: 'white'}}>{shopData[0].companyName}</Text>
+                    </View>
+                    <View style={{width: 40}}/>
+                </TopBar>
                 <ProgressBar style={styles.progress} progress={(state-3)/4} color='red'  
                     theme = {{ animation : { scale : 5 }  }}
                 />
@@ -452,7 +468,7 @@ function ProgressScreen( props ) {
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
                             <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
                             <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].shipmentLocation}</Title>
-                            {state === 3 && <Button mode={'contained'} color={Color.main} style={{marginTop: 10}} onPress={()=>{NextState();}}>완료</Button>}
+                            {state === 3 && <Button mode={'contained'} disabled={isSending} color={Color.main} style={{marginTop: 10}} onPress={()=>{setIsSending(true); NextState();}}>{isSending ? '전달중...': '완료'}</Button>}
                         </View>
                     </SwiperView>}
                     
@@ -461,7 +477,7 @@ function ProgressScreen( props ) {
                             <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
                                 {'2단계: '}{progress[2].title}
                             </Title>
-                            {state === 5 && <Button mode={"contained"} onPress={() => {NextState();}} contentStyle={{width: 100, height: 40}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10, width: 100, height: 40, }} labelStyle={{fontSize: 15}} color={Color.main}>승인</Button>}
+                            {state === 5 && <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); NextState();}} contentStyle={{width: 100, height: 40}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10, width: 100, height: 40, }} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '승인'}</Button>}
                         </Row>
                         <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
                             <FlatList
@@ -494,6 +510,7 @@ function ProgressScreen( props ) {
                             {'4단계: '}{progress[4].title}
                         </Title>
                         <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
+                            <ScrollView>
                             <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
                             <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].shipmentLocation}</Title>
                             <Text style={{color: 'red', marginVertical: 5, alignSelf: 'center'}}>/*모든시공이 완료되었는지 반드시 확인해주세요.*/</Text>
@@ -580,7 +597,8 @@ function ProgressScreen( props ) {
                                     
                                 </ScrollView>
                             </InfoView>
-                            <Button style={{marginTop: 20}} mode={'contained'} color={Color.main} onPress={()=>{FinalConfirm()}}>출고 확정</Button>
+                            <Button style={{marginTop: 20}} mode={'contained'} disabled={isSending} color={Color.main} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
+                            </ScrollView>
                         </View>
                     </SwiperView>}
                     
@@ -590,9 +608,8 @@ function ProgressScreen( props ) {
                 <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center'}} icon="chat" onPress={() => { rdbOff(contractId); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
                 {addChatNum !== 0 && <Badge style={{position: 'absolute'}}>{addChatNum}</Badge>}
             </View>
-            </> : 
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>
+            {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+                <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
 
         </View>

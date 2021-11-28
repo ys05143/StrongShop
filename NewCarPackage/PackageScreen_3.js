@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList } from 'react-native';
+import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { Button } from 'react-native-paper';
 import Icon  from "react-native-vector-icons/Ionicons";
@@ -796,7 +796,9 @@ function PackageScreen_3(props) {
                 </BtnView>
             </ContentView>
             <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                <Icon name="close-outline" size={35} color={'black'} onPress={()=>{askCancelOptions();}}></Icon>
+                <TouchableOpacity onPress={()=>{askCancelRequire();}}>
+                    <Icon name="close-outline" size={35} color={'black'}></Icon>
+                </TouchableOpacity>    
             </View>
         </TotalView>
         </KeyboardAwareScrollView>

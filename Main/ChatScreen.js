@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Platform, KeyboardAvoidingView } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import database from '@react-native-firebase/database';
 //component
@@ -266,6 +266,9 @@ function ChatScreen(props){
                 name: '고객',
             }}
         />
+        {
+            Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />
+        }
         </TotalView>
     );
 }

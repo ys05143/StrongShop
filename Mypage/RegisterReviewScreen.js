@@ -122,6 +122,7 @@ function RegisterReviewScreen(props) {
             selectedAssets: img,
             doneTitle: "완료",
             singleSelectedMode: true,
+            usedCameraButton: false,
         })
         .then(images => {
             setImg(images);
@@ -350,12 +351,12 @@ function RegisterReviewScreen(props) {
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                     <Button mode={"contained"} onPress={() => {props.navigation.popToTop();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
-                    <Button mode={"contained"} onPress={() => {SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
+                    <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>등록</Button>
                 </Row>
             </BtnView>
             {isSending && 
                 <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
-                    <ActivityIndicator color= {Color.main}/>
+                    <ActivityIndicator color= {Color.main} size={'large'}/>
                 </View>}
         </TotalView>
         </KeyboardAwareScrollView>

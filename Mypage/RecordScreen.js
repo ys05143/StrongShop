@@ -9,6 +9,7 @@ import FastImage from 'react-native-fast-image';
 import { useIsFocused } from '@react-navigation/native';
 //component
 import TotalView from '../components/TotalView';
+import TopBar from '../components/TopBar';
 //constant
 import Color from '../constants/Color';
 //for server
@@ -16,18 +17,6 @@ import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 
-const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
-const TopBar = styled.View`
-    height: 60px;
-    width: 100%;
-    padding-right: 10px;
-    border-bottom-width: 1px;
-    border-color: lightgray;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-`;
 const TextRow = styled.View`
     flex-direction: row;
     align-items: center;
@@ -172,11 +161,11 @@ function RecordScreen(props) {
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
+                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
-                <View style={{width: 15}}/>
+                <View style={{width: 40}}/>
             </TopBar>
             {!isLoading ? <FlatList  data={recordData}
                     renderItem={renderItem}

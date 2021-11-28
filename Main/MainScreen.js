@@ -34,6 +34,15 @@ const TextRow = styled.View`
     align-items: center;
 `;
 const View = styled.View``;
+const TopBar = styled.View`
+    height: 60px;
+    width: 100%;
+    padding-right: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: ${Color.main};
+`;
 
 const MenuButton = styled.TouchableOpacity`
     border: 1px lightgray;
@@ -68,7 +77,7 @@ const styles = {
     card : {
         margin: 10,
         width: 150,
-        height: '80%'
+        height: '80%',
     } ,
     divider :  {
         marginTop: 20 ,
@@ -145,8 +154,6 @@ function MainScreen( props ) {
     const [myOrderList, setMyOrderList] = React.useState([]);
     const [orderTimeList, setOrderTimeList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
-
-    const stamp = (new Date().getTime()+(23*3600+54*60)-new Date().getTime()) ;
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -518,11 +525,14 @@ function MainScreen( props ) {
     return(
         <TotalView notchColor={Color.main}>
             <ScrollView>
-            <Appbar.Header style={{ backgroundColor: Color.main }}>
-                <Appbar.Content title=''/>
-                <Appbar.Action icon="bell-outline" onPress={() => {props.navigation.navigate("AlarmScreen")}} />
-                <Appbar.Action icon="account-circle" onPress={async () => {MoveMypage();}} />
-            </Appbar.Header> 
+            <TopBar>
+                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.navigate("AlarmScreen")}}>
+                    <Icon name="notifications-outline" size={25} color={'white'}></Icon>
+                </TouchableOpacity>
+                <TouchableOpacity style={{padding: 5, marginLeft: 15}} onPress={()=>{MoveMypage();}}>
+                    <Icon name="person-circle-outline" size={25} color={'white'}></Icon>
+                </TouchableOpacity>
+            </TopBar>
 
             <View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20}}>
                 <Title style={styles.title}>{'안녕하세요,\n무엇을 도와드릴까요?'}</Title>
@@ -555,7 +565,7 @@ function MainScreen( props ) {
                 <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
                 <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
             </TextRow>
-            <View style={{ height: 250 , borderBottomWidth: 3 , borderBottomColor: 'lightgray'}}>
+            <View style={{height: 250, borderBottomWidth: 3 , borderBottomColor: 'lightgray'}}>
                 {!isLoading ? 
                 <>
                     { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
@@ -586,7 +596,7 @@ function MainScreen( props ) {
                     ) : 
                     (
                         <Swiper 
-                            autoplay={true} 
+                            autoplay={false} 
                             style={{ marginVertical: 10 }}
                             loop={false}
                             renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}

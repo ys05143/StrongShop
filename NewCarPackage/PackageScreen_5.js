@@ -205,11 +205,11 @@ function PackageScreen_5(props){
                 </ShopList>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>홈으로</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} disabled={isSending}>홈으로</Button>
                     </Row>
                 </BtnView>
             </ContentView>
-            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute'}}>
+            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
         </TotalView>
