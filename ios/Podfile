@@ -12,6 +12,8 @@ target 'StrongShop' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-in-app-message', :path => '../node_modules/react-native-in-app-message'
+
   target 'StrongShopTests' do
     inherit! :complete
     # Pods for testing

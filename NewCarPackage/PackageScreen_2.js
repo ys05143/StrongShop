@@ -260,7 +260,7 @@ function PackageScreen_2 (props, {navigation}) {
                     </BtnView>
                 </ContentView>
                 <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                    <TouchableOpacity onPress={()=>{askCancelRequire();}}>
+                    <TouchableOpacity onPress={()=>{askCancelCarName();}}>
                         <Icon name="close-outline" size={35} color={'black'}></Icon>
                     </TouchableOpacity>    
                 </View>

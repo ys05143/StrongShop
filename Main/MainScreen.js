@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
-import messaging from '@react-native-firebase/messaging';
 import Icon from "react-native-vector-icons/Ionicons";
 import FastImage from 'react-native-fast-image';
 import moment from 'moment';
@@ -19,6 +18,18 @@ import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
 import TotalView from '../components/TotalView';
+//navigation
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+export const navigationRef = createNavigationContainerRef();
+export function navigate(name, params) {
+    if (navigationRef.isReady()) {
+      navigationRef.navigate(name, params);
+    }
+    else{
+
+    }
+}
 
 const Row = styled.View`
     flex-direction: row;
@@ -163,80 +174,6 @@ function MainScreen( props ) {
     },[isFocused]);
 
     const hideDialog = () => setExistingDialog(false);
-
-    React.useEffect(()=>{
-        const unsubscribe = messaging().onMessage( async remoteMessage => {
-          //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
-          const index = remoteMessage.data.index;
-          const alarmList = await storage.fetch("Alarm");
-        //console.log('main Async',alarmList);
-        let newAlarm = alarmList !== null ? [...alarmList] : [];
-        const length = newAlarm.length;
-
-        let title = '오류';
-        let content = '알림을 표시할 수 없습니다.';
-
-        if(index === '200'){
-            title = '입찰이 도착했습니다';
-            content = '도착!'
-        }
-        else if(index === '201'){
-            title = '입찰시간이 종료되었습니다.';
-            content = '종료!'
-        }
-        else if(index === '210'){
-            title = '업체에서 검수 사진을 등록했습니다.';
-            content = '등록!'
-        }
-        else if(index === '211'){
-            title = '검수가 완료되었습니다.';
-            content = '완료!'
-        }
-        else if(index === '212'){
-            title = '시공사진이 등록되었습니다.';
-            content = '등록!'
-        }
-        else if(index === '213'){
-            title = '시공이 완료되었습니다';
-            content = '완료!'
-        }
-        else if(index === '214'){
-            title = '리뷰를 작성해주세요.';
-            content = '제발!'
-        }
-        newAlarm.push({
-            id: length,
-            alarmType: index === null ? 0 : index,
-            date: '20211126',
-            isRead: false,
-            title: title,
-            content: content,
-        });
-        await storage.store("Alarm", newAlarm);
-        if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
-            Alert.alert(
-            index,
-            '알림이 도착했습니다. 이동하시겠습니까?',
-            [
-              {text: '예', onPress: async() => {
-                props.navigation.navigate("AlarmScreen");
-              }},
-              {text: '아니요', onPress: () => {}}
-            ],
-                { cancelable: true }
-            );
-        }
-        });
-
-        return unsubscribe;
-    },[]);
-
-    React.useEffect(()=>{
-        const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
-            props.navigation.navigate("MainScreen");
-        });
-        return unsubscribe;
-    },[])
 
     async function CheckAsync(){
         try{

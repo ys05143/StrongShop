@@ -370,6 +370,8 @@ PODS:
     - React-jsi (= 0.64.2)
     - React-perflogger (= 0.64.2)
   - React-jsinspector (0.64.2)
+  - react-native-in-app-message (1.0.33):
+    - React
   - react-native-multiple-image-picker (0.4.8):
     - React-Core
     - TLPhotoPicker (= 2.1.4)
@@ -556,6 +558,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-in-app-message (from `../node_modules/react-native-in-app-message`)
   - "react-native-multiple-image-picker (from `../node_modules/@baronha/react-native-multiple-image-picker`)"
   - react-native-nmap (from `../node_modules/react-native-nmap`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -664,6 +667,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-in-app-message:
+    :path: "../node_modules/react-native-in-app-message"
   react-native-multiple-image-picker:
     :path: "../node_modules/@baronha/react-native-multiple-image-picker"
   react-native-nmap:
@@ -778,6 +783,7 @@ SPEC CHECKSUMS:
   React-jsi: 67747b9722f6dab2ffe15b011bcf6b3f2c3f1427
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
+  react-native-in-app-message: 00952df970f85d162b9100f6b767ae37c6520dda
   react-native-multiple-image-picker: e73ad1b4f8a5687828c07aa46b35205894168089
   react-native-nmap: cfcc5402746040494c544ea90a6062f49505acdf
   react-native-pager-view: 54970cc27fdef14db2dcfedadb091d711e88065d
@@ -813,6 +819,6 @@ SPEC CHECKSUMS:
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 2b2610d6edc0951b1ccf724adeb60be37865dab6
+PODFILE CHECKSUM: 5543c3dc340fdc38baee14d11642d0d0fbb41978
 
 COCOAPODS: 1.11.2

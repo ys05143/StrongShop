@@ -1,9 +1,15 @@
 
 import React from 'react';
 import styled from 'styled-components/native';
+import { View, Text, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
+import {Notification} from "react-native-in-app-message";
+import { navigationRef } from './Main/MainScreen';
+import * as RootNavigation from './Main/MainScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from './function/storage';
 
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
@@ -32,6 +38,8 @@ import Temp from './Temp';
 const Stack = createStackNavigator();
 
 function App (props) {
+  const inAppMessage = React.useRef();
+  const [alarmContent, setAlarmContent] = React.useState({title: '', content: ''});
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -47,11 +55,96 @@ function App (props) {
   React.useEffect(()=>{
     requestUserPermission().catch((e) =>{ console.log('firebase errror')});
     messaging().getToken().then(res=>{console.log(res)});
+    //RootNavigation.navigate("MainScreen");
   },[]);
+
+  React.useEffect(()=>{
+    const unsubscribe = messaging().onMessage( async remoteMessage => {
+      //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
+      const index = remoteMessage.data.index;
+      const alarmList = await storage.fetch("Alarm");
+      //console.log('main Async',alarmList);
+      let newAlarm = alarmList !== null ? [...alarmList] : [];
+      const length = newAlarm.length;
+
+      let title = '오류';
+      let content = '알림을 표시할 수 없습니다.';
+
+      if(index === '200'){
+          title = '입찰';
+          content = '입찰이 도착했습니다.';
+      }
+      else if(index === '201'){
+          title = '입찰 종료';
+          content = '입찰 시간이 만료되었습니다.';
+      }
+      else if(index === '210'){
+          title = '사진 등록';
+          content = '업체에서 검수 사진을 등록했습니다.';
+      }
+      else if(index === '211'){
+          title = '검수 완료';
+          content = '검수가 완료되었습니다.';
+      }
+      else if(index === '212'){
+          title = '사진 등록';
+          content = '업체에서 시공 사진을 등록했습니다.';
+      }
+      else if(index === '213'){
+          title = '시공 완료';
+          content = '시공이 완료되었습니다.';
+      }
+      else if(index === '214'){
+          title = '리뷰';
+          content = '시공이 완료되었습니다.';
+      }
+    else{
+      title = ''
+    }
+      newAlarm.push({
+          id: length,
+          alarmType: index === null ? 0 : index,
+          date: Date.now(),
+          isRead: false,
+          title: title,
+          content: content,
+      });
+      await storage.store("Alarm", newAlarm);
+      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+        setAlarmContent({title: title, content: content});
+        inAppMessage.current?.show();
+      }
+      else{
+        setAlarmContent({title: title, content: content});
+        inAppMessage.current?.show();
+      }
+      });
+
+      return unsubscribe;
+  },[]);
+
+  React.useEffect(()=>{
+      const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+          props.navigation.navigate("MainScreen");
+      });
+      return unsubscribe;
+  },[])
+
+  function alarmComponent(){
+    return(
+      <View style={{width: '100%', padding: 10}}>
+        <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5}}>{alarmContent.title}</Text>
+        <Text>{alarmContent.content}</Text>
+      </View>
+    )
+
+  }
+
 
   return (
     <>
-    <NavigationContainer>
+    <React.Fragment>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
         
         { /* 개발시 보는 임시 첫화면 */}
@@ -104,6 +197,8 @@ function App (props) {
 
       </Stack.Navigator>
     </NavigationContainer>
+    <Notification customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />
+    </React.Fragment>
     </>
   );
 };

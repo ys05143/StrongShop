@@ -130,7 +130,7 @@ function LoginScreen(props) {
                     props.navigation.goBack(); 
                 })
                 .catch ( e => { 
-                    Alert.alert('다시 시도해주세요.');
+                    Alert.alert('토큰 캐시에 실패했습니다.');
                 })
             }
 
@@ -189,7 +189,7 @@ function LoginScreen(props) {
         console.log(token);
         // 카카오 인증취소 / 인증실패 
         if ( token == null ) {
-            Alert.alert('다시 시도해주세요.');
+            Alert.alert('토큰을 받아올 수 없습니다.');
             return;
         }
         const accessToken = 'Bearer ' + token.accessToken ;        
@@ -198,7 +198,7 @@ function LoginScreen(props) {
             requestAccessToken(accessToken, 'kakao');
         }
         catch {
-            Alert.alert('다시 요청해주세요.');
+            Alert.alert('로그인을 다시 요청해주세요.');
         }
 
     }

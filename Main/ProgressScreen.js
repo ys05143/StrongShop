@@ -20,6 +20,7 @@ import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
+import TotalView from '../components/TotalView';
 
 const View = styled.View``;
 const Row = styled.View`
@@ -422,7 +423,7 @@ function ProgressScreen( props ) {
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
         </Modal>
 
-        <View style={{flex:1}}>
+        <TotalView notchColor={Color.main}>
             <View>
                 {/* <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(contractId); }} />
@@ -612,7 +613,7 @@ function ProgressScreen( props ) {
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
 
-        </View>
+        </TotalView>
         </Provider>
     );
 }
