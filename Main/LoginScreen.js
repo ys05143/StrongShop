@@ -83,7 +83,6 @@ function LoginScreen(props) {
     const snapPoints = React.useMemo(() => ['80%'], []);
     const [userName,setUserName] = React.useState("");
     const [dtoData,setDtoData] = React.useState(null);
-    const [fcmToken, setFcmToken] = React.useState();
     const [loginVer, setLoginVer] = React.useState('');
 
     const bottomSheetModalRef = React.useRef(null);
@@ -94,14 +93,14 @@ function LoginScreen(props) {
         bottomSheetModalRef.current?.dismiss();
     }, []);  
 
-    React.useEffect(()=>{
-        messaging().getToken().then( res =>{
-          setFcmToken(res);
-        });
-    },[]);
 
     // 카카오 AccessToken을 서버로 전달
-    function requestAccessToken(accessToken, name) {
+    async function requestAccessToken(accessToken, name) {
+        let fcmToken = '';
+        await messaging().getToken()
+        .then( res =>{
+            fcmToken = res;
+        });
         axios({
             method : 'GET' ,
             url : `${server.url}/api/login/user/${name}` ,
@@ -111,6 +110,7 @@ function LoginScreen(props) {
             } ,
         })
         .then( async (res) =>  {
+
             // 회원가입 필요
             if ( res.data.statusCode == 201 ) {
                 // 추가정보를 사용자로부터 받음.
@@ -130,7 +130,7 @@ function LoginScreen(props) {
                     props.navigation.goBack(); 
                 })
                 .catch ( e => { 
-                    Alert.alert('토큰 캐시에 실패했습니다.');
+                    Alert.alert('앱을 재시작하세요.');
                 })
             }
 
@@ -143,8 +143,13 @@ function LoginScreen(props) {
     }
 
     //bottom sheet 에서 만들어지 정보를 서버에 전달
-    function requestSignIn(name) {
+    async function requestSignIn(name) {
         //console.log(`${server.url}/api/login/user/${name}`);
+        let fcmToken = '';
+        await messaging().getToken()
+        .then( res =>{
+            fcmToken = res;
+        });
         // 서버에게 dtoData 전달
         axios({
             method: 'POST',
@@ -170,7 +175,7 @@ function LoginScreen(props) {
                 // cache 성공 시 -> 메인화면
                 catch {
                     // cache 저장 에러
-                    console.log('cache 에러');
+                    Alert.alert('앱을 재시작하세요.');
                 }
             }   
 
@@ -186,10 +191,10 @@ function LoginScreen(props) {
         // 카카오 인증요청
         setLoginVer('kakao');
         const token = await login().catch(e=>{console.log(e)});
-        console.log(token);
+        //console.log(token);
         // 카카오 인증취소 / 인증실패 
         if ( token == null ) {
-            Alert.alert('토큰을 받아올 수 없습니다.');
+            Alert.alert('카카오톡 로그인을 할 수 없습니다.');
             return;
         }
         const accessToken = 'Bearer ' + token.accessToken ;        
@@ -207,6 +212,10 @@ function LoginScreen(props) {
         return new Promise((resolve, reject) => {
           NaverLogin.login(props, (err, token) => {
             setLoginVer('naver');
+            if ( token == null ) {
+                Alert.alert('카카오톡 로그인을 할 수 없습니다.');
+                return;
+            }
             const accessToken = 'Bearer ' + token.accessToken ; 
             requestAccessToken(accessToken,'naver');
             if (err) {
