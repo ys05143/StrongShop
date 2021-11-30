@@ -63,7 +63,7 @@ function Receipt(props){
                             [
                                 {text: '확인', onPress: () => {
                                         console.log("remove async Bid")
-                                        props.navigation.navigate("MainScreen");
+                                        props.navigation.popToTop();
                                     }
                                 },
                             ],

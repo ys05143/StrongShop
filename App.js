@@ -62,13 +62,9 @@ function App (props) {
     const unsubscribe = messaging().onMessage( async remoteMessage => {
       //console.log('foreground messgage arrived!',JSON.stringify(remoteMessage));
       const index = remoteMessage.data.index;
-      const alarmList = await storage.fetch("Alarm");
-      //console.log('main Async',alarmList);
-      let newAlarm = alarmList !== null ? [...alarmList] : [];
-      const length = newAlarm.length;
 
-      let title = '오류';
-      let content = '알림을 표시할 수 없습니다.';
+      let title = '알림';
+      let content = '';
 
       if(index === '200'){
           title = '입찰';
@@ -98,18 +94,24 @@ function App (props) {
           title = '리뷰';
           content = '시공이 완료되었습니다.';
       }
-    else{
-      title = ''
-    }
-      newAlarm.push({
-          id: length,
-          alarmType: index === null ? 0 : index,
-          date: Date.now(),
-          isRead: false,
-          title: title,
-          content: content,
-      });
-      await storage.store("Alarm", newAlarm);
+      
+      if(index !== '002' || index !== '000'){
+        const alarmList = await storage.fetch("Alarm");
+        //console.log('main Async',alarmList);
+        let newAlarm = alarmList !== null ? [...alarmList] : [];
+        const length = newAlarm.length;
+        
+        newAlarm.push({
+            id: remoteMessage.messageId,
+            alarmType: index,
+            date: remoteMessage.data.time,
+            isRead: false,
+            title: title,
+            content: content,
+        });
+
+        await storage.store("Alarm", newAlarm);
+      }
       if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
         setAlarmContent({title: title, content: content});
         inAppMessage.current?.show();
@@ -124,8 +126,59 @@ function App (props) {
   },[]);
 
   React.useEffect(()=>{
-      const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
-          props.navigation.navigate("MainScreen");
+      const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
+        const index = remoteMessage.data.index;
+
+        let title = '알림';
+        let content = '';
+
+        if(index === '200'){
+            title = '입찰';
+            content = '입찰이 도착했습니다.';
+        }
+        else if(index === '201'){
+            title = '입찰 종료';
+            content = '입찰 시간이 만료되었습니다.';
+        }
+        else if(index === '210'){
+            title = '사진 등록';
+            content = '업체에서 검수 사진을 등록했습니다.';
+        }
+        else if(index === '211'){
+            title = '검수 완료';
+            content = '검수가 완료되었습니다.';
+        }
+        else if(index === '212'){
+            title = '사진 등록';
+            content = '업체에서 시공 사진을 등록했습니다.';
+        }
+        else if(index === '213'){
+            title = '시공 완료';
+            content = '시공이 완료되었습니다.';
+        }
+        else if(index === '214'){
+            title = '리뷰';
+            content = '시공이 완료되었습니다.';
+        }
+        
+        if(index !== '002' || index !== '000'){
+          const alarmList = await storage.fetch("Alarm");
+          //console.log('main Async',alarmList);
+          let newAlarm = alarmList !== null ? [...alarmList] : [];
+          const length = newAlarm.length;
+          
+          newAlarm.push({
+              id: remoteMessage.messageId,
+              alarmType: index,
+              date: remoteMessage.data.time,
+              isRead: false,
+              title: title,
+              content: content,
+          });
+
+          await storage.store("Alarm", newAlarm);
+        }
+        RootNavigation.navigate("MainScreen");
       });
       return unsubscribe;
   },[])
@@ -148,7 +201,7 @@ function App (props) {
       <Stack.Navigator>
         
         { /* 개발시 보는 임시 첫화면 */}
-        {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>} */}
         {/* 메인화면 */}
         {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>}
         {/* 로그인 화면 */}
@@ -197,7 +250,7 @@ function App (props) {
 
       </Stack.Navigator>
     </NavigationContainer>
-    <Notification customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />
+    <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />
     </React.Fragment>
     </>
   );

@@ -163,6 +163,8 @@ function PackageScreen_5(props){
 
     useInterval(()=>{
         if(time>0) setTime(time-1);
+        else if(time === 0) console.log('time out');
+        else{}
     }, 1000);
 
     function convertTime(time){
@@ -209,7 +211,7 @@ function PackageScreen_5(props){
                     </Row>
                 </BtnView>
             </ContentView>
-            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
+            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
         </TotalView>

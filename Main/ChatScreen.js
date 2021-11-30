@@ -25,7 +25,7 @@ function ChatScreen(props){
     const [contractId, setContractId] = React.useState(props.route.params.contractId);
     const db = database().ref(`chat${contractId}`);
 
-    const RenderAvatar = () => { return ( <Avatar.Image source={{ uri: props.route.params.imageUrl }} size={30} icon='cash' color='white' />) }
+    const RenderAvatar = () => { return ( <Avatar.Image source={require('../resource/default_profile.png')} size={30} icon='cash' color='white' />) }
     const RenderSend = (props) =>  { 
         return ( 
         <Send {...props} disabled={disableSend}>

@@ -89,6 +89,7 @@ const styles = {
         margin: 10,
         width: 150,
         height: '80%',
+        elevation: 1,
     } ,
     divider :  {
         marginTop: 20 ,
@@ -238,6 +239,7 @@ function MainScreen( props ) {
                     headers : {Auth: auth},
                 })
                 .then(res => {
+                    //console.log(res);
                     const curTime = Date.now();
                     let rawData = res.data.data;
                     //console.log(rawData);
@@ -274,6 +276,7 @@ function MainScreen( props ) {
             }
             else{
                 console.log("no login");
+                setMyOrderList([]);
                 setIsLoading(false);
             }
         }
@@ -447,7 +450,7 @@ function MainScreen( props ) {
     function askCancelOptions(orderId){
         Alert.alert(
             '확인',
-            '신청하신 입찰이 취소하시겠습니까?',
+            '신청하신 입찰을 취소하시겠습니까?',
             [
               {text: '예', onPress: () => {
                 CancelOrder(orderId);
@@ -486,10 +489,13 @@ function MainScreen( props ) {
                     <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                     <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                 </MenuButton>
-                <MenuButton>
+                <MenuButton disabled={true}>
                     <Text style={styles.text}>케어</Text>
                     <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
                     <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
+                    <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
+                        <Text style={{color: 'red', fontSize: 12}}>{'/*빠른 시일안에\n찾아뵙겠습니다*/'}</Text>
+                    </View>
                 </MenuButton>
             </Row>
 
@@ -524,7 +530,7 @@ function MainScreen( props ) {
                                             <Icon name="close-outline" size={25} color={'black'}></Icon>
                                         </TouchableOpacity>}
                                     </Card> 
-                                    {item.state <=2 && <Badge style={{position: 'absolute'}}>{item.bidNum}</Badge>}
+                                    {item.state <=2 && <Badge style={{position: 'absolute', elevation: 1}}>{item.bidNum}</Badge>}
                                     </View>
                                 )
                             })

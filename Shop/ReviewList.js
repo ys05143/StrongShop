@@ -24,51 +24,57 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const Total = styled.View`
     width: 100%;
-    padding-top: 10px;
+    padding-top: 20px;
     align-items: center;
     flex: 1;
 `;
 const ReviewView = styled.View`
     width: ${WIDTH*0.9}px;
-    border-radius: 15px;
-    background-color: #e5e5e5;
-    padding-left: 10px;
-    padding-right: 10px;
+    border-radius: 5px;
+    background-color: white;
     padding-bottom: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 `;
 const NameView = styled.View`
     width: 100%;
-    height: 60px;
+    height: 50px;
+    padding-left: 10px;
     flex-direction: row;
     align-items: center;
 `;
 const ProfileImg = styled.View`
-    width: 40px;
-    height: 40px;
-    border-radius:50px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
     background-color: white;
     overflow: hidden;
 `;
 const Name = styled.Text`
     margin-left: 10px;
+    font-weight: bold;
 `;
 
 const ContentView = styled.View`
     width: 100%;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: white;
     justify-content: center;
+    align-items: center;
+    padding-left: 5px;
+    padding-right: 5px;
 `;
-const Content = styled.Text`
-    margin-top: 10px;
-    margin-bottom: 10px;
+const Content = styled.View`
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 `;
 const ContentImg = styled.View`
-    width: ${WIDTH*0.9-40}px;
-    height: ${WIDTH*0.9-40}px;
+    width: 100%;
+    height: 300px;
     overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    background-color: #e5e5e5;
 `;
 
 const AfterDATA=[{
@@ -249,9 +255,20 @@ function ReviewList(props){
                     <ContentImg>
                         <FastImage source={{uri: item.imageUrls[0].imageUrl}} style={{width:'100%', height: '100%'}} resizeMode='cover'></FastImage>
                     </ContentImg>
-                    <Content>{item.content}</Content>
-                    <Divider style={{backgroundColor: 'black', height: 2, marginTop: 5}}/>
-                    <Content>{'사장님의 답변: '+item.reply}</Content>
+                    <Content>
+                        <Text>{item.content}</Text>
+                    </Content>
+                    <Divider style={{backgroundColor: 'black', height: 2, marginTop: 5, width: '100%'}}/>
+                    <Content>
+                        <Row style={{alignItems: 'center'}}>
+                            <Avatar.Icon size={24} icon="face"/>
+                            <View style={{justifyContent: 'center', padding: 10}}>
+                                <Text style={{fontWeight: 'bold', marginBottom: 5}}>{'사장님의 답변:'}</Text>
+                            </View>
+                        </Row>
+                        {/* <Text>{item.reply === null ? '': item.reply}</Text> */}
+                        <Text>ajflkaj;ajdfjasjflkdsjadfafasdfdsfdfdfdsdddddsfdaj;jjfdasjfljsdlkfj;ladjfjf;jasfjlasdkjf;adjslfjdsajfak</Text>
+                    </Content>
                 </ContentView>
             </ReviewView>
             </View>

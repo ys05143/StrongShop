@@ -40,7 +40,15 @@ function AlarmScreen(props){
 
     async function GetAlarm(){
         let response = await storage.fetch("Alarm");
-        setAlarmList(response !== null ? response.reverse(): null);
+        if(response === null ){
+            setAlarmList([]);
+        }
+        else {
+            response.sort(function(a,b){
+                return moment(b.date) - moment(a.date);
+            })
+            setAlarmList(response !== null ? response: null);
+        }
     }
 
     async function ClearAlarmList(){

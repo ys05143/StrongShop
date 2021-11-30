@@ -180,7 +180,8 @@ function ProgressScreen( props ) {
                 const record = Object.values(snapshot.toJSON());
                 let count = 0;
                 record.map((item)=>{
-                    if(item.user !== 2 && item.received !== true) count = count+1;
+                    console.log(item.user);
+                    if(item.user._id !== 2 && item.received !== true) count = count+1;
                 });
                 setAddChatNum(count);
             }
@@ -361,8 +362,8 @@ function ProgressScreen( props ) {
     async function NextState(){
         try{
             Alert.alert(
-                '승인하시겠습니까?',
-                '되돌리실 수 없습니다.',
+                state === 3 ? '출고지를 변경하셨습니까?' : state === 5 ? '시공을 승인하시겠습니까?' : '승인하시겠습니까?',
+                state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '되돌릴 수 없습니다.' : '되돌릴 수 없습니다.',
                 [
                     {text: '예', onPress: async () => {
                         const auth = await checkJwt();
@@ -606,8 +607,8 @@ function ProgressScreen( props ) {
                 </Swiper>
             </SwiperView>
             <View style={{position: 'absolute', bottom: 50, alignSelf: 'flex-end', right: 30,}}>
-                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center'}} icon="chat" onPress={() => { rdbOff(contractId); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
-                {addChatNum !== 0 && <Badge style={{position: 'absolute'}}>{addChatNum}</Badge>}
+                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center', elevation: 0}} icon="chat" onPress={() => { rdbOff(contractId); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
+                {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 3}}>{addChatNum}</Badge>}
             </View>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
