@@ -429,16 +429,21 @@ function MainScreen( props ) {
     useInterval(()=>{
         let newTime = [];
         orderTimeList.map(item => {
-            newTime.push(item-60);
+            newTime.push(item>0 ? item-60 : 0);
         })
         setOrderTimeList(newTime);
     }, 60000);
 
     function convertTime(time){
-        const target = parseInt(time);
-        let hour = parseInt(target/3600);
-        let minute = parseInt((target - hour*3600)/60);
-        let second = parseInt((target-hour*3600-minute*60));
+        let hour=0;
+        let minute=0;
+        let second=0;
+        if(time>0){
+            const target = parseInt(time);
+            hour = parseInt(target/3600);
+            minute = parseInt((target - hour*3600)/60);
+            second = parseInt((target-hour*3600-minute*60));
+        }
         
         return {
             hour: hour.toString().padStart(2,0),

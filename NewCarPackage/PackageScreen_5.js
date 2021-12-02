@@ -170,15 +170,20 @@ function PackageScreen_5(props){
 
     useInterval(()=>{
         if(time>0) setTime(time-1);
-        else if(time === 0) console.log('time out');
+        else if(time === 0) return;
         else{}
     }, 1000);
 
     function convertTime(time){
-        const target = parseInt(time);
-        let hour = parseInt(target/3600);
-        let minute = parseInt((target - hour*3600)/60);
-        let second = parseInt((target-hour*3600-minute*60));
+        let hour=0;
+        let minute=0;
+        let second=0;
+        if(time>0){
+            const target = parseInt(time);
+            hour = parseInt(target/3600);
+            minute = parseInt((target - hour*3600)/60);
+            second = parseInt((target-hour*3600-minute*60));
+        }
         
         return {
             hour: hour.toString().padStart(2,0),
