@@ -117,7 +117,7 @@ const REGION =[
 function PackageScreen_4(props){
     const [text, setText] = React.useState('');
     //서버와 통신 전에 항상 start 조작하기
-    const [searchModal, setSearchModal] = React.useState(false);
+    const [ReceiptModal, setReceiptModal] = React.useState(false);
     const [selectedRegion, setSelectedRegion] = React.useState('seoul');
     const [displayRegion, setDisplayRegion] = React.useState('서울');
     const [regionModal, setRegionModal] = React.useState(false);
@@ -166,38 +166,57 @@ function PackageScreen_4(props){
                 newOrder.processPage = 3;
                 newOrder.require = text !==null ? text : null;
                 newOrder.region = selectedRegion;
-                await storage.store('BidOrder', newOrder);
+                await storage.store('BidOrder', newOrder)
+                .then(res => {
+                    setReceiptModal(true);
+                })
+                .catch(e=>{
+                    Alert.alert(
+                        '오류',
+                        '오류가 발생했습니다.',
+                        [
+                          {text: '확인', onPress: () => {cancelRequire();}},
+                        ],
+                        { cancelable: false }
+                      );
+                })
             }
             else{ 
                 Alert.alert(
                     '오류',
-                    '오류가 발생했습니다.',
+                    '주문 정보를 저장하지 못했습니다.',
                     [
                       {text: '확인', onPress: () => {cancelRequire();}},
                     ],
                     { cancelable: false }
                   );
             }
-            const check = await storage.fetch('BidOrder');
-            if(check !== null){
-                //console.log(check);
-                setSearchModal(true);
-            }
-            else{
-                Alert.alert(
-                    '오류',
-                    '오류가 발생했습니다.',
-                    [
-                      {text: '확인', onPress: () => {cancelRequire();}},
-                    ],
-                    { cancelable: false }
-                  );
-            }
+            // const check = await storage.fetch('BidOrder');
+            // if(check !== null){
+            //     //console.log(check);
+            //     setReceiptModal(true);
+            // }
+            // else{
+            //     Alert.alert(
+            //         '오류',
+            //         '오류가 발생했습니다.',
+            //         [
+            //           {text: '확인', onPress: () => {cancelRequire();}},
+            //         ],
+            //         { cancelable: false }
+            //       );
+            // }
             //console.log('In page 4 check: ', check);
         }
         catch(error){
-            console.log(error);
-            cancelRequire();
+            Alert.alert(
+                '오류',
+                '오류가 발생했습니다.',
+                [
+                    {text: '확인', onPress: () => {cancelRequire();}},
+                ],
+                { cancelable: false }
+            );
         }
     }
 
@@ -224,8 +243,8 @@ function PackageScreen_4(props){
         );
     }
 
-    function getSearchModal(close){
-        setSearchModal(close);
+    function getReceiptModal(close){
+        setReceiptModal(close);
     }
 
     return(
@@ -277,12 +296,12 @@ function PackageScreen_4(props){
         <Modal
             animationType="slide"
             transparent={true}
-            visible={searchModal}
-            onRequestClose={() => {setSearchModal(!searchModal);}}
+            visible={ReceiptModal}
+            onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
         >
             <ModalView>
                 <View style={{width: '90%'}}>
-                    <Receipt getModal={getSearchModal} navigation={props.navigation}/>
+                    <Receipt getModal={getReceiptModal} navigation={props.navigation}/>
                 </View>
             </ModalView>
         </Modal>

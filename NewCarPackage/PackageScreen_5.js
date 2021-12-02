@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
 import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
@@ -11,6 +11,8 @@ import BidShops from './BidShops';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
+import JustShowReceipt from './JustShowReceipt';
+import ModalView from '../components/ModalView';
 //constants
 import Color from '../constants/Color';
 //for server
@@ -73,6 +75,11 @@ function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [bidList, setBidList] = React.useState([]);
     const [isSending, setIsSending] = React.useState(false);
+    const [ReceiptModal, setReceiptModal] = React.useState(false);
+
+    function getReceiptModal(close){
+        setReceiptModal(close);
+    }
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -182,6 +189,7 @@ function PackageScreen_5(props){
       
 
     return(
+        <>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TitleView>
                 <View style={{width: '50%'}}>
@@ -192,7 +200,10 @@ function PackageScreen_5(props){
                 </TimeView>
             </TitleView>
             <ContentView>
-                <Filter>-최신순</Filter>
+                {/* <Filter>-최신순</Filter> */}
+                <TouchableOpacity style={{marginLeft: 10, fontSize: 15, marginTop: 5, marginBottom: 10}} onPress={()=>{setReceiptModal(true)}}>
+                    <Text>주문확인</Text>
+                </TouchableOpacity>
                 <ShopList>
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
@@ -211,10 +222,24 @@ function PackageScreen_5(props){
                     </Row>
                 </BtnView>
             </ContentView>
-            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center'}}>
+            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
         </TotalView>
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={ReceiptModal}
+            onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
+        >
+            <ModalView>
+                <View style={{width: '90%'}}>
+                    <JustShowReceipt getModal={getReceiptModal} navigation={props.navigation} orderId={orderId}/>
+                </View>
+            </ModalView>
+        </Modal>
+        </>
     );
 }
 

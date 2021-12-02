@@ -271,7 +271,7 @@ function MainScreen( props ) {
                     setIsLoading(false);
                 })
                 .catch(e=>{
-                    checkErrorCode(e);
+                    checkErrorCode(e, props.navigation);
                 })
             }
             else{
@@ -282,8 +282,8 @@ function MainScreen( props ) {
         }
         catch{e=>{
             Alert.alert(
-                '오류',
-                'MainScreen 오류',
+                '네트워크 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
@@ -346,7 +346,7 @@ function MainScreen( props ) {
         }
         else{
             Alert.alert(
-                '로그인 필요',
+                '요청',
                 '로그인을 하셔야 합니다.',
                 [
                     {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},

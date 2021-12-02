@@ -21,7 +21,7 @@ const AlarmView = styled.TouchableOpacity`
     justify-content: center;
 `;
 const DATA = [{
-    id: 2,
+    messageId: 2,
     alarmType: 200,
     title: '입찰에 업체가 참여했습니다.',
     content: '확인 해줘',
@@ -36,7 +36,7 @@ function AlarmScreen(props){
 
     React.useEffect(()=>{
         GetAlarm();
-    },[])
+    },[alarmList])
 
     async function GetAlarm(){
         let response = await storage.fetch("Alarm");
@@ -65,16 +65,25 @@ function AlarmScreen(props){
         });
     }
 
-    async function changeState(index){
+    async function changeState(id){
         let newAlarmList = alarmList;
-        newAlarmList[index].isRead = true;
-        setAlarmList(newAlarmList);
-        await storage.store("Alarm",newAlarmList);
+        const changeIndex = alarmList.findIndex(item=>item.messageId === id);
+        console.log(changeIndex);
+        if(changeIndex !== -1){
+            newAlarmList[changeIndex].isRead = true;
+            await storage.store("Alarm", newAlarmList)
+            .then(res=>{
+                setAlarmList(newAlarmList);
+                //props.navigation.popToTop("MainScreen");
+            })
+        }
     }
 
     function RenderItem({item}){
         return(
-            <AlarmView style={{backgroundColor: item.isRead ?  'rgba(0, 0, 0, 0.03)':  'rgba(256, 256, 256, 1)'}} onPress={async ()=>{if(item.isRead === false){ await changeState(item.id); props.navigation.navigate("MainScreen")}}}>
+            <AlarmView style={{backgroundColor: item.isRead ?  'rgba(0, 0, 0, 0.03)':  'rgba(256, 256, 256, 1)'}} onPress={async ()=>{
+                if(item.isRead === false){ changeState(item.messageId);}
+                }}>
                 <Text style={{fontWeight: 'bold', fontSize: 17, marginBottom: 3, color: item.isRead ? 'gray' : 'black'}}>{item.title}</Text>
                 <Text style={{marginBottom: 3, color: item.isRead ? 'gray' : 'black'}}>{item.content}</Text>
                 <Text style={{color: 'gray'}}>{moment(item.date).format('YYYY-MM-DD')}</Text>
@@ -96,7 +105,7 @@ function AlarmScreen(props){
                 data={alarmList}
                 scrollEnabled={true}
                 renderItem={RenderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.messageId}
                 refreshing={isRefreshing}
                 onRefresh={()=>{GetAlarm();}}
             /> :

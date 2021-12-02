@@ -266,7 +266,7 @@ function Gallery(props){
                     refreshing={isRefreshing}
                     />
             </View>:
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
         </Total>

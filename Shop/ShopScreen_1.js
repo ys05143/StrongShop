@@ -248,7 +248,7 @@ function ShopScreen_1(props){
             <Tab.Screen name="리뷰" children={({navigation})=><ReviewList name={'리뷰'} navigation={navigation} companyId={companyId}/>}/>
             
           </Tab.Navigator> : 
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
             <ActivityIndicator size = 'large' color= {'white'}/>
           </View>}
         </Animated.View>

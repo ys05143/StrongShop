@@ -12,6 +12,7 @@ import {  GiftedChat , Time  } from 'react-native-gifted-chat';
 import { Send , Bubble } from 'react-native-gifted-chat';
 import moment from 'moment';
 import _ from 'lodash';
+import { useIsFocused } from '@react-navigation/native';
 import storage from "../function/storage";
 //for server
 import axios from 'axios';
@@ -232,6 +233,13 @@ function ChatScreen(props){
         // });
         db.off();
     }
+
+    const isFocused = useIsFocused();
+    React.useEffect(()=>{
+        if(!isFocused){
+            finalChatNum();
+        }
+    },[isFocused])
 
 
     return(

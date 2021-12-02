@@ -253,7 +253,7 @@ function Merchandise_2(props){
                     {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.deafening} title={'랩핑'}/>}
                     {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.deafening} title={'기타'}/>}
                 </ScrollView> :
-                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
                     <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 20}}/>
                 </View>}
             </View>          

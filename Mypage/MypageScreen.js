@@ -151,15 +151,16 @@ function MyPageScreen(props){
             }
         }
         catch{e=>{
-            //console.log(e);
+            console.log(e);
             Alert.alert(
                 '오류',
-                'mypageScreen 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
                 { cancelable: false }
-            );}
+            );
+            }
         }  
     }
 
@@ -201,7 +202,7 @@ function MyPageScreen(props){
                 });
             })
             .catch(e=>{
-                checkErrorCode(e);
+                checkErrorCode(e, props.navigation);
             })
         }
         else {
@@ -243,7 +244,7 @@ function MyPageScreen(props){
                 });
             })
             .catch(e=>{
-                checkErrorCode(e);
+                checkErrorCode(e, props.navigation);
             })
         }
         else {

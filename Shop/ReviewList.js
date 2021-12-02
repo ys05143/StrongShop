@@ -261,13 +261,12 @@ function ReviewList(props){
                     <Divider style={{backgroundColor: 'black', height: 2, marginTop: 5, width: '100%'}}/>
                     <Content>
                         <Row style={{alignItems: 'center'}}>
-                            <Avatar.Icon size={24} icon="face"/>
-                            <View style={{justifyContent: 'center', padding: 10}}>
+                            <Avatar.Icon size={24} icon="face" color={'white'} backgroundColor={Color.main}/>
+                            <View style={{justifyContent: 'center', paddingLeft: 5}}>
                                 <Text style={{fontWeight: 'bold', marginBottom: 5}}>{'사장님의 답변:'}</Text>
                             </View>
                         </Row>
-                        {/* <Text>{item.reply === null ? '': item.reply}</Text> */}
-                        <Text>ajflkaj;ajdfjasjflkdsjadfafasdfdsfdfdfdsdddddsfdaj;jjfdasjfljsdlkfj;ladjfjf;jasfjlasdkjf;adjslfjdsajfak</Text>
+                        <Text>{item.reply === null ? '': item.reply}</Text>
                     </Content>
                 </ContentView>
             </ReviewView>
@@ -287,7 +286,7 @@ function ReviewList(props){
                     refreshing={isRefreshing}
                     />
             </View>:
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
         </Total>

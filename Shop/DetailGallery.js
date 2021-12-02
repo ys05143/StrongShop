@@ -32,13 +32,12 @@ function DetailGallery(props){
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{padding: 5}}>
-                    <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+                
+                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>게시물</Text>
-                <TouchableOpacity>
-                    <Text style={{fontSize: 15, marginRight: 5}} onPress={()=>{alert('save')}}>저장</Text>
-                </TouchableOpacity>
+                <View style={{width: 40}}/>
             </TopBar>
             <View style={{flex:2}}>
                 <Swiper activeDotColor={Color.main}>

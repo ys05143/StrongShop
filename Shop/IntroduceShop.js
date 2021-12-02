@@ -209,7 +209,7 @@ function IntroduceShop(props){
                     </View>
                 </AddressView>}
             </ScrollView>:
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backfaceVisibility: 'transparent'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
         </Total>

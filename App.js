@@ -94,22 +94,25 @@ function App (props) {
           title = '리뷰';
           content = '시공이 완료되었습니다.';
       }
+      else if(index === '002'){
+          title = remoteMessage.notification.title;
+          content = remoteMessage.notification.body;
+      }
       
-      if(index !== '002' || index !== '000'){
+      if(index !== '002'){
         const alarmList = await storage.fetch("Alarm");
-        //console.log('main Async',alarmList);
+        console.log(index);
         let newAlarm = alarmList !== null ? [...alarmList] : [];
         const length = newAlarm.length;
-        
+        console.log(remoteMessage);
         newAlarm.push({
-            id: remoteMessage.messageId,
+            messageId: remoteMessage.messageId,
             alarmType: index,
             date: remoteMessage.data.time,
             isRead: false,
             title: title,
             content: content,
         });
-
         await storage.store("Alarm", newAlarm);
       }
       if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
@@ -120,7 +123,7 @@ function App (props) {
         setAlarmContent({title: title, content: content});
         inAppMessage.current?.show();
       }
-      });
+    });
 
       return unsubscribe;
   },[]);
@@ -160,15 +163,19 @@ function App (props) {
             title = '리뷰';
             content = '시공이 완료되었습니다.';
         }
+        else if(index === '002'){
+            title = remoteMessage.notification.title;
+            content = remoteMessage.notification.body;
+        }
         
-        if(index !== '002' || index !== '000'){
+        if(index !== '002'){
           const alarmList = await storage.fetch("Alarm");
           //console.log('main Async',alarmList);
           let newAlarm = alarmList !== null ? [...alarmList] : [];
           const length = newAlarm.length;
           
           newAlarm.push({
-              id: remoteMessage.messageId,
+              messageId: remoteMessage.messageId,
               alarmType: index,
               date: remoteMessage.data.time,
               isRead: false,

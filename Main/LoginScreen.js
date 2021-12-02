@@ -324,7 +324,7 @@ function LoginScreen(props) {
                 });
             })
             .catch(e=>{
-                checkErrorCode(e);
+                checkErrorCode(e, props.navigation);
             })
         }
         else {

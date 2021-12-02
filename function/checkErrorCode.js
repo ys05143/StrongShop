@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert } from 'react-native';
 
-function CheckErrorCode(e) {
+function CheckErrorCode(e, navigation) {
     if(e.response.status === 406){
         Alert.alert(
             '실패',
@@ -15,9 +15,9 @@ function CheckErrorCode(e) {
     else if(e.response.status === 403){
         Alert.alert(
             '현재 다른 기기에서 로그인 중입니다.',
-            '기존 기기에서 로그아웃 후 이용 가능합니다.',
+            '다시 로그인 해야 합니다.',
             [
-                {text: '확인', onPress: () => {}},
+                {text: '확인', onPress: () => { navigation.navigate("LoginScreen")}},
             ],
             { cancelable: false }
         );

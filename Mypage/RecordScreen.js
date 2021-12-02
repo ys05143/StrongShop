@@ -120,7 +120,7 @@ function RecordScreen(props) {
         catch{e => {
             Alert.alert(
                 '오류',
-                '과거 시공내역 조회 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
@@ -170,7 +170,7 @@ function RecordScreen(props) {
             {!isLoading ? <FlatList  data={recordData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.completedContractId}/>:
-                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
                         <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
                     </View>}
         </TotalView>

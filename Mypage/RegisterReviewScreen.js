@@ -14,6 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FastImage from 'react-native-fast-image';
 
@@ -172,7 +173,8 @@ function RegisterReviewScreen(props) {
                     const response = await axios.post(`${server.url}/api/review/${completedContractId}`, newFormData, {
                         headers: {'content-type': 'multipart/form-data' , Auth: auth },
                         timeout: 5000,
-                    }).then(res=>{
+                    })
+                    .then(res=>{
                         Alert.alert(
                             '성공',
                             '리뷰 등록에 성공했습니다.',
@@ -181,7 +183,10 @@ function RegisterReviewScreen(props) {
                             ],
                             { cancelable: false }
                         );
-                    });
+                    })
+                    .catch(e=>{
+                        checkErrorCode(e, props.navigation);
+                    })
                 }
                 else{
                     Alert.alert(

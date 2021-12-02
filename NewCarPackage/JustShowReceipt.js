@@ -4,15 +4,11 @@ import { Button, Chip } from 'react-native-paper';
 import styled from 'styled-components/native';
 import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 //constant
 import Color from '../constants/Color';
 import storage from '../function/storage';
-import checkJwt from '../function/checkJwt';
 import Icon  from "react-native-vector-icons/Ionicons";
-//server
-import server from '../server';
 
 const Total = styled.View`
     width: 100%;
@@ -36,107 +32,18 @@ const DetailOptions = styled.View`
     justify-content: center;
 `;
 
-function Receipt(props){
+function JustShowReceipt(props){
     const [receipt, setReceipt] = React.useState(null);
-    const [region, setRegion] = React.useState(null);
-    const [isSending, setIsSending] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    async function finishOrder(){ // 서버에 오더 전송
-        try{
-            setIsSending(true);
-            if(receipt !== null){
-                const auth = await checkJwt();
-                if(auth !== null){
-                    const response = await axios({
-                        method: 'POST',
-                        url : `${server.url}/api/orders` ,
-                        data : {
-                            details: JSON.stringify(receipt),
-                            region: region,
-                        },
-                        headers : {Auth: auth},
-                    })
-                    .then(async res=>{
-                        //console.log(res.data.data.id);
-                        const stringOrderId = res.data.data.id.toString();
-                        await storage.store(stringOrderId, receipt);
-                    })
-                    await AsyncStorage.removeItem('BidOrder', ()=>{
-                        Alert.alert(
-                            '완료',
-                            '지금부터 입찰이 시작됩니다!',
-                            [
-                                {text: '확인', onPress: () => {
-                                        console.log("remove async Bid")
-                                        props.navigation.popToTop();
-                                    }
-                                },
-                            ],
-                            { cancelable: false }
-                        );
-                    });
-                    props.getModal(false);
-                    setIsSending(false);
-                }
-                else{
-                    Alert.alert(
-                        '실패',
-                        '로그인이 필요합니다.',
-                        [
-                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), props.getModal(false); setIsSending(false);}},
-                        ],
-                        { cancelable: false }
-                    );
-                }
-            }
-            else{
-                Alert.alert(
-                    '실패',
-                    '작성한 견적이 없습니다.',
-                    [
-                        {text: '확인', onPress: () => { setIsSending(false)}},
-                    ],
-                    { cancelable: false }
-                );
-            }
-            setIsSending(false); 
-        }
-        catch{
-            Alert.alert(
-                '오류',
-                '견적 등록을 실패했습니다.',
-                [
-                    {text: '확인', onPress: () => { setIsSending(false)}},
-                ],
-                { cancelable: false }
-            );
-        } 
-    }
-
-    function finalCheck(){
-        Alert.alert(
-            '확인',
-            '입찰을 시작하시겠습니까',
-            [
-                {text: '예', onPress: () => {
-                    finishOrder();
-                }},
-                {text: '아니요', onPress: () => {}},
-            ],
-            { cancelable: false }
-        );
-    }
-    
     const isFocused = useIsFocused();
     React.useEffect( ()=>{
         //console.log(isFocused);
         if(isFocused){
             setIsLoading(true);
-            storage.fetch('BidOrder')
+            storage.fetch(props.orderId.toString())
             .then(res =>{
                 setReceipt(res);
-                setRegion(res.region);
                 setIsLoading(false);
             })
             .catch(e => {
@@ -152,7 +59,8 @@ function Receipt(props){
             })
         }
     },[]);
-
+    
+    
     function translate(option,item){
         const res_Tinting = {
             LUMA: '루마',
@@ -227,7 +135,7 @@ function Receipt(props){
     return (
         <>
         <Total>
-            { receipt !== null && !isLoading && <><SearchView>
+            { receipt !== null && !isLoading && <SearchView>
                 <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
                 </View>
@@ -332,19 +240,12 @@ function Receipt(props){
                         </View>
                     </View>
                 </View>}
-            </SearchView>
+            </SearchView>}
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
+                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
                     <Text>이전</Text>
                 </Button>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
-                    <Text>완료</Text>
-                </Button>
-            </View></>}
-            {isSending && 
-            <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500, backgroundColor: 'transparent'}}>
-                <ActivityIndicator size = 'large' color= {Color.main}/>
-            </View>}
+            </View>
         </Total>
         {isLoading && 
             <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500, backgroundColor: 'transparent'}}>
@@ -354,4 +255,4 @@ function Receipt(props){
     );
 }
 
-export default Receipt
+export default JustShowReceipt;

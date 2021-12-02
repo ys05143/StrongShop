@@ -10,6 +10,7 @@ import Color from '../constants/Color';
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
 
 const styles = {
     listAccordionStyle : {
@@ -75,6 +76,9 @@ function BidShop(props, {navigation}) {
                     },
                     headers : {Auth: auth},
                 })
+                .catch(e=>{
+                    checkErrorCode(e, props.navigation);
+                })
                 //console.log(response);
                 props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3});
                 props.getSending(false);
@@ -83,7 +87,7 @@ function BidShop(props, {navigation}) {
         catch{
             Alert.alert(
                 '오류',
-                'BidShop 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
@@ -115,7 +119,7 @@ function BidShop(props, {navigation}) {
                     <NameView> 
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <Text style={{fontSize: 20}}>{section.companyName}</Text>
-                            <Button mode={'outlined'} style={{marginLeft: 5}} color={Color.main} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: section.companyId, companyName: section.companyName});}}>홈페이지 방문</Button>
+                            <Button mode={'outlined'} style={{marginLeft: 5}} color={Color.main} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: section.companyId});}}>홈페이지 방문</Button>
                         </View>
                         <View style={{flexDirection: 'row', marginTop: 3, alignItems: 'center'}}>
                             <Text style={{fontSize: 15, marginLeft: 3, color: 'gray'}}>{section.simpleRegion}</Text>
