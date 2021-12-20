@@ -88,7 +88,7 @@ function RecordScreen(props) {
                     headers : {Auth: auth},
                 }).catch(e=>console.log(e));
                 const rawData = response.data.data;
-                console.log(rawData);
+                //console.log(rawData);
                 let record = [];
                 rawData.map(item => {
                     record.push({
@@ -102,7 +102,7 @@ function RecordScreen(props) {
                         reviewStatus: item.reviewStatus === "NOT_WRITTEN" ? false : true,
                     })
                 })
-                console.log(record);
+                //console.log(record);
                 setRecordData(record);
             }
             else{

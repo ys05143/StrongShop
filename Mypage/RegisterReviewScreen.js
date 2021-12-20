@@ -138,7 +138,7 @@ function RegisterReviewScreen(props) {
             // });
             let name = images.fileName;
             let type = "multipart/form-data";
-            let imgUri = Platform.OS === 'ios' ? images.path : "file://"+ images.path;
+            let imgUri = Platform.OS === 'ios' ? images.path : images.path.startsWith('content') ? images.path : 'file://'+response.path;
             formdata.append("files", { name: name , type: type, uri: imgUri });
             setImgFormData(formdata);
             //console.log(formdata);

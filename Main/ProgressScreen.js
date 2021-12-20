@@ -21,6 +21,7 @@ import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
 import TotalView from '../components/TotalView';
+import AppWindow from '../constants/AppWindow';
 
 const View = styled.View``;
 const Row = styled.View`
@@ -207,16 +208,16 @@ function ProgressScreen( props ) {
         }
     },[isFocused, state])
 
-    const RenderItemInspection = ({item}) =>  {
+    const RenderItemInspection = ({item, index}) =>  {
         return(
-            <CButton onPress={ () =>  { setVisibleInspection(true) }}>
+            <CButton onPress={ () =>  { setVisibleInspection(true);  setInspectionIndex(index); }}>
                 <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
             </CButton>
         )
     }
-    const RenderItemConstruction = ({item}) =>  {
+    const RenderItemConstruction = ({item, index}) =>  {
         return(
-            <CButton onPress={ () =>  {setVisibleConstruction(true) }}>
+            <CButton onPress={ () =>  {setVisibleConstruction(true); setConstructionIndex(index); }}>
                 <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
             </CButton>
         )
@@ -409,12 +410,22 @@ function ProgressScreen( props ) {
         <Provider>
         {/* 사진 상세보기 */}
         <Modal visible={visibleInspection} transparent={true}>
-            <ImageViewer imageUrls={inspectionImages}/>
-            <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleInspection(false) }} />
+            <ImageViewer 
+                imageUrls={inspectionImages} 
+                onCancel={()=>{setVisibleInspection(false)}} 
+                enableSwipeDown={true} 
+                index={inspectionIndex}
+                swipeDownThreshold={80}/>
+            <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: AppWindow.IOS_notch}} color={'white'} onPress={ () => { setVisibleInspection(false) }} />
         </Modal>
 
         <Modal visible={visibleConstruction} transparent={true}>
-            <ImageViewer imageUrls={constructionImages}/>
+            <ImageViewer 
+                imageUrls={constructionImages} 
+                onCancel={()=>{setVisibleConstruction(false)}} 
+                enableSwipeDown={true} 
+                index={constructionIndex}
+                swipeDownThreshold={80}/>
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
         </Modal>
 
@@ -475,7 +486,7 @@ function ProgressScreen( props ) {
                             </Title>
                             {state === 5 && <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); NextState();}} contentStyle={{width: 100, height: 40}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10, width: 100, height: 40, }} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '승인'}</Button>}
                         </Row>
-                        <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
+                        <View style={{width: '75%', flex: 1, alignSelf: 'center'}}>
                             <FlatList
                                 data={shopData[2].inspectionImages}
                                 scrollEnabled={true}
@@ -490,7 +501,7 @@ function ProgressScreen( props ) {
                         <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
                             {'3단계: '}{progress[3].title}
                         </Title>
-                        <View style={{width: '75%', height: '100%', alignSelf: 'center'}}>
+                        <View style={{width: '75%', flex:1, alignSelf: 'center'}}>
                             <FlatList
                                 data={shopData[3].constructionImages}
                                 scrollEnabled={true}

@@ -38,8 +38,8 @@ const TitleView = styled.View`
     flex-direction: row;
 `;
 const TimeView = styled.View`
-    border: 2px solid #000000;
-    border-radius: 15px;
+    border: 1px solid gray;
+    border-radius: 10px;
     width: 150px;
     height: 60px;
     align-items: center;
@@ -201,7 +201,7 @@ function PackageScreen_5(props){
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{props.route.params.carName}</Text>
                 </View>
                 <TimeView>
-                    <Text style={{fontSize: 25}}>{`${convertTime(time).hour}:${convertTime(time).minute}:${convertTime(time).second}`}</Text>
+                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>{`${convertTime(time).hour}:${convertTime(time).minute}:${convertTime(time).second}`}</Text>
                 </TimeView>
             </TitleView>
             <ContentView>

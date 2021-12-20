@@ -254,8 +254,8 @@ function PackageScreen_2 (props, {navigation}) {
                     </ResulView>
                     <BtnView>
                         <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                            <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>취소</Button>
-                            <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>다음</Button>
+                            <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>취소</Button>
+                            <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>입력완료</Button>
                         </Row>
                     </BtnView>
                 </ContentView>

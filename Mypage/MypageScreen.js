@@ -203,6 +203,7 @@ function MyPageScreen(props){
             })
             .catch(e=>{
                 checkErrorCode(e, props.navigation);
+                setIsLoading(false);
             })
         }
         else {
@@ -218,6 +219,7 @@ function MyPageScreen(props){
     }
 
     async function deleteUser(){
+        setIsLoading(true);
         const auth = await checkJwt();
         if(auth !== null){
             axios({
@@ -236,6 +238,7 @@ function MyPageScreen(props){
                                     const allKey = await AsyncStorage.getAllKeys();
                                     console.log(allKey);
                                     props.navigation.popToTop();
+                                    setIsLoading(false);
                                 }
                             },
                         ],
@@ -245,6 +248,7 @@ function MyPageScreen(props){
             })
             .catch(e=>{
                 checkErrorCode(e, props.navigation);
+                setIsLoading(false);
             })
         }
         else {
@@ -252,7 +256,7 @@ function MyPageScreen(props){
                 '오류',
                 '로그인상태가 아닙니다.',
                 [
-                    {text: '확인', onPress: () => {} },
+                    {text: '확인', onPress: () => {setIsLoading(false)} },
                 ],
                 { cancelable: false }
             );

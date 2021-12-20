@@ -529,7 +529,7 @@ function MainScreen( props ) {
                                         <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                             subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
                                         <Card.Content style={{flexDirection: 'row'}}>
-                                            {item.state <= 2 && <Text>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
+                                            {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold'}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                         </Card.Content>
                                         {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
                                             <Icon name="close-outline" size={25} color={'black'}></Icon>

@@ -84,6 +84,7 @@ function LoginScreen(props) {
     const [userName,setUserName] = React.useState("");
     const [dtoData,setDtoData] = React.useState(null);
     const [loginVer, setLoginVer] = React.useState('');
+    const [isSending, setIsSending] = React.useState(false);
 
     const bottomSheetModalRef = React.useRef(null);
     const handlePresentModalPress = React.useCallback(() => {
@@ -96,6 +97,7 @@ function LoginScreen(props) {
 
     // 카카오 AccessToken을 서버로 전달
     async function requestAccessToken(accessToken, name) {
+        setIsSending(true);
         let fcmToken = '';
         await messaging().getToken()
         .then( res =>{
@@ -133,7 +135,7 @@ function LoginScreen(props) {
                     Alert.alert('앱을 재시작하세요.');
                 })
             }
-
+            setIsSending(false);
         })
         .catch( e =>  {
             // 서버 통신에러
@@ -151,7 +153,7 @@ function LoginScreen(props) {
             else if(e.response.status === 403){
                 Alert.alert(
                     '현재 다른 기기에서 로그인 중입니다.',
-                    '기존 기기에서 로그아웃 후 이용 가능합니다.',
+                    '다시 로그인 후 이용 가능합니다.',
                     [
                         {text: '확인', onPress: () => {}},
                     ],
@@ -168,11 +170,13 @@ function LoginScreen(props) {
                     { cancelable: false }
                 );
             }
+            setIsSending(false);
         })
     }
 
     //bottom sheet 에서 만들어지 정보를 서버에 전달
     async function requestSignIn(name) {
+        setIsSending(true);
         //console.log(`${server.url}/api/login/user/${name}`);
         let fcmToken = '';
         await messaging().getToken()
@@ -207,6 +211,7 @@ function LoginScreen(props) {
                     Alert.alert('앱을 재시작하세요.');
                 }
             }   
+            setIsSending(false);
 
         })
         .catch(e => {
@@ -241,6 +246,7 @@ function LoginScreen(props) {
                     { cancelable: false }
                 );
             }
+            setIsSending(false);
         })
     }
 
@@ -252,7 +258,7 @@ function LoginScreen(props) {
         //console.log(token);
         // 카카오 인증취소 / 인증실패 
         if ( token == null ) {
-            Alert.alert('카카오톡 로그인을 할 수 없습니다.');
+            Alert.alert('카카오톡 로그인을 진행할 수 없습니다.');
             return;
         }
         const accessToken = 'Bearer ' + token.accessToken ;        
@@ -267,17 +273,19 @@ function LoginScreen(props) {
     }
 
     const naverLogin = props => {
+        setIsSending(true);
         return new Promise((resolve, reject) => {
           NaverLogin.login(props, (err, token) => {
             setLoginVer('naver');
             if ( token == null ) {
-                Alert.alert('카카오톡 로그인을 할 수 없습니다.');
+                Alert.alert('네이버 로그인을 진행할 수 없습니다.');
                 return;
             }
             const accessToken = 'Bearer ' + token.accessToken ; 
             requestAccessToken(accessToken,'naver');
             if (err) {
               reject(err);
+              setIsSending(false);
               return;
             }
             resolve(token);
@@ -364,7 +372,7 @@ function LoginScreen(props) {
                     <>
                         <Title style={styles.title}> {userName}님으로 인증할게요.(2/2)</Title>
                         <View style={{ width: '100%' , height: 700 }}>
-                            <Button onPress={()=>requestSignIn(loginVer)}>테스트</Button>
+                            <Button onPress={()=>requestSignIn(loginVer)} disabled={isSending}>테스트</Button>
                         {/* <IMP.Certification
                         userCode={'iamport'}  // 가맹점 식별코드
                         // tierCode={'AAA'}      // 티어 코드: agency 기능 사용자에 한함
@@ -387,6 +395,10 @@ function LoginScreen(props) {
             </View>
             <Icon name={'chevron-back-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginLeft: 10}} color={'white'} onPress={()=>{props.navigation.goBack();}}/>
             {/* <Icon name={'power-outline'} size={25} style={{position: 'absolute', paddingTop: 10, paddingRight: 10, alignSelf: 'flex-end'}} color={'white'} onPress={()=>{logOut();}}/> */}
+            {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'transparent'}}>
+                <ActivityIndicator size = 'large' color= {'white'}/>
+            </View>}
+
         </TotalView>
         </BottomSheetModalProvider>
     );

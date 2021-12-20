@@ -269,6 +269,7 @@ function PackageScreen_3(props) {
     function getTintingANY(bool){
         setTintingANY(bool);
         if(bool === true){
+            setTintingChoose(true);
             setLUMA(false);
             setSOLAR(false);
             setRAINBOW(false);
@@ -280,6 +281,7 @@ function PackageScreen_3(props) {
     function getTintingETC(str){ 
         setTintingETC(str);
         if(str !== ''){
+            setTintingChoose(true);
             setTintingANY(false);
         }
     }
@@ -287,6 +289,7 @@ function PackageScreen_3(props) {
     function getLUMA(bool){
         setLUMA(bool);
         if(bool === true){
+            setTintingChoose(true);
             setTintingANY(false);
         }
     }
@@ -294,6 +297,7 @@ function PackageScreen_3(props) {
     function getSOLAR(bool){
         setSOLAR(bool);
         if(bool === true){
+            setTintingChoose(true);
             setTintingANY(false);
         }
     }
@@ -301,6 +305,7 @@ function PackageScreen_3(props) {
     function getRAINBOW(bool){
         setRAINBOW(bool);
         if(bool === true){
+            setTintingChoose(true);
             setTintingANY(false);
         }
     }
@@ -308,6 +313,7 @@ function PackageScreen_3(props) {
     function getRAYNO(bool){
         setRAYNO(bool);
         if(bool === true){
+            setTintingChoose(true);
             setTintingANY(false);
         }
     }
@@ -331,17 +337,89 @@ function PackageScreen_3(props) {
         }
     }
     const [PPFETC, setPPFETC] = React.useState('');
+    function getPPFETC(bool){
+        setPPFETC(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [BONNET, setBONNET] = React.useState(false);
+    function getBONNET(bool){
+        setBONNET(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [SIDEMIRROR, setSIDEMIRROR] = React.useState(false);
+    function getSIDEMIRROR(bool){
+        setSIDEMIRROR(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [FRONTBUMPER, setFRONTBUMPER] = React.useState(false);
+    function getFRONTBUMPER(bool){
+        setFRONTBUMPER(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [FRONTBUMPERSIDE, setFRONTBUMPERSIDE] = React.useState(false);
+    function getFRONTBUMPERSIDE(bool){
+        setFRONTBUMPERSIDE(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [BACKBUMPER, setBACKBUMPER] = React.useState(false);
+    function getBACKBUMPER(bool){
+        setBACKBUMPER(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [BACKBUMPERSIDE, setBACKBUMPERSIDE] = React.useState(false);
+    function getBACKBUMPERSIDE(bool){
+        setBACKBUMPERSIDE(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [HEADLIGHT, setHEADLIGHT] = React.useState(false);
+    function getHEADLIGHT(bool){
+        setHEADLIGHT(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [TAILLAMP, setTAILLAMP] = React.useState(false);
+    function getTAILLAMP(bool){
+        setTAILLAMP(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [BCFILTER, setBCFILTER] = React.useState(false);
+    function getBCFILTER(bool){
+        setBCFILTER(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [DOOR, setDOOR] = React.useState(false);
+    function getDOOR(bool){
+        setDOOR(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
     const [HOOD, setHOOD] = React.useState(false);
+    function getHOOD(bool){
+        setHOOD(bool);
+        if(bool === true){
+            setPPFChoose(true);
+        }
+    }
 /////////////////////////////////////////////////////////////////
     const [BlackboxChoose, setBlackboxChoose] = React.useState(false);
     function getBlackboxChoose(bool){
@@ -357,6 +435,7 @@ function PackageScreen_3(props) {
     function getBlackboxANY(bool){
         setBlackboxANY(bool);
         if(bool === true){
+            setBlackboxChoose(true);
             setFINETECH(false);
             setINAVI(false);
             setMANDO(false);
@@ -367,6 +446,7 @@ function PackageScreen_3(props) {
     function getBlackboxETC(str){
         setBlackboxETC(str);
         if(str !== ''){
+            setBlackboxChoose(true);
             setBlackboxANY(false);
         }
     }
@@ -374,6 +454,7 @@ function PackageScreen_3(props) {
     function getFINETECH(bool){
         setFINETECH(bool);
         if(bool === true){
+            setBlackboxChoose(true);
             setBlackboxANY(false);
         }
     }
@@ -381,6 +462,7 @@ function PackageScreen_3(props) {
     function getINAVI(bool){
         setINAVI(bool);
         if(bool === true){
+            setBlackboxChoose(true);
             setBlackboxANY(false);
         }
     }
@@ -388,6 +470,7 @@ function PackageScreen_3(props) {
     function getMANDO(bool){
         setMANDO(bool);
         if(bool === true){
+            setBlackboxChoose(true);
             setBlackboxANY(false);
         }
     }
@@ -404,6 +487,7 @@ function PackageScreen_3(props) {
     function getBatteryANY(bool){
         setBatteryANY(bool);
         if(bool === true){
+            setBatteryChoose(true);
             setV6(false);
             setV12(false);
             setBatteryETC('');
@@ -413,6 +497,7 @@ function PackageScreen_3(props) {
     function getBatteryETC(str){
         setBatteryETC(str);
         if(str !== ''){
+            setBatteryChoose(true);
             setBatteryANY(false);
         }
     }
@@ -420,6 +505,7 @@ function PackageScreen_3(props) {
     function getV6(bool){
         setV6(bool);
         if(bool === true){
+            setBatteryChoose(true);
             setBatteryANY(false);
         }
     }
@@ -427,6 +513,7 @@ function PackageScreen_3(props) {
     function getV12(bool){
         setV12(bool);
         if(bool === true){
+            setBatteryChoose(true);
             setBatteryANY(false);
         }
     }
@@ -443,6 +530,7 @@ function PackageScreen_3(props) {
     function getAfterblowANY(bool){
         setAfterblowANY(bool);
         if(bool === true){
+            setAfterblowChoose(true);
             setAfterblowETC('');
         }
     }
@@ -450,6 +538,7 @@ function PackageScreen_3(props) {
     function getAfterblowETC(str){
         setAfterblowETC(str);
         if(str !== ''){
+            setAfterblowChoose(true);
             setAfterblowANY(false);
         }
     }
@@ -468,12 +557,54 @@ function PackageScreen_3(props) {
         }
     }
     const [UNDER, setUNDER] = React.useState(false);
+    function getUNDER(bool){
+        setUNDER(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [INSIDEFLOOR, setINSIDEFLOOR] = React.useState(false);
+    function getINSIDEFLOOR(bool){
+        setINSIDEFLOOR(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [FENDER, setFENDER] = React.useState(false);
+    function getFENDER(bool){
+        setFENDER(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [DOORSOUND, setDOORSOUND] = React.useState(false);
+    function getDOORSOUND(bool){
+        setDOORSOUND(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [BONNETSOUND, setBONNETSOUND] = React.useState(false);
+    function getBONNETSOUND(bool){
+        setBONNETSOUND(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [TRUNK, setTRUNK] = React.useState(false);
+    function getTRUNK(bool){
+        setTRUNK(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
     const [SoundproofETC, setSoundproofETC] = React.useState('');
+    function getSoundproofETC(bool){
+        setSoundproofETC(bool);
+        if(bool === true){
+            setSoundproofChoose(true);
+        }
+    }
 /////////////////////////////////////////////////////////////////
     const [WrappingChoose, setWrappingChoose] = React.useState(false);
     function getWrappingChoose(bool){
@@ -485,6 +616,9 @@ function PackageScreen_3(props) {
     const [WrappingETC, setWrappingETC] = React.useState('');
     function getWrappingETC(str){
         setWrappingETC(str);
+        if(str !== ''){
+            setWrappingChoose(true);
+        }
     }
 /////////////////////////////////////////////////////////////////
     const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
@@ -739,29 +873,29 @@ function PackageScreen_3(props) {
                             <SelectDetailOption getChoose={getLUMA} 
                                                 choose={LUMA}
                                                 name={'루마'}
-                                                touchable={TintingChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getSOLAR} 
                                                 choose={SOLAR}
                                                 name={'솔라'}
-                                                touchable={TintingChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getRAINBOW} 
                                                 choose={RAINBOW}
                                                 name={'레인보우'}
-                                                touchable={TintingChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getRAYNO} 
                                                 choose={RAYNO}
                                                 name={'레이노'}
-                                                touchable={TintingChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getTintingANY} 
                                                 choose={TintingANY}
                                                 name={'상관없음'}
-                                                touchable={TintingChoose}/>
+                                                touchable={true}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={TintingETC}
                                         maxLength={100}
-                                        editable={TintingChoose}
+                                        editable={true}
                                         onChangeText={(value)=>{getTintingETC(value);}}/>
                             </Row>
                         </SelectInSwiper>
@@ -769,57 +903,57 @@ function PackageScreen_3(props) {
                             <SelectTitleOption getChoose={getPPFChoose} 
                                                 choose={PPFChoose} 
                                                 name={'PPF'}/>
-                            <SelectDetailOption getChoose={setBONNET} 
+                            <SelectDetailOption getChoose={getBONNET} 
                                                 choose={BONNET}
                                                 name={'본넷'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setSIDEMIRROR} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getSIDEMIRROR} 
                                                 choose={SIDEMIRROR}
                                                 name={'사이드미러'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setFRONTBUMPER} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getFRONTBUMPER} 
                                                 choose={FRONTBUMPER}
                                                 name={'앞 범퍼'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setFRONTBUMPERSIDE} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getFRONTBUMPERSIDE} 
                                                 choose={FRONTBUMPERSIDE}
                                                 name={'앞 범퍼사이드'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setBACKBUMPER} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getBACKBUMPER} 
                                                 choose={BACKBUMPER}
                                                 name={'뒷 범퍼'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setBACKBUMPERSIDE} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getBACKBUMPERSIDE} 
                                                 choose={BACKBUMPERSIDE}
                                                 name={'뒷 범퍼사이드'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setHEADLIGHT} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getHEADLIGHT} 
                                                 choose={HEADLIGHT}
                                                 name={'헤드라이트'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setTAILLAMP} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getTAILLAMP} 
                                                 choose={TAILLAMP}
                                                 name={'테일램프'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setBCFILTER} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getBCFILTER} 
                                                 choose={BCFILTER}
                                                 name={'B/C 필터'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setDOOR} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getDOOR} 
                                                 choose={DOOR}
                                                 name={'도어'}
-                                                touchable={PPFChoose}/>
-                            <SelectDetailOption getChoose={setHOOD} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getHOOD} 
                                                 choose={HOOD}
                                                 name={'후드'}
-                                                touchable={PPFChoose}/>
+                                                touchable={true}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={PPFETC}
                                         maxLength={100}
-                                        editable={PPFChoose}
-                                        onChangeText={(value)=>{setPPFETC(value);}}/>
+                                        editable={true}
+                                        onChangeText={(value)=>{getPPFETC(value);}}/>
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
@@ -829,25 +963,25 @@ function PackageScreen_3(props) {
                             <SelectDetailOption getChoose={getFINETECH} 
                                                 choose={FINETECH}
                                                 name={'파인테크'}
-                                                touchable={BlackboxChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getINAVI} 
                                                 choose={INAVI}
                                                 name={'아이나비'}
-                                                touchable={BlackboxChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getMANDO} 
                                                 choose={MANDO}
                                                 name={'만도'}
-                                                touchable={BlackboxChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getBlackboxANY} 
                                                 choose={BlackboxANY}
                                                 name={'상관없음'}
-                                                touchable={BlackboxChoose}/>
+                                                touchable={true}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={BlackboxETC}
                                         maxLength={100}
-                                        editable={BlackboxChoose}
+                                        editable={true}
                                         onChangeText={(value)=>{getBlackboxETC(value);}}/>
                             </Row>
                         </SelectInSwiper>
@@ -858,21 +992,21 @@ function PackageScreen_3(props) {
                             <SelectDetailOption getChoose={getV6} 
                                                 choose={V6}
                                                 name={'V6'}
-                                                touchable={BatteryChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getV12} 
                                                 choose={V12}
                                                 name={'V12'}
-                                                touchable={BatteryChoose}/>
+                                                touchable={true}/>
                             <SelectDetailOption getChoose={getBatteryANY} 
                                                 choose={BatteryANY}
                                                 name={'상관없음'}
-                                                touchable={BatteryChoose}/>
+                                                touchable={true}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={BatteryETC}
                                         maxLength={100}
-                                        editable={BatteryChoose}
+                                        editable={true}
                                         onChangeText={(value)=>{getBatteryETC(value);}}/>
                             </Row>
                         </SelectInSwiper>
@@ -883,13 +1017,13 @@ function PackageScreen_3(props) {
                             {/* <SelectDetailOption getChoose={getAfterblowANY} 
                                                 choose={AfterblowANY}
                                                 name={'상관없음'}
-                                                touchable={AfterblowChoose}/> */}
+                                                touchable={true}/> */}
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={AfterblowETC}
                                         maxLength={100}
-                                        editable={AfterblowChoose}
+                                        editable={true}
                                         onChangeText={(value)=>{getAfterblowETC(value);}}/>
                             </Row>                  
                         </SelectInSwiper>
@@ -897,37 +1031,37 @@ function PackageScreen_3(props) {
                             <SelectTitleOption getChoose={getSoundproofChoose} 
                                                 choose={SoundproofChoose} 
                                                 name={'방음'}/>
-                            <SelectDetailOption getChoose={setUNDER} 
+                            <SelectDetailOption getChoose={getUNDER} 
                                                 choose={UNDER}
                                                 name={'하부 방음'}
-                                                touchable={SoundproofChoose}/>
-                            <SelectDetailOption getChoose={setINSIDEFLOOR} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getINSIDEFLOOR} 
                                                 choose={INSIDEFLOOR}
                                                 name={'실내 바닥 방음'}
-                                                touchable={SoundproofChoose}/>
-                            <SelectDetailOption getChoose={setFENDER} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getFENDER} 
                                                 choose={FENDER}
                                                 name={'휀다 방음'}
-                                                touchable={SoundproofChoose}/>
-                            <SelectDetailOption getChoose={setDOORSOUND} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getDOORSOUND} 
                                                 choose={DOORSOUND}
                                                 name={'도어 방음'}
-                                                touchable={SoundproofChoose}/>
-                            <SelectDetailOption getChoose={setBONNETSOUND} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getBONNETSOUND} 
                                                 choose={BONNETSOUND}
                                                 name={'본넷 방음'}
-                                                touchable={SoundproofChoose}/>
-                            <SelectDetailOption getChoose={setTRUNK} 
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getTRUNK} 
                                                 choose={TRUNK}
                                                 name={'트렁크 방음'}
-                                                touchable={SoundproofChoose}/>
+                                                touchable={true}/>
                             <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
                                 <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
                                         value={SoundproofETC}
                                         maxLength={100}
-                                        editable={SoundproofChoose}
-                                        onChangeText={(value)=>{setSoundproofETC(value);}}/>
+                                        editable={true}
+                                        onChangeText={(value)=>{getSoundproofETC(value);}}/>
                             </Row>                   
                         </SelectInSwiper>
                         <SelectInSwiper>
@@ -940,7 +1074,7 @@ function PackageScreen_3(props) {
                                     <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, borderRadius: 5, textAlignVertical:'top'}}
                                             value={WrappingETC}
                                             maxLength={100}
-                                            editable={WrappingChoose}
+                                            editable={true}
                                             multiline={true}
                                             onChangeText={(value)=>{getWrappingETC(value);}}/>
                                 </View>
@@ -960,8 +1094,8 @@ function PackageScreen_3(props) {
                 </AllSelectView>
                 <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>다음</Button>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>선택완료</Button>
                     </Row>
                 </BtnView>
             </ContentView>

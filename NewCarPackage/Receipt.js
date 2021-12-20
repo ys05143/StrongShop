@@ -334,11 +334,11 @@ function Receipt(props){
                 </View>}
             </SearchView>
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
+                <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
                     <Text>이전</Text>
                 </Button>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
-                    <Text>완료</Text>
+                <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
+                    <Text>등록하기</Text>
                 </Button>
             </View></>}
             {isSending && 

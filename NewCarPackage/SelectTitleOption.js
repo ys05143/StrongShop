@@ -43,6 +43,10 @@ function Select4Screen3_3 (props){
         props.getChoose(bool);
     }
 
+    React.useEffect(()=>{
+        setIsChoose(props.choose);
+    },[props.choose]);
+
     return(
         <>
         <SelectView>
