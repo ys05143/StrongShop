@@ -5,6 +5,7 @@ import Icon  from "react-native-vector-icons/Ionicons";
 import { Button, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 //pages
 import SearchModal from './SearchModal';
 //components
@@ -95,40 +96,44 @@ function PackageScreen_2 (props, {navigation}) {
     const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
     const [isLoading, setIsLoading] = React.useState(true); //로딩중...
 
+    const isFoucused = useIsFocused();
     React.useEffect(() => {
-        setIsLoading(true);
-        storage.fetch('BidOrder')
-        .then(response => {
-            if(response != null){
-                if(response.carName !== null){
-                    console.log('In page 2 useEffect: ', response);         
-                    getData(response.carName);
+        if(isFoucused){
+            setIsLoading(true);
+            storage.fetch('BidOrder')
+            .then(response => {
+                if(response != null){
+                    if(response.carName !== null){
+                        console.log('In page 2 useEffect: ', response);         
+                        getData(response.carName);
+                    }
+                    else{
+                        console.log('Async error: there is not carName');
+                        AsyncStorage.removeItem('BidOrder')
+                        .then(() => {
+                            console.log('remove bidOrder Async');
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                    }
                 }
                 else{
-                    console.log('Async error: there is not carName');
-                    AsyncStorage.removeItem('BidOrder')
-                    .then(() => {
-                        console.log('remove bidOrder Async');
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
+                    setSearch(null);
+                    setResult(null);
+                    setIsLoading(false);
                 }
-            }
-            else{
-                setSearch(null);
-                setResult(null);
-                setIsLoading(false);
-            }
-        })
-        .catch(error=>{
-            console.log(error);
-        })
-    }, [navigation]);
+            })
+            .catch(error=>{
+                console.log(error);
+            })
+        }
+    }, [isFoucused]);
 
     function getSearchModal(close){
         setSearchModal(close);
     }
+
     function getData(name){
         setIsLoading(true);
         setSearch(name);
@@ -157,38 +162,34 @@ function PackageScreen_2 (props, {navigation}) {
         setIsLoading(false);
     }
 
-    async function storeCarName() {
+    async function storeCarName(){
         try{
-            if(result === null){
+            const response = await storage.fetch('BidOrder');
+            if(response !== null){
+                if(response.carName !== null) props.navigation.navigate("PackageScreen_3");
+                else {
+                    Alert.alert(
+                        '경고',
+                        '차량을 입력해주세요.',
+                        [
+                            {text: '확인', onPress: () => {}},
+                        ],
+                        { cancelable: false }
+                        );
+                }
+            }
+            else{
                 Alert.alert(
                     '경고',
                     '차량을 입력해주세요.',
                     [
-                      {text: '확인', onPress: () => {}},
+                        {text: '확인', onPress: () => {}},
                     ],
                     { cancelable: false }
-                  );
-            }
-            else{
-                let newOrder = null;
-                const response = await storage.fetch('BidOrder');
-                if(response !== null){
-                    newOrder = {...response};
-                    newOrder.carName = result.name;
-                    if(newOrder.processPage <= 1) newOrder.processPage = 1;
-                    await storage.store('BidOrder', newOrder);
-                    props.navigation.navigate("PackageScreen_3");
-                }
-                else{
-                    newOrder = {...BidOrderList}; 
-                    newOrder.carName = result.name;
-                    newOrder.processPage = 1;
-                    await storage.store('BidOrder', newOrder);
-                    props.navigation.navigate("PackageScreen_3");
-                }
+                    );
             }
             //just check
-            const check = await storage.fetch('BidOrder');
+            //const check = await storage.fetch('BidOrder');
             //console.log('In page 2 check: ', check);
         }
         catch(error){
@@ -245,8 +246,8 @@ function PackageScreen_2 (props, {navigation}) {
                     </Intro>
                 </IntroView>
                 <ContentView>
-                    <SearchBar onPress={()=>{setSearchModal(true)}}>
-                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? search : ''}</Text>
+                    <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen")}}>
+                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? result.name : ''}</Text>
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>
@@ -265,7 +266,7 @@ function PackageScreen_2 (props, {navigation}) {
                     </TouchableOpacity>    
                 </View>
             </TotalView>
-            <Modal
+            {/* <Modal
                 onDismiss={false}
                 animationType="slide"
                 transparent={true}
@@ -281,7 +282,7 @@ function PackageScreen_2 (props, {navigation}) {
                         </View>
                     </ModalView>
                 </TouchableWithoutFeedback>
-            </Modal>
+            </Modal> */}
         </PaperProvider>
     );
 }

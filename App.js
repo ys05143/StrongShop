@@ -34,6 +34,7 @@ import Past_PackageScreen_3_2_2 from './NewCarPackage/Past_PackageScreen_3_2_2';
 import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
 import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
+import SearchScreen from './NewCarPackage/SearchScreen';
 
 const Stack = createStackNavigator();
 
@@ -200,7 +201,7 @@ function App (props) {
 
   }
 
-
+  
   return (
     <>
     <React.Fragment>
@@ -222,6 +223,8 @@ function App (props) {
 
         {/* 신차패키지 2 */}
         {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>}
+        {/* 검색페이지 */}
+        {<Stack.Screen name="SearchScreen" component={SearchScreen} options={{headerShown:false}}/>}
         {/* 신차패키지 3 ver 3.0*/}
         {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>}
         {/* 신차패키지 4 */}

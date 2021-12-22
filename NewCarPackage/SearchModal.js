@@ -42,7 +42,7 @@ function SearchModal(props){
         <Total>
             <SearchView>
                 <Searchbar
-                    style={{height: 45, borderWidth: 1, borderColor: 'gray', justifyContent: 'center'}}
+                    style={{height: 50, borderWidth: 1, borderColor: 'gray', justifyContent: 'center'}}
                     inputStyle={{fontSize: 15, justifyContent: 'center'}}
                     placeholder='차종을 검색하세요.'
                     value={text}

@@ -1,20 +1,23 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Portal , Provider, FAB, Divider}  from 'react-native-paper';
-import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
-import Color from '../constants/Color';
+import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import _, { add } from 'lodash';
-import Icon from "react-native-vector-icons/Ionicons";
+import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon from "react-native-vector-icons/Ionicons";
+import StepIndicator from 'react-native-step-indicator';
+import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 //import { request , PERMISSIONS } from 'react-native-permissions';
 import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import storage from '../function/storage';
 import TopBar from '../components/TopBar';
+import Color from '../constants/Color';
+import JustShowReceipt from '../NewCarPackage/JustShowReceipt';
+import ModalView from '../components/ModalView';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -23,24 +26,24 @@ import checkErrorCode from '../function/checkErrorCode';
 import TotalView from '../components/TotalView';
 import AppWindow from '../constants/AppWindow';
 
-const View = styled.View``;
+const WIDTH = AppWindow.width;
 const Row = styled.View`
     flex-direction: row ;
     align-items: center;
 `;
-const CButton = styled.TouchableOpacity`
-    width: 100%;
-    height: 300px;
-    margin-bottom: 10px;
+const ImageView = styled.TouchableOpacity`
+    width: ${(WIDTH-6)/3}px;
+    height: ${(WIDTH-6)/3}px;
+    background-color: #e5e5e5;
+    margin: 1px;
 `;
 const SwiperView = styled.View`
     width: 100%;
     flex: 1;
 `;
 const InfoView = styled.View`
-    width: 100%;
-    height: 250px;
-    background-color: lightgray;
+    width: 95%;
+    background-color: #e5e5e5;
     border-radius: 10px;
     padding: 5px 10px;
 `;
@@ -78,7 +81,7 @@ const styles = {
         fontFamily : 'DoHyeon-Regular' ,
         fontSize: 30 ,
         padding: 20
-    } ,
+    },
     progress : {
       height: 5
     },
@@ -92,7 +95,7 @@ const styles = {
     },
     subTitle : {
 
-    }
+    },
 }
 
 
@@ -111,19 +114,45 @@ const progress = [
     },
     {
         title : '차량 탁송지 지정하기' ,
-        text: '❗️❗️고객님께서 \'직접\'\n 구매사를 통해 변경해주셔야 합니다.❗️❗️'
+        text: '고객님께서 \'직접\'\n구매사를 통해\n아래 주소로 변경해주셔야 합니다.'
     } ,
     {
         title : '신차검수 현황' ,
     } ,
     {
-        title : '시공진행 현황' ,
+        title : '시공 현황' ,
     } ,
     {
         title : '시공완료/출고' ,
         text: '🎉오래 기다리셨습니다!!!🎉\n고객님의 시공이 모두 완료되었습니다.\n아래의 주소로 차량을 찾으러오세요.🚗'
     } ,
 ]
+
+const labels = ["탁송지\n지정","신차검수","검수완료","시공중","시공완료","출고대기"];
+const customStyles = {
+    stepIndicatorSize: 25,
+    currentStepIndicatorSize: 32,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: Color.main,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: Color.main,
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: Color.main,
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: Color.main,
+    stepIndicatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 15,
+    stepIndicatorLabelCurrentColor: Color.main,
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#ffffff',
+    labelColor: '#999999',
+    labelSize: 13,
+    currentStepLabelColor: Color.main,
+  }
+  
 
 //서버로 부터 받은 데이터
 const DATA=[
@@ -148,6 +177,7 @@ function ProgressScreen( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
     const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
+    const[display, setDisplay]=React.useState(props.route.params.state-3);
     const[refresh,setRefresh] = React.useState(false);
     const[visibleInspection,setVisibleInspection] = React.useState(false);
     const[visibleConstruction, setVisibleConstruction] = React.useState(false);
@@ -159,6 +189,12 @@ function ProgressScreen( props ) {
     const[isLoading, setIsLoading] = React.useState(true);
     const[addChatNum, setAddChatNum] = React.useState(0);
     const[isSending, setIsSending] = React.useState(false);
+    const[ReceiptModal, setReceiptModal] = React.useState(false);
+
+    function getReceiptModal(close){
+        setReceiptModal(close);
+    }
+
 
     // async function rdbOn(id){ //캐시를 이용해서 읽지 않은 채팅 감지
     //     console.log(`chat${id}`);
@@ -210,16 +246,16 @@ function ProgressScreen( props ) {
 
     const RenderItemInspection = ({item, index}) =>  {
         return(
-            <CButton onPress={ () =>  { setVisibleInspection(true);  setInspectionIndex(index); }}>
-                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
-            </CButton>
+            <ImageView onPress={ () =>  { setVisibleInspection(true);  setInspectionIndex(index); }}>
+                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='cover'/>
+            </ImageView>
         )
     }
     const RenderItemConstruction = ({item, index}) =>  {
         return(
-            <CButton onPress={ () =>  {setVisibleConstruction(true); setConstructionIndex(index); }}>
-                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='contain'/>
-            </CButton>
+            <ImageView onPress={ () =>  {setVisibleConstruction(true); setConstructionIndex(index); }}>
+                <FastImage source={{ uri : item }} style={{ width: '100%' , height: '100%' }} resizeMode='cover'/>
+            </ImageView>
         )
     }
 
@@ -415,7 +451,7 @@ function ProgressScreen( props ) {
                 onCancel={()=>{setVisibleInspection(false)}} 
                 enableSwipeDown={true} 
                 index={inspectionIndex}
-                swipeDownThreshold={80}/>
+                swipeDownThreshold={90}/>
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: AppWindow.IOS_notch}} color={'white'} onPress={ () => { setVisibleInspection(false) }} />
         </Modal>
 
@@ -425,104 +461,120 @@ function ProgressScreen( props ) {
                 onCancel={()=>{setVisibleConstruction(false)}} 
                 enableSwipeDown={true} 
                 index={constructionIndex}
-                swipeDownThreshold={80}/>
+                swipeDownThreshold={90}/>
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
         </Modal>
 
-        <TotalView notchColor={Color.main}>
-            <View>
+        <TotalView notchColor={Color.main} homeIndicatorColor={'white'}>
+            <View style={{backgroundColor: 'white'}}>
                 {/* <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(); }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 
                 </Appbar.Header>   */}
                 <TopBar style={{backgroundColor: Color.main}}>
-                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={() => { props.navigation.goBack(); rdbOff(); }}>
+                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={() => { props.navigation.goBack(); rdbOff(); }}>
                         <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>
                         <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30, color: 'white'}}>{shopData[0].companyName}</Text>
                     </TouchableOpacity>
-                    <View style={{width: 40}}/>
+                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 10}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
+                        <MaterialComunityIcons name={"chat"} size={30} color={'white'} style={{elevation: 0}}/>
+                        {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={13}>{addChatNum}</Badge>}
+                    </TouchableOpacity>
                 </TopBar>
-                <ProgressBar style={styles.progress} progress={(state-3)/4} color='red'  
-                    theme = {{ animation : { scale : 5 }  }}
-                />
-                <Title style={styles.title}>시공 진행상황</Title>
-                <Title style={{ marginLeft: 20 , color : 'gray' ,marginBottom: 10}}>
-                    {
-                        state == 3 ? TEXT.first : state == 4 ? TEXT.second : state == 5 ? TEXT.third : state == 6 ? TEXT.fourth : TEXT.fifth 
-                    }
-                </Title>
+                
+                <Row style={{alignItems: 'center'}}>
+                    <Title style={styles.title}>시공 진행 상황</Title>
+                    {/* <Title style={{ marginLeft: 20 , color : 'gray' ,marginBottom: 10}}>
+                        {
+                            state == 3 ? TEXT.first : state == 4 ? TEXT.second : state == 5 ? TEXT.third : state == 6 ? TEXT.fourth : TEXT.fifth 
+                        }
+                    </Title> */}
+                    <Button mode={"outlined"} color={'gray'} icon={'clipboard-check-outline'} onPress={()=>{setReceiptModal(true)}}>시공 목록</Button>
+                </Row>
+                <View style={{width: '100%', marginBottom: 10}}>
+                    <StepIndicator
+                        customStyles={customStyles}
+                        currentPosition={state-3}
+                        labels={labels}
+                        stepCount={6}
+                    />
+                </View>
             </View>
             
-            <SwiperView>
+            <SwiperView style={{backgroundColor: 'white', marginTop: 10}}>
                 <Swiper horizontal={true} index={state-3}
-                    showsButtons={true}
-                    showsHorizontalScrollIndicator={true}
+                    //showsButtons={true}
+                    // showsHorizontalScrollIndicator={true}
                     showsPagination={false}
-                    prevButton={<IconButton icon='chevron-left' color={'black'} size={25}/>}
-                    nextButton={<IconButton icon='chevron-right' color={'black'} size={25}/>}
+                    // prevButton={<Icon name='chevron-back-outline' color={'black'} size={25}/>}
+                    // nextButton={<Icon name='chevron-forward-outline' color={'black'} size={25}/>}
                     overScrollMode='auto'
                     loop={false}
+                    //onIndexChanged={index=>setDisplay(index)}
                     // renderPagination = { (index,total) => <Title style={{ alignSelf: 'center'}}>{ index+1}/{total}</Title>}
-
                 >  
                     {state >= 3 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 3 ? 'red' : 'black'}}>
-                            {'1단계: '}{progress[1].title}
+                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 3 ? 'red' : 'black', fontWeight: 'bold'}}>
+                            {progress[1].title}
                         </Title>
-                        <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
-                            <Title style={{fontSize: 15,}}>{progress[1].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[1].shipmentLocation}</Title>
-                            {state === 3 && <Button mode={'contained'} disabled={isSending} color={Color.main} style={{marginTop: 10}} onPress={()=>{setIsSending(true); NextState();}}>{isSending ? '전달중...': '완료'}</Button>}
+                        <View style={{flex: 1, alignItems: 'center'}}>
+                            <View style={{width: '75%', flex: 1, justifyContent: 'space-between'}}>
+                                <Title style={{fontSize: 18}}>{progress[1].text}</Title>
+                                <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15, ...styles.title}}>{'업체 주소:\n'+shopData[1].shipmentLocation}</Title>
+                            </View>
+                            {state === 3 && <Button mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); NextState();}} contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center'}} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '완료'}</Button>}
                         </View>
                     </SwiperView>}
                     
                     {state >= 4 && <SwiperView>
                         <Row>
-                            <Title style={{ padding: 10 , color : (state === 4 || state ===5) ? 'red' : 'black'}}>
-                                {'2단계: '}{progress[2].title}
+                            <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : (state === 4 || state ===5) ? 'red' : 'black', fontWeight: 'bold'}}>
+                                {progress[2].title}
                             </Title>
-                            {state === 5 && <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); NextState();}} contentStyle={{width: 100, height: 40}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10, width: 100, height: 40, }} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '승인'}</Button>}
                         </Row>
-                        <View style={{width: '75%', flex: 1, alignSelf: 'center'}}>
-                            <FlatList
-                                data={shopData[2].inspectionImages}
-                                scrollEnabled={true}
-                                renderItem={RenderItemInspection}
-                                keyExtractor={item => item}
-                                refreshControl={refresh}
-                            />
-                        </View>
+                        <FlatList
+                            style={{width: '100%', flex: 1}}
+                            data={shopData[2].inspectionImages}
+                            scrollEnabled={true}
+                            renderItem={RenderItemInspection}
+                            keyExtractor={item => item}
+                            numColumns={3}
+                            onRefresh={()=>{getData()}}
+                            refreshing={refresh}
+                        />
+                        {state === 5 && <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); NextState();}} contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center'}} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '승인'}</Button>}
                     </SwiperView>}
 
                     {state >= 6 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 6 ? 'red' : 'black'}}>
-                            {'3단계: '}{progress[3].title}
+                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 6 ? 'red' : 'black', fontWeight: 'bold'}}>
+                            {progress[3].title}
                         </Title>
-                        <View style={{width: '75%', flex:1, alignSelf: 'center'}}>
-                            <FlatList
-                                data={shopData[3].constructionImages}
-                                scrollEnabled={true}
-                                renderItem={RenderItemConstruction}
-                                keyExtractor={item => item}
-                                refreshControl={refresh}
-                            />
-                        </View>
+                        <FlatList
+                            style={{width: '100%', flex: 1}}
+                            data={shopData[3].constructionImages}
+                            scrollEnabled={true}
+                            renderItem={RenderItemConstruction}
+                            keyExtractor={item => item}
+                            numColumns={3}
+                            onRefresh={()=>{getData()}}
+                            refreshing={refresh}
+                        />
                     </SwiperView>}
 
                     {state >= 7 && <SwiperView>
-                        <Title style={{ padding: 10 , color : state === 7 ? 'red' : 'black'}}>
-                            {'4단계: '}{progress[4].title}
+                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 7 ? 'red' : 'black', fontWeight: 'bold'}}>
+                            {progress[4].title}
                         </Title>
-                        <View style={{width: '75%', flex: 1,  alignSelf: 'center'}}>
+                        <View style={{width: '100%', flex: 1}}>
                             <ScrollView>
                             <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
                             <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].shipmentLocation}</Title>
-                            <Text style={{color: 'red', marginVertical: 5, alignSelf: 'center'}}>/*모든시공이 완료되었는지 반드시 확인해주세요.*/</Text>
-                            <InfoView>
-                                <ScrollView>
+                            <Text style={{color: 'red', marginVertical: 5, alignSelf: 'center'}}>모든시공이 완료되었는지 확인 후 아래 '출고 확정' 버튼을 눌러주세요</Text>
+                            <View style={{alignItems: 'center'}}>
+                                <InfoView>
                                     <Row>
                                         <Icon name={'ellipse'} style={{marginRight: 5}}/>
                                         <Title>시공내역</Title>
@@ -602,24 +654,37 @@ function ProgressScreen( props ) {
                                     <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{shopData[4].receipt.totalPrice}{' 만원'}</Text>}/>
                                     
                                     
-                                </ScrollView>
-                            </InfoView>
-                            <Button style={{marginTop: 20}} mode={'contained'} disabled={isSending} color={Color.main} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
+                                </InfoView>
+                            </View>
+                            <Button contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center', marginTop: 20}} labelStyle={{fontSize: 15}} color={Color.main}mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
                             </ScrollView>
                         </View>
                     </SwiperView>}
                     
                 </Swiper>
             </SwiperView>
-            <View style={{position: 'absolute', bottom: 50, alignSelf: 'flex-end', right: 30,}}>
-                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center', elevation: 0}} icon="chat" onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
+            {/* <View style={{position: 'absolute', bottom: 20, alignSelf: 'flex-end', right: 25,}}>
+                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center', elevation: 0, width: 70, height: 70, borderRadius: 50}} icon="chat" onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
                 {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1}}>{addChatNum}</Badge>}
-            </View>
+            </View> */}
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
 
         </TotalView>
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={ReceiptModal}
+            onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
+        >
+            <ModalView>
+                <View style={{width: '90%'}}>
+                    <JustShowReceipt getModal={getReceiptModal} navigation={props.navigation} orderId={orderId}/>
+                </View>
+            </ModalView>
+        </Modal>
         </Provider>
     );
 }
