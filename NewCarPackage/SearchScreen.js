@@ -85,7 +85,7 @@ function SearchScreen(props){
                 onBlur={()=>setSearchSpinner(false)}
                 onPress={()=>{}}
                 clearIconComponent={<Icon name="close-circle" size={20} color={'gray'}/>}
-                style={{...styles.shadowStyle, backgroundColor: '#e5e5e5', height: 45}}
+                style={{...styles.shadowStyle, ...styles.searchBarStyle}}
                 onClearPress={()=>SearchProcess('')}
                 onSearchPress={()=>{SelectCar(search)}}
             />
@@ -115,7 +115,16 @@ const styles = {
             elevation: 1,
           },
         }),
-      },
+    },
+    searchBarStyle: {
+        height: 45,
+        backgroundColor: '#e5e5e5',
+        ...Platform.select({
+            android: {
+                marginTop: 10,
+            }
+        })
+    }
 }
 
 export default SearchScreen;

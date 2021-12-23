@@ -567,7 +567,10 @@ function ProgressScreen_Ver_2( props ) {
                         <View style={{flex: 1, alignItems: 'center'}}>
                             <View style={{width: '75%', flex: 1, justifyContent: 'space-between'}}>
                                 <Title style={{fontSize: 18}}>{progress[1].text}</Title>
-                                <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15, ...styles.title}}>{'업체 주소:\n'+shopData[1].shipmentLocation}</Title>
+                                <View>
+                                    <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15, fontSize: 20, fontFamily: 'DoHyeon-Regular'}}>{'업체 주소:'}</Title>
+                                    <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginBottom: 15, fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{shopData[1].shipmentLocation}</Title>
+                                </View>
                             </View>
                             {state === 3 && <Button mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); NextState();}} contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center'}} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '완료'}</Button>}
                         </View>

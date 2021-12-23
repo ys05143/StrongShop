@@ -253,12 +253,14 @@ function LoginScreen(props) {
 
     const handleKakaoLogin = async() =>  {
         // 카카오 인증요청
+        setIsSending(true);
         setLoginVer('kakao');
         const token = await login().catch(e=>{console.log(e)});
         //console.log(token);
         // 카카오 인증취소 / 인증실패 
         if ( token == null ) {
             Alert.alert('카카오톡 로그인을 진행할 수 없습니다.');
+            setIsSending(false);
             return;
         }
         const accessToken = 'Bearer ' + token.accessToken ;        
@@ -279,6 +281,7 @@ function LoginScreen(props) {
             setLoginVer('naver');
             if ( token == null ) {
                 Alert.alert('네이버 로그인을 진행할 수 없습니다.');
+                setIsSending(false);
                 return;
             }
             const accessToken = 'Bearer ' + token.accessToken ; 
