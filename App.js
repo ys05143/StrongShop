@@ -10,6 +10,7 @@ import { navigationRef } from './Main/MainScreen';
 import * as RootNavigation from './Main/MainScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from './function/storage';
+import SplashScreen from 'react-native-splash-screen'
 
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
@@ -202,6 +203,11 @@ function App (props) {
 
   }
 
+  React.useEffect(() => { 
+    setTimeout(() => { 
+      SplashScreen.hide(); 
+    }, 1500); }
+  , []);
   
   return (
     <>

@@ -48,6 +48,7 @@
     "react-native-safe-area-context": "^3.3.0",
     "react-native-screens": "^3.5.0",
     "react-native-spinkit": "^1.5.1",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-step-indicator": "^1.0.3",
     "react-native-swiper": "^1.6.0-rc.3",
