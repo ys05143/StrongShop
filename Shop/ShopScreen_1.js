@@ -223,9 +223,9 @@ function ShopScreen_1(props){
               </TouchableOpacity>}
             </Animated.View>
           </Animated.View>
-          <View style={{width: 35, position: 'absolute' , height: HEADER_MIN_HEIGHT, justifyContent: 'center'}}>
+          <TouchableOpacity style={{position: 'absolute' , height: HEADER_MIN_HEIGHT, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}}>
             <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
-          </View>  
+          </TouchableOpacity>  
         </View>
         <Animated.View
           style={{

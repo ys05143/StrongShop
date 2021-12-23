@@ -11,7 +11,7 @@ import BidShops from './BidShops';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
-import JustShowReceipt from './JustShowReceipt';
+import JustShowOrder from './JustShowOrder';
 import ModalView from '../components/ModalView';
 //constants
 import Color from '../constants/Color';
@@ -240,7 +240,7 @@ function PackageScreen_5(props){
         >
             <ModalView>
                 <View style={{width: '90%'}}>
-                    <JustShowReceipt getModal={getReceiptModal} navigation={props.navigation} orderId={orderId}/>
+                    <JustShowOrder getModal={getReceiptModal} navigation={props.navigation} orderId={orderId}/>
                 </View>
             </ModalView>
         </Modal>

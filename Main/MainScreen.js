@@ -225,7 +225,8 @@ function MainScreen( props ) {
 
     function StateMove(orderId, state, carName, time){
         if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time});
-        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
+        //else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
+        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
     }
 
     async function getData(){

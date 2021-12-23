@@ -51,8 +51,7 @@ function JustShowReceipt(props){
                     '오류',
                     '다시 시도해주세요.',
                     [
-                        {text: '예', onPress: () => {}},
-                        {text: '아니요', onPress: () => {}},
+                        {text: '예', onPress: () => {props.getModal(false);}},
                     ],
                     { cancelable: false }
                 );
@@ -241,7 +240,7 @@ function JustShowReceipt(props){
                     </View>
                 </View>}
             </SearchView>}
-            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
+            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
                 <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
                     <Text>이전</Text>
                 </Button>

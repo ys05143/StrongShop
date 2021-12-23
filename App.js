@@ -35,6 +35,7 @@ import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
 import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
+import ProgressScreen_2 from './Main/ProgressScreen_2';
 
 const Stack = createStackNavigator();
 
@@ -243,6 +244,8 @@ function App (props) {
         {<Stack.Screen name="RegisterReviewScreen" component={RegisterReviewScreen} options={{headerShown:false}}/>}
         {/* 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
+        {/* 시공중 페이지 */}
+        {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
 
         {/* 애니메이션 test */}
         {<Stack.Screen name="AnimatedTest" component={AnimatedTest} options={{headerShown:false}}/>}

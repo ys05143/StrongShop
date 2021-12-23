@@ -11,7 +11,7 @@ import _ from 'lodash';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import ModalView from '../components/ModalView';
-import Receipt from './Receipt';
+import FinalOrder from './FinalOrder';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color'
@@ -76,7 +76,7 @@ const RegionView = styled.View`
 `;
 const PickerView = styled.TouchableOpacity`
     border: 1px;
-    border-radius: 1px;
+    border-radius: 5px;
     margin-top: 5px;
     height: 50px;
     justify-content: center;
@@ -301,7 +301,7 @@ function PackageScreen_4(props){
         >
             <ModalView>
                 <View style={{width: '90%'}}>
-                    <Receipt getModal={getReceiptModal} navigation={props.navigation}/>
+                    <FinalOrder getModal={getReceiptModal} navigation={props.navigation}/>
                 </View>
             </ModalView>
         </Modal>
@@ -313,7 +313,7 @@ function PackageScreen_4(props){
             onRequestClose={() => {setRegionModal(!regionModal);}}
         >
             <ModalView>
-                <View style={{width: '90%', height: 350, backgroundColor: 'white'}}>
+                <View style={{width: '90%', height: 400, backgroundColor: 'white'}}>
                     <ScrollView contentContainerStyle={{alignItems: 'center'}}
                                 persistentScrollbar={true}
                                 showsVerticalScrollIndicator={true}>
