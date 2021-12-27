@@ -28,6 +28,7 @@
 		C87B67509B7046D9BDE0557F /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 36F8BE87281D4DF3A7ACE8EE /* NotoSansKR-Bold.otf */; };
 		D86C158927300C09000F87BB /* BridgingFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86C158827300C09000F87BB /* BridgingFile.swift */; };
 		D87A8B442742707B0000BE77 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87A8B432742707B0000BE77 /* GoogleService-Info.plist */; };
+		D8DBE31D2779A22800519842 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = D8DBE31C2779A22800519842 /* splash.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		D86C158827300C09000F87BB /* BridgingFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgingFile.swift; sourceTree = "<group>"; };
 		D87A8B432742707B0000BE77 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D8DAADCC274278FF00278EAF /* StrongShop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StrongShop.entitlements; path = StrongShop/StrongShop.entitlements; sourceTree = "<group>"; };
+		D8DBE31C2779A22800519842 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		E7FEDBC2EAC74E65A9EEB346 /* EastSeaDokdo-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EastSeaDokdo-Regular.ttf"; path = "../assets/fonts/EastSeaDokdo-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EED759B60F5D4F13BF2B871C /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		13B07FAE1A68108700A75B9A /* StrongShop */ = {
 			isa = PBXGroup;
 			children = (
+				D8DBE31C2779A22800519842 /* splash.png */,
 				D8DAADCC274278FF00278EAF /* StrongShop.entitlements */,
 				D87A8B432742707B0000BE77 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -337,6 +340,7 @@
 				9725F40EA8764D85B319E1D2 /* NotoSansKR-Light.otf in Resources */,
 				AC5E2D2591394A8D9CBD9682 /* NotoSansKR-Medium.otf in Resources */,
 				7DBB66BD6F0944229B19BFCC /* NotoSansKR-Regular.otf in Resources */,
+				D8DBE31D2779A22800519842 /* splash.png in Resources */,
 				BD32C167B60D4EAF8FE39669 /* NotoSansKR-Thin.otf in Resources */,
 				572C4431AAA04C448223BA77 /* DoHyeon-Regular.ttf in Resources */,
 				6774855D3EE6438B94CBEB2E /* EastSeaDokdo-Regular.ttf in Resources */,
