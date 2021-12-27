@@ -174,6 +174,7 @@ function ShopScreen_1(props){
   ).start();
     
   return(
+    <>
     <View style={{backgroundColor:'white', width: '100%', height: '100%'}}>
       <View style={{flex: 1, marginTop: NOTCH}}>
         <Animated.View
@@ -254,6 +255,10 @@ function ShopScreen_1(props){
         </Animated.View>
       </View>
     </View>
+    {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+                <ActivityIndicator size = 'large' color= {Color.main}/>
+            </View>}
+    </>
   );
 }
 

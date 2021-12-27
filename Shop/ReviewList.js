@@ -77,31 +77,31 @@ const ContentImg = styled.View`
     background-color: #e5e5e5;
 `;
 
-const AfterDATA=[{
-    reviewId:1,
-    name: '공진우',
-    images : 'https://www.netcarshow.com/Hyundai-Kona_Electric-2021-1280-03.jpg',
-    text: '너무 친절하게 잘 해주셨습니다.',
-    profileImg: require('../resource/character1.png'),
-},{
-    reviewId:2,
-    name: '김영우',
-    images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
-    text: '그냥 그래요',
-    profileImg: null,
-},{
-    reviewId:3,
-    name: '이승진',
-    images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
-    text: '다음차도 여기서 하고싶어요!',
-    profileImg: require('../resource/character3.png'),
-},{
-    reviewId:4,
-    name: '허지훈',
-    images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
-    text: '불친절한 직원이 있습니다.',
-    profileImg: require('../resource/character4.png'),
-}];
+// const AfterDATA=[{
+//     reviewId:1,
+//     name: '공진우',
+//     images : 'https://www.netcarshow.com/Hyundai-Kona_Electric-2021-1280-03.jpg',
+//     text: '너무 친절하게 잘 해주셨습니다.',
+//     profileImg: require('../resource/character1.png'),
+// },{
+//     reviewId:2,
+//     name: '김영우',
+//     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+//     text: '그냥 그래요',
+//     profileImg: null,
+// },{
+//     reviewId:3,
+//     name: '이승진',
+//     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+//     text: '다음차도 여기서 하고싶어요!',
+//     profileImg: require('../resource/character3.png'),
+// },{
+//     reviewId:4,
+//     name: '허지훈',
+//     images: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
+//     text: '불친절한 직원이 있습니다.',
+//     profileImg: require('../resource/character4.png'),
+// }];
 
 const DATA = [{ 
     companyId: 0, 

@@ -34,7 +34,6 @@ const DetailModal = styled.View`
 function SelectDetailOption (props){
     const [touchable, setTouchable] = React.useState(props.touchable);
     const [isChoose, setIsChoose] = React.useState(props.choose);
-    const [modal, setModal] = React.useState(false);
 
     React.useEffect(()=>{
         setTouchable(props.touchable);
@@ -58,27 +57,8 @@ function SelectDetailOption (props){
                     <Icon name={isChoose===false?"radio-button-off-outline": "radio-button-on-outline"} size={30} color= 'gray'></Icon>
                     <SelectName>{props.name}</SelectName>
                 </TouchableOpacity>
-                
             </Row>
         </SelectView>
-
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modal}
-        onRequestClose={() => {setModal(!modal);}}
-        >
-            <ModalView>
-                <DetailModal>
-                    <View style={{width: '100%', height: 40, alignItems: 'flex-end'}}>
-                        <Icon name="close-outline" size={35} color={'white'} onPress={()=>{setModal(false)}}></Icon>
-                    </View>
-                    <View style={{borderRadius: 10, overflow: 'hidden', width: '100%', height: HEIGHT*2/5}}>
-                        <Description image={require('../resource/Temp.png')}>신차 패키지란?</Description>
-                    </View>
-                </DetailModal>
-            </ModalView>
-        </Modal>
         </>
     )
 }

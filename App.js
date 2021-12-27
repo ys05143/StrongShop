@@ -22,18 +22,12 @@ import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
 import ShopScreen_1 from './Shop/ShopScreen_1';
-import AnimatedTest from './Shop/AnimatedTest';
 import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import ProgressScreen from './Main/ProgressScreen';
 
-import Past_PackageScreen_3_1 from './NewCarPackage/Past_PackageScreen_3_1';
-import Past_PackageScreen_3_2 from './NewCarPackage/Past_PackageScreen_3_2';
-import Past_PackageScreen_3_2_2 from './NewCarPackage/Past_PackageScreen_3_2_2';
-import DetailOptionScreen from './NewCarPackage/DetailOptionScreen';
-import Test_ShopScreen from './Shop/Test_ShopScreen';
 import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
 import ProgressScreen_2 from './Main/ProgressScreen_2';
@@ -252,21 +246,6 @@ function App (props) {
         {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
         {/* 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
-
-        {/* 애니메이션 test */}
-        {<Stack.Screen name="AnimatedTest" component={AnimatedTest} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 ver 2.0 */}
-        {<Stack.Screen name="Past_PackageScreen_3_2" component={Past_PackageScreen_3_2} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 ver 2.0 */}
-        {<Stack.Screen name="Past_PackageScreen_3_2_2" component={Past_PackageScreen_3_2_2} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 ver 1.0 */}
-        {<Stack.Screen name="Past_PackageScreen_3_1" component={Past_PackageScreen_3_1} options={{headerShown:false}}/>}
-        {/* DetailOption 고르기 */}
-        {<Stack.Screen name="DetailOptionScreen" component={DetailOptionScreen} options={{headerShown:false}}/>}
-        {/* 업체페이지 Test Ver */}
-        {<Stack.Screen name="Test_ShopScreen" component={Test_ShopScreen} options={{headerShown:false}}/>}
-
-
       </Stack.Navigator>
     </NavigationContainer>
     <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />

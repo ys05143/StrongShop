@@ -73,7 +73,7 @@ function Select4Screen3_3 (props){
                         <Icon name="close-outline" size={35} color={'white'} onPress={()=>{setModal(false)}}></Icon>
                     </View>
                     <View style={{borderRadius: 10, overflow: 'hidden', width: '100%', height: HEIGHT*2/5}}>
-                        <Description image={require('../resource/Temp.png')}>신차 패키지란?</Description>
+                        <Description image={null}>신차 패키지란?</Description>
                     </View>
                 </DetailModal>
             </ModalView>
