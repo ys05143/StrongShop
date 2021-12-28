@@ -31,6 +31,7 @@ import ProgressScreen from './Main/ProgressScreen';
 import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
 import ProgressScreen_2 from './Main/ProgressScreen_2';
+import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
 
 const Stack = createStackNavigator();
 
@@ -246,6 +247,9 @@ function App (props) {
         {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
         {/* 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
+
+        {/* 신차패키지 3 ver 3.0*/}
+        {<Stack.Screen name="PackageScreen_3_2" component={PackageScreen_3_2} options={{headerShown:false}}/>}
       </Stack.Navigator>
     </NavigationContainer>
     <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />

@@ -495,13 +495,16 @@ function MainScreen( props ) {
                     <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                     <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                 </MenuButton>
-                <MenuButton disabled={true}>
+                <MenuButton 
+                //disabled={true}
+                onPress={()=>props.navigation.navigate("PackageScreen_3_2")}
+                >
                     <Text style={styles.text}>케어</Text>
                     <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
                     <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
-                    <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
-                        <Text style={{color: 'red', fontSize: 12}}>{'/*빠른 시일안에\n찾아뵙겠습니다*/'}</Text>
-                    </View>
+                    {/* <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
+                        <Text style={{color: 'red', fontSize: 12}}>{'빠른 시일안에\n찾아뵙겠습니다'}</Text>
+                    </View> */}
                 </MenuButton>
             </Row>
 
