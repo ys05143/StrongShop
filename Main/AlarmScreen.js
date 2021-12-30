@@ -14,17 +14,17 @@ import Color from "../constants/Color";
 
 const AlarmView = styled.TouchableOpacity`
     width: 100%;
-    height: 100px;
+    height: 90px;
     border-bottom-width: 1px;
     border-color: lightgray;
-    padding: 5px 10px;
+    padding: 20px;
     justify-content: center;
 `;
 const DATA = [{
     messageId: 2,
     alarmType: 200,
     title: '입찰에 업체가 참여했습니다.',
-    content: '확인 해줘',
+    content: '확인 해주세요.',
     date: '20211126',
     isRead: false,
 }]
@@ -36,10 +36,11 @@ function AlarmScreen(props){
 
     React.useEffect(()=>{
         GetAlarm();
-    },[alarmList])
+    },[])
 
     async function GetAlarm(){
         let response = await storage.fetch("Alarm");
+        //console.log(response);
         if(response === null ){
             setAlarmList([]);
         }
@@ -68,13 +69,14 @@ function AlarmScreen(props){
     async function changeState(id){
         let newAlarmList = alarmList;
         const changeIndex = alarmList.findIndex(item=>item.messageId === id);
-        console.log(changeIndex);
+        console.log(newAlarmList[changeIndex]);
         if(changeIndex !== -1){
             newAlarmList[changeIndex].isRead = true;
             await storage.store("Alarm", newAlarmList)
             .then(res=>{
                 setAlarmList(newAlarmList);
                 //props.navigation.popToTop("MainScreen");
+                GetAlarm();
             })
         }
     }
@@ -85,13 +87,13 @@ function AlarmScreen(props){
                 if(item.isRead === false){ changeState(item.messageId);}
                 }}>
                 <Text style={{fontWeight: 'bold', fontSize: 17, marginBottom: 3, color: item.isRead ? 'gray' : 'black'}}>{item.title}</Text>
-                <Text style={{marginBottom: 3, color: item.isRead ? 'gray' : 'black'}}>{item.content}</Text>
-                <Text style={{color: 'gray'}}>{moment(item.date).format('YYYY-MM-DD')}</Text>
+                <Text style={{fontSize: 15, marginBottom: 3, color: item.isRead ? 'gray' : 'black'}}>{item.content}</Text>
+                <Text style={{color: 'gray'}}>{moment(item.date).format('YYYY-MM-DD HH:mm')}</Text>
             </AlarmView>
         )
     }
     return(
-        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
+        <TotalView>
             <TopBar>
                 <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
@@ -101,7 +103,8 @@ function AlarmScreen(props){
                     <Icon name="trash-outline" size={25} color={'black'}></Icon>
                 </TouchableOpacity>
             </TopBar>
-            {!isLoading ? <FlatList
+            {!isLoading ? 
+            <FlatList
                 data={alarmList}
                 scrollEnabled={true}
                 renderItem={RenderItem}

@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Modal, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import Moment from 'react-moment';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 //pages
 import BidShops from './BidShops';
 //components
@@ -32,10 +33,10 @@ const BtnView = styled.View`
 ///////////////////////////////////
 const TitleView = styled.View`
     width: 100%;
-    padding: 5px;
     align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
+    background-color: white;
+    margin-top: 35px;
+    margin-bottom: 15px;
 `;
 const TimeView = styled.View`
     border: 1px solid gray;
@@ -70,6 +71,28 @@ const DATA = [{
     price: 15000000,
     quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
 },];
+
+const ShopView2 = styled.View`
+    width: 95%;
+    align-items: flex-end;
+    flex-direction: row;
+    padding-bottom: 10px;
+    padding-top: 10px;
+`;
+const NameView2 = styled.TouchableOpacity`
+    height: 35px;
+
+    margin-left: 10px;
+
+`;
+const PriceView = styled.View`
+    height: 35px;
+    flex: 1;
+    flex-direction: row;
+    padding-right: 10px;
+    align-items: flex-end;
+    justify-content: flex-end;
+`;
 
 function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
@@ -197,23 +220,46 @@ function PackageScreen_5(props){
         <>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TitleView>
-                <View style={{width: '50%'}}>
+                <View>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>{props.route.params.carName}</Text>
                 </View>
-                <TimeView>
-                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>{`${convertTime(time).hour}:${convertTime(time).minute}:${convertTime(time).second}`}</Text>
-                </TimeView>
+                <View>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>{`${convertTime(time).hour}:${convertTime(time).minute}:${convertTime(time).second}`}</Text>
+                </View>
             </TitleView>
             <ContentView>
                 {/* <Filter>-최신순</Filter> */}
-                <TouchableOpacity style={{marginLeft: 10, fontSize: 15, marginTop: 5, marginBottom: 10}} onPress={()=>{setReceiptModal(true)}}>
+                {/* <TouchableOpacity style={{marginLeft: 10, fontSize: 15, marginTop: 5, marginBottom: 10}} onPress={()=>{setReceiptModal(true)}}>
                     <Text>주문확인</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <Button mode={"outlined"} color={'gray'} icon={'clipboard-check-outline'} onPress={()=>{setReceiptModal(true)}}>주문 상세</Button>
                 <ShopList>
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
                             return(
-                                <BidShops key={item.bidId} item={[item]} navigation={props.navigation} orderId={orderId} getSending={setIsSending}></BidShops>
+                                <View key={item.bidId} style={{width: '100%', alignItems: 'center'}}>
+                                    <ShopView2>
+                                        <TouchableOpacity style={{width: 70, height: 70, backgroundColor: '#e5e5e5', borderRadius: 15}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: item.companyId});}}/> 
+                                        <View style={{flex: 1}}>
+                                            <NameView2 onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: item.companyId});}}> 
+                                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>{item.companyName}</Text>
+                                                    <MaterialIcons name={"chevron-right"} size={20} color= 'black' style={{marginLeft: 5}}></MaterialIcons>
+                                                </View>
+                                                
+                                                <View>
+                                                    <Text style={{fontSize: 13, marginLeft: 3, color: 'gray'}}>{item.simpleRegion}</Text>
+                                                </View>
+                                            </NameView2>
+                                            <PriceView>
+                                                <Text style={{fontSize: 23, fontWeight: 'bold'}}>{Platform.OS ==='ios' ? item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' }) : parseInt(item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원'}</Text>
+                                            </PriceView>
+                                        </View>
+                                    </ShopView2>
+                                    <View style={{width: '100%'}}>
+                                        <BidShops item={[item]} navigation={props.navigation} orderId={orderId} getSending={setIsSending}></BidShops>
+                                    </View>
+                                </View>
                             )
                         })}
                     </ScrollView>:
@@ -221,11 +267,11 @@ function PackageScreen_5(props){
                         <Text style={{fontSize: 20, color: 'gray'}}>아직 입찰에 참여한 업체가 없습니다.</Text>                        
                     </View>}
                 </ShopList>
-                <BtnView>
+                {/* <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                         <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} disabled={isSending}>홈으로</Button>
                     </Row>
-                </BtnView>
+                </BtnView> */}
             </ContentView>
             {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
