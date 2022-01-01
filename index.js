@@ -1,8 +1,8 @@
 /**
  * @format
  */
-
-import {AppRegistry} from 'react-native';
+import React from 'react';
+import {AppRegistry, Platform} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
@@ -11,7 +11,8 @@ import storage from './function/storage';
 messaging().setBackgroundMessageHandler(async (remoteMessage) => { //backbground
     const index = remoteMessage.data.index;
     let title = '알림';
-    let content = 'null';
+    let content = 'background';
+    console.log('background\n'+JSON.stringify(remoteMessage));
 
     if(index === '200'){
         title = '입찰';
@@ -48,20 +49,36 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => { //backbground
     
     //if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
     if(true){
-      const alarmList = await storage.fetch("Alarm");
-      //console.log('main Async',alarmList);
-      let newAlarm = alarmList !== null ? [...alarmList] : [];
-      newAlarm.push({
-          messageId: remoteMessage.messageId,
-          alarmType: index,
-          date: remoteMessage.data.time,
-          isRead: false,
-          title: title,
-          content: content,
-      });
-
-      await storage.store("Alarm", newAlarm);
-    }
+    const alarmList = await storage.fetch("Alarm");
+    //console.log('main Async',alarmList);
+    let newAlarm = alarmList !== null ? [...alarmList] : [];
+    newAlarm.push({
+        messageId: remoteMessage.messageId,
+        alarmType: index,
+        date: remoteMessage.data.time,
+        isRead: false,
+        title: title,
+        content: content,
     });
 
-AppRegistry.registerComponent(appName, () => App);
+    await storage.store("Alarm", newAlarm);
+    }
+});
+
+// messaging()
+//   .getIsHeadless()
+//   .then(isHeadless => {
+//     // do sth with isHeadless
+//   });
+
+function HeadlessCheck({ isHeadless }) {
+    if (isHeadless) {
+      // App has been launched in the background by iOS, ignore
+      console.log('hello');
+      return null;
+    }
+    return <App/>;
+  }
+
+// AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => HeadlessCheck);

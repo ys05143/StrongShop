@@ -1,7 +1,7 @@
 
 import React from 'react';
 import styled from 'styled-components/native';
-import { View, Text, } from 'react-native';
+import { View, Text, Platform, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
@@ -21,6 +21,11 @@ import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
+
+import PaymentScreen from './Payment/PaymentScreen';
+import Pay from './Payment/Pay';
+import PayFinish from './Payment/PayFinish';
+
 import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
@@ -40,7 +45,16 @@ function App (props) {
   const [alarmContent, setAlarmContent] = React.useState({title: '', content: ''});
 
   async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
+    const authStatus = await messaging().requestPermission(
+    //   {
+    //   alert: true,
+    //   announcement: false,
+    //   badge: true,
+    //   carPlay: false,
+    //   provisional: false,
+    //   sound: true
+    // }
+    );
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
@@ -60,9 +74,9 @@ function App (props) {
     const unsubscribe = messaging().onMessage( async remoteMessage => {
       //alert('foreground messgage arrived!',JSON.stringify(remoteMessage));
       const index = remoteMessage.data.index;
-
       let title = '알림';
-      let content = 'null';
+      let content = 'foreground';
+      console.log('foreground\n'+JSON.stringify(remoteMessage));
 
       if(index === '200'){
           title = '입찰';
@@ -109,7 +123,6 @@ function App (props) {
             isRead: false,
             title: title,
             content: content,
-            name: remoteMessage.data.name, 
         });
         await storage.store("Alarm", newAlarm);
       }
@@ -178,7 +191,6 @@ function App (props) {
   //         isRead: false,
   //         title: title,
   //         content: content,
-  //         name: remoteMessage.data.name,
   //     });
 
   //     await storage.store("Alarm", newAlarm);
@@ -187,7 +199,61 @@ function App (props) {
 
   React.useEffect(()=>{ // background message open by touching
       const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
-        //console.log('app open'+remoteMessage.data);
+        // if(Platform.OS === 'ios'){
+        //     const index = remoteMessage.data.index;
+        //     let title = '알림';
+        //     let content = 'ios background touch';
+        //     console.log('ios background touch\n'+JSON.stringify(remoteMessage));
+
+        //     if(index === '200'){
+        //         title = '입찰';
+        //         content = '새로운 입찰이 있습니다.';
+        //     }
+        //     else if(index === '201'){
+        //         title = '입찰 종료';
+        //         content = '입찰 시간이 만료되었습니다.';
+        //     }
+        //     else if(index === '210'){
+        //         title = '사진 등록';
+        //         content = '업체에서 검수 사진을 등록했습니다.';
+        //     }
+        //     else if(index === '211'){
+        //         title = '검수 완료';
+        //         content = '검수가 완료되었습니다.';
+        //     }
+        //     else if(index === '212'){
+        //         title = '사진 등록';
+        //         content = '업체에서 시공 사진을 등록했습니다.';
+        //     }
+        //     else if(index === '213'){
+        //         title = '시공 완료';
+        //         content = '시공이 완료되었습니다.';
+        //     }
+        //     else if(index === '214'){
+        //         title = '리뷰';
+        //         content = '시공이 완료되었습니다.';
+        //     }
+        //     else if(index === '002'){
+        //         title = remoteMessage.notification.title;
+        //         content = remoteMessage.notification.body;
+        //     }
+            
+        //     if(true){
+        //       const alarmList = await storage.fetch("Alarm");
+        //       //console.log('main Async',alarmList);
+        //       let newAlarm = alarmList !== null ? [...alarmList] : [];
+        //       newAlarm.push({
+        //           messageId: remoteMessage.messageId,
+        //           alarmType: index,
+        //           date: remoteMessage.data.time,
+        //           isRead: false,
+        //           title: title,
+        //           content: content,
+        //       });
+
+        //       await storage.store("Alarm", newAlarm);
+        //     }
+        // }
         RootNavigation.navigate("MainScreen");
       });
       return unsubscribe;
@@ -238,6 +304,14 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
         {/* 신차패키지 5 */}
         {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
+
+        {/* 결제페이지 */}
+        {<Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{headerShown:false}}/>}
+        {/* 결제 화면 */}
+        {<Stack.Screen name="Pay" component={Pay} options={{headerShown:false}}/>}
+        {/* 결제 완료 화면 */}
+        {<Stack.Screen name="PayFinish" component={PayFinish} options={{headerShown:false}}/>}
+
         {/* 업체페이지 */}
         {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 */}

@@ -131,6 +131,7 @@ function BidShop(props, {navigation}) {
                 //console.log(response);
                 props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3});
                 props.getSending(false);
+                setIsSending(false);
             }
         }
         catch{
@@ -151,7 +152,8 @@ function BidShop(props, {navigation}) {
             '이 업체로 선택하시겠습니까?',
             [
                 {text: '예', onPress: async () => {
-                    sendData(orderId, bidId);
+                    //sendData(orderId, bidId);
+                    props.navigation.replace("PaymentScreen", {orderId: orderId, bidId: bidId});
                 }},
                 {text: '아니요', onPress: () => {
                      props.getSending(false);

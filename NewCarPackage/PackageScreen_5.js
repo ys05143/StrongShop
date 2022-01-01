@@ -7,6 +7,7 @@ import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import Moment from 'react-moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon  from "react-native-vector-icons/Ionicons";
 //pages
 import BidShops from './BidShops';
 //components
@@ -98,6 +99,7 @@ function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [bidList, setBidList] = React.useState([]);
     const [isSending, setIsSending] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [ReceiptModal, setReceiptModal] = React.useState(false);
 
     function getReceiptModal(close){
@@ -113,6 +115,7 @@ function PackageScreen_5(props){
 
     async function getData(){
         try{
+            setIsLoading(true);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({
@@ -121,7 +124,7 @@ function PackageScreen_5(props){
                     headers : {Auth: auth},
                 })
                 const rawData = response.data.data;
-                console.log(rawData);
+                //console.log(rawData);
                 if(rawData.length !== 0){
                     //details만 parsing
                     rawData.map(item => {
@@ -145,6 +148,7 @@ function PackageScreen_5(props){
                     console.log('bidlist is empty');
                     setBidList([]);
                 }
+                setIsLoading(false);
             }
             else{
                 Alert.alert(
@@ -162,7 +166,7 @@ function PackageScreen_5(props){
                 '오류',
                 'PackageScreen_5 오류',
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen")}},
                 ],
                 { cancelable: false }
             );
@@ -233,7 +237,7 @@ function PackageScreen_5(props){
                     <Text>주문확인</Text>
                 </TouchableOpacity> */}
                 <Button mode={"outlined"} color={'gray'} icon={'clipboard-check-outline'} onPress={()=>{setReceiptModal(true)}}>주문 상세</Button>
-                <ShopList>
+                {!isLoading ? <ShopList>
                     {bidList.length !== 0 ? <ScrollView>
                         {_.map(bidList, (item)=>{
                             return(
@@ -266,7 +270,12 @@ function PackageScreen_5(props){
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontSize: 20, color: 'gray'}}>아직 입찰에 참여한 업체가 없습니다.</Text>                        
                     </View>}
-                </ShopList>
+                </ShopList> : 
+                <ShopList>
+                    <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center', backgroundColor: 'transparent'}}>
+                        <ActivityIndicator size = 'small' color= {Color.main}/>
+                    </View>
+                </ShopList>}
                 {/* <BtnView>
                     <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                         <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} disabled={isSending}>홈으로</Button>
@@ -276,6 +285,11 @@ function PackageScreen_5(props){
             {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
+            <View style={{position: 'absolute', width: '100%', paddingTop: 5, paddingLeft: 5}}>
+                <TouchableOpacity onPress={()=>{props.navigation.navigate("MainScreen")}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
+                </TouchableOpacity>    
+            </View>
         </TotalView>
 
         <Modal

@@ -36,6 +36,7 @@ function JustShowReceipt(props){
     const [receipt, setReceipt] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
 
+    //서버요청으로 변경해야함.
     const isFocused = useIsFocused();
     React.useEffect( ()=>{
         //console.log(isFocused);
@@ -44,6 +45,7 @@ function JustShowReceipt(props){
             storage.fetch(props.orderId.toString())
             .then(res =>{
                 setReceipt(res);
+                //console.log(res);
                 setIsLoading(false);
             })
             .catch(e => {

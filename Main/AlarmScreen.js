@@ -45,7 +45,7 @@ function AlarmScreen(props){
             setAlarmList([]);
         }
         else {
-            response.sort(function(a,b){
+            response.sort((a,b)=>{
                 return moment(b.date) - moment(a.date);
             })
             setAlarmList(response !== null ? response: null);
@@ -93,7 +93,7 @@ function AlarmScreen(props){
         )
     }
     return(
-        <TotalView>
+        <TotalView notchColor={'white'}>
             <TopBar>
                 <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>

@@ -1,3 +1,4 @@
+#import "RNFBMessagingModule.h"
 #import <Firebase.h>
 #import "AppDelegate.h"
 
@@ -47,6 +48,8 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  NSDictionary *appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
+  
   if ([FIRApp defaultApp] == nil) {
       [FIRApp configure];
     }
@@ -63,7 +66,7 @@ static void InitializeFlipper(UIApplication *application) {
   #endif
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"StrongShop"
-                                            initialProperties:nil];
+                                            initialProperties:appProperties];
 
   if (@available(iOS 13.0, *)) {
       rootView.backgroundColor = [UIColor systemBackgroundColor];

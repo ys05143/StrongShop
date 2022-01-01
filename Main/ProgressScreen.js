@@ -218,7 +218,7 @@ function ProgressScreen( props ) {
                 const record = Object.values(snapshot.toJSON());
                 let count = 0;
                 record.map((item)=>{
-                    console.log(item.user);
+                    //console.log(item.user);
                     if(item.user._id !== 2 && item.received !== true) count = count+1;
                 });
                 setAddChatNum(count);
@@ -306,7 +306,7 @@ function ProgressScreen( props ) {
                     checkErrorCode(e, props.navigation);
                 });
                 let rawData = response.data.data;
-                console.log('state:',state,rawData);
+                //console.log('state:',state,rawData);
 
                 if(rawData !== null){
                     await checkAddChat(rawData.contract_id);
@@ -409,7 +409,7 @@ function ProgressScreen( props ) {
                             }).catch(e=>{
                                 checkErrorCode(e, props.navigation);
                             })
-                            console.log(response);
+                            //console.log(response);
                             setState(state+1);
                         }
                         else{

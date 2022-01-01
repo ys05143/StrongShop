@@ -244,7 +244,7 @@ function ProgressScreen_Ver_2( props ) {
                 const record = Object.values(snapshot.toJSON());
                 let count = 0;
                 record.map((item)=>{
-                    console.log(item.user);
+                    //console.log(item.user);
                     if(item.user._id !== 2 && item.received !== true) count = count+1;
                 });
                 setAddChatNum(count);
@@ -332,7 +332,7 @@ function ProgressScreen_Ver_2( props ) {
                     checkErrorCode(e, props.navigation);
                 });
                 let rawData = response.data.data;
-                console.log('state:',state,rawData);
+                //console.log('state:',state,rawData);
 
                 if(rawData !== null){
                     await checkAddChat(rawData.contract_id);
@@ -419,8 +419,8 @@ function ProgressScreen_Ver_2( props ) {
     async function NextState(){
         try{
             Alert.alert(
-                state === 3 ? '탁송지를 변경하셨습니까?' : state === 5 ? '시공을 승인하시겠습니까?' : '승인하시겠습니까?',
-                state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '되돌릴 수 없습니다.' : '되돌릴 수 없습니다.',
+                state === 3 ? '탁송지를 변경하셨습니까?' : state === 5 ? '차량을 인수하시겠습니까?' : '승인하시겠습니까?',
+                state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '인수를 결정하시면 바로 시공을 시작합니다.' : '되돌릴 수 없습니다.',
                 [
                     {text: '예', onPress: async () => {
                         const auth = await checkJwt();
@@ -435,7 +435,6 @@ function ProgressScreen_Ver_2( props ) {
                             }).catch(e=>{
                                 checkErrorCode(e, props.navigation);
                             })
-                            console.log(response);
                             setState(state+1);
                         }
                         else{
