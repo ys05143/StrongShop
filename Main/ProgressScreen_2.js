@@ -512,7 +512,7 @@ function ProgressScreen_Ver_2( props ) {
                 
                 </Appbar.Header>   */}
                 <TopBar style={{backgroundColor: Color.main}}>
-                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={() => { props.navigation.goBack(); rdbOff(); }}>
+                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={() => { props.navigation.replace("MainScreen"); rdbOff(); }}>
                         <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>

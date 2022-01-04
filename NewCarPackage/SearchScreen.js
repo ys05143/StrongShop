@@ -39,7 +39,7 @@ function SearchScreen(props){
         }
         newOrder.carName = carName;
         await storage.store('BidOrder', newOrder);
-        props.navigation.navigate("PackageScreen_2");
+        props.navigation.replace("PackageScreen_2");
     }
 
     const searchItem = (item) =>{
@@ -86,7 +86,7 @@ function SearchScreen(props){
                 onPress={()=>{}}
                 clearIconComponent={<Icon name="close-circle" size={20} color={'gray'}/>}
                 style={{...styles.shadowStyle, ...styles.searchBarStyle}}
-                onClearPress={()=>SearchProcess('')}
+                onClearPress={()=>{SearchProcess(''); setSearchSpinner(false);}}
                 onSearchPress={()=>{SelectCar(search)}}
             />
             <View style={{flex: 1, marginTop: 10}}>

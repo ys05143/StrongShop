@@ -47,8 +47,8 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => { //backbground
         content = remoteMessage.notification.body;
     }
     
-    //if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
-    if(true){
+    if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+    // if(true){
     const alarmList = await storage.fetch("Alarm");
     //console.log('main Async',alarmList);
     let newAlarm = alarmList !== null ? [...alarmList] : [];
