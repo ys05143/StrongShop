@@ -46,14 +46,15 @@ function App (props) {
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission(
-    //   {
-    //   alert: true,
-    //   announcement: false,
-    //   badge: true,
-    //   carPlay: false,
-    //   provisional: false,
-    //   sound: true
-    // }
+      // {
+      //   alert: true,
+      //   announcement: false,
+      //   badge: true,
+      //   carPlay: true,
+      //   provisional: false,
+      //   sound: true,
+      //   providesAppNotificationSettings: false,
+      // }
     );
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -111,8 +112,7 @@ function App (props) {
           content = remoteMessage.notification.body;
       }
       
-      //if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
-      if(true){
+      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
         const alarmList = await storage.fetch("Alarm");
         let newAlarm = alarmList !== null ? [...alarmList] : [];
         const length = newAlarm.length;
@@ -141,119 +141,8 @@ function App (props) {
       return unsubscribe;
   },[]);
 
-  // index.js 로 이동
-  // messaging().setBackgroundMessageHandler(async (remoteMessage) => { //backbground
-  //   const index = remoteMessage.data.index;
-  //   let title = '알림';
-  //   let content = '';
-
-  //   if(index === '200'){
-  //       title = '입찰';
-  //       content = '입찰이 도착했습니다.';
-  //   }
-  //   else if(index === '201'){
-  //       title = '입찰 종료';
-  //       content = '입찰 시간이 만료되었습니다.';
-  //   }
-  //   else if(index === '210'){
-  //       title = '사진 등록';
-  //       content = '업체에서 검수 사진을 등록했습니다.';
-  //   }
-  //   else if(index === '211'){
-  //       title = '검수 완료';
-  //       content = '검수가 완료되었습니다.';
-  //   }
-  //   else if(index === '212'){
-  //       title = '사진 등록';
-  //       content = '업체에서 시공 사진을 등록했습니다.';
-  //   }
-  //   else if(index === '213'){
-  //       title = '시공 완료';
-  //       content = '시공이 완료되었습니다.';
-  //   }
-  //   else if(index === '214'){
-  //       title = '리뷰';
-  //       content = '시공이 완료되었습니다.';
-  //   }
-  //   else if(index === '002'){
-  //       title = remoteMessage.notification.title;
-  //       content = remoteMessage.notification.body;
-  //   }
-    
-  //   if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
-  //     const alarmList = await storage.fetch("Alarm");
-  //     //console.log('main Async',alarmList);
-  //     let newAlarm = alarmList !== null ? [...alarmList] : [];
-  //     newAlarm.push({
-  //         messageId: remoteMessage.messageId,
-  //         alarmType: index,
-  //         date: remoteMessage.data.time,
-  //         isRead: false,
-  //         title: title,
-  //         content: content,
-  //     });
-
-  //     await storage.store("Alarm", newAlarm);
-  //   }
-  //   });
-
   React.useEffect(()=>{ // background message open by touching
       const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
-        // if(Platform.OS === 'ios'){
-        //     const index = remoteMessage.data.index;
-        //     let title = '알림';
-        //     let content = 'ios background touch';
-        //     console.log('ios background touch\n'+JSON.stringify(remoteMessage));
-
-        //     if(index === '200'){
-        //         title = '입찰';
-        //         content = '새로운 입찰이 있습니다.';
-        //     }
-        //     else if(index === '201'){
-        //         title = '입찰 종료';
-        //         content = '입찰 시간이 만료되었습니다.';
-        //     }
-        //     else if(index === '210'){
-        //         title = '사진 등록';
-        //         content = '업체에서 검수 사진을 등록했습니다.';
-        //     }
-        //     else if(index === '211'){
-        //         title = '검수 완료';
-        //         content = '검수가 완료되었습니다.';
-        //     }
-        //     else if(index === '212'){
-        //         title = '사진 등록';
-        //         content = '업체에서 시공 사진을 등록했습니다.';
-        //     }
-        //     else if(index === '213'){
-        //         title = '시공 완료';
-        //         content = '시공이 완료되었습니다.';
-        //     }
-        //     else if(index === '214'){
-        //         title = '리뷰';
-        //         content = '시공이 완료되었습니다.';
-        //     }
-        //     else if(index === '002'){
-        //         title = remoteMessage.notification.title;
-        //         content = remoteMessage.notification.body;
-        //     }
-            
-        //     if(true){
-        //       const alarmList = await storage.fetch("Alarm");
-        //       //console.log('main Async',alarmList);
-        //       let newAlarm = alarmList !== null ? [...alarmList] : [];
-        //       newAlarm.push({
-        //           messageId: remoteMessage.messageId,
-        //           alarmType: index,
-        //           date: remoteMessage.data.time,
-        //           isRead: false,
-        //           title: title,
-        //           content: content,
-        //       });
-
-        //       await storage.store("Alarm", newAlarm);
-        //     }
-        // }
         RootNavigation.navigate("MainScreen");
       });
       return unsubscribe;
