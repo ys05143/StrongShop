@@ -1071,7 +1071,7 @@ function PackageScreen_3(props) {
                             <Row style={{ paddingLeft: 10}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>디자인</Text>
                                 <View style={{width: '100%', height: '80%'}}>
-                                    <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, borderRadius: 5, textAlignVertical:'top'}}
+                                    <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, paddingVertical: 15, paddingHorizontal: 5, borderRadius: 5, textAlignVertical:'top'}}
                                             value={WrappingETC}
                                             maxLength={100}
                                             editable={true}

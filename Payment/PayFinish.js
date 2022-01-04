@@ -52,7 +52,7 @@ function PayFinish(props){
 
     return(
         <TotalView>
-            <Button mode={"contained"} disabled={isSending} color={Color.main} onPress={()=>{sendData()}}>결제완료</Button>
+            <Button mode={"contained"} disabled={isSending} color={Color.main} onPress={()=>{props.navigation.popToTop()}}>홈으로</Button>
             {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', position: 'absolute', justifyContent: 'center', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}

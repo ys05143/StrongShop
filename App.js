@@ -46,14 +46,15 @@ function App (props) {
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission(
-    //   {
-    //   alert: true,
-    //   announcement: false,
-    //   badge: true,
-    //   carPlay: false,
-    //   provisional: false,
-    //   sound: true
-    // }
+      // {
+      //   alert: true,
+      //   announcement: false,
+      //   badge: true,
+      //   carPlay: true,
+      //   provisional: false,
+      //   sound: true,
+      //   providesAppNotificationSettings: false,
+      // }
     );
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -112,7 +113,6 @@ function App (props) {
       }
       
       if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
-      // if(true){
         const alarmList = await storage.fetch("Alarm");
         let newAlarm = alarmList !== null ? [...alarmList] : [];
         const length = newAlarm.length;
@@ -143,7 +143,6 @@ function App (props) {
 
   React.useEffect(()=>{ // background message open by touching
       const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
-        //background에서 detect한 같은 메세지 호출됨.
         RootNavigation.navigate("MainScreen");
       });
       return unsubscribe;
