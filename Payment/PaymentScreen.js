@@ -18,17 +18,17 @@ import checkErrorCode from '../function/checkErrorCode';
 const WIDTH = AppWindow.width;
 
 const DATA = {
-    pg: 'html5_inicis',
-    pay_method: 'card',
-    name: '아임포트 결제데이터 분석',
-    merchant_uid: `mid_${new Date().getTime()}`,
-    amount: '100',
-    buyer_name: '홍길동',
-    buyer_tel: '01012345678',
-    buyer_email: 'example@naver.com',
-    buyer_addr: '서울시 강남구 신사동 661-16',
-    buyer_postcode: '06018',
-    app_scheme: 'example',
+    pg: '',
+    pay_method: '',
+    name: '',
+    merchant_uid: '',
+    amount: '',
+    buyer_name: '',
+    buyer_tel: '',
+    buyer_email: '',
+    buyer_addr: '',
+    buyer_postcode: '',
+    app_scheme: '',
     // [Deprecated v1.0.3]: m_redirect_url
 };
 
@@ -42,11 +42,10 @@ const PayMode = styled.TouchableOpacity`
 `;
 
 const Pay = [
-    {label: '신용카드', mode: 'html5_inicis'},
-    {label: '무통장입금', mode: 'temp'},
-    {label: '네이버페이', mode: 'naverpay'},
-    {label: '카카오페이', mode: 'kakaopay'},
-    {label: '토스페이', mode: 'tosspay'},
+    {label: '신용카드', pg: 'uplus', pay_method: 'card'},
+    {label: '무통장입금', pg: 'uplus', pay_method: 'vbank'},
+    {label: '카카오페이', pg: 'kakaopay', pay_method: 'card'},
+    {label: '토스페이', pg: 'tosspay', pay_method: 'card'},
 ]
 
 const styles = {
@@ -85,9 +84,11 @@ function PaymentScreen(props){
     const [bidId, setBidId] = React.useState(props.route.params.bidId);
     const [receipt, setReceipt] = React.useState(props.route.params.receipt);
     const [payData, setPayData] = React.useState(DATA);
+    const [baseData, setBaseData] = React.useState(null);
+    const [payName, setPayName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [activeSections, setActiveSections] = React.useState([]);
-    const [test, setTest] = React.useState(false);
+    const [test, setTest] = React.useState(true);
 
     React.useEffect(()=>{
         getData();
@@ -102,10 +103,24 @@ function PaymentScreen(props){
                     method: 'GET',
                     url : `${server.url}/api/user`,
                     headers : {Auth: auth},
-                })
+                });
                 const rawData = response.data.data;
+                setBaseData({
+                    pg: null,
+                    pay_method: null,
+                    name: '아임포트 결제데이터 분석',
+                    merchant_uid: `mid_${new Date().getTime()}`,
+                    amount: JSON.parse(receipt[0].quote).totalPrice,
+                    buyer_name: rawData.nickname,
+                    buyer_tel: rawData.phonenumber,
+                    buyer_email: 'example@naver.com',
+                    buyer_addr: '서울시 강남구 신사동 661-16',
+                    buyer_postcode: '06018',
+                    app_scheme: 'example',
+                    // [Deprecated v1.0.3]: m_redirect_url
+                });
                 setPayData({
-                    pg: 'html5_inicis',
+                    pg: 'uplus',
                     pay_method: 'card',
                     name: '아임포트 결제데이터 분석',
                     merchant_uid: `mid_${new Date().getTime()}`,
@@ -117,7 +132,22 @@ function PaymentScreen(props){
                     buyer_postcode: '06018',
                     app_scheme: 'example',
                     // [Deprecated v1.0.3]: m_redirect_url
-                })
+                });
+                setPayName('신용카드');
+                console.log({
+                    pg: 'uplus',
+                    pay_method: 'card',
+                    name: '아임포트 결제데이터 분석',
+                    merchant_uid: `mid_${new Date().getTime()}`,
+                    amount: JSON.parse(receipt[0].quote).totalPrice,
+                    buyer_name: rawData.nickname,
+                    buyer_tel: rawData.phonenumber,
+                    buyer_email: 'example@naver.com',
+                    buyer_addr: '서울시 강남구 신사동 661-16',
+                    buyer_postcode: '06018',
+                    app_scheme: 'example',
+                    // [Deprecated v1.0.3]: m_redirect_url
+                });
                 setIsLoading(false);
             }
             else{
@@ -171,11 +201,12 @@ function PaymentScreen(props){
         }
     }
 
-    function changePayData(key, value){
-        let newData = {...payData};
-        if(key === 'pg') newData.pg = value;
+    function changePayData(key, item){
+        let newData = {...baseData};
+        if(key === 'pg') {newData.pg = item.pg; newData.pay_method = item.pay_method}
         console.log(newData);
         setPayData(newData);
+        setPayName(item.label);
     }
 
     function MoveToPay(){
@@ -201,9 +232,9 @@ function PaymentScreen(props){
 
     function OnePayMode(item){
         return(
-            <View key={item.mode} style={{width: WIDTH/3, height: 70, justifyContent: 'center', alignItems: 'center'}}>
-                <PayMode style={{borderColor: payData.pg === item.mode ? Color.main : 'lightgray', backgroundColor: payData.pg === item.mode ? Color.main : 'white'}} onPress={()=>{changePayData('pg', item.mode)}}>
-                    <Text style={{color: payData.pg === item.mode ? 'white' : 'black'}}>{item.label}</Text>
+            <View key={item.label} style={{width: WIDTH/3, height: 70, justifyContent: 'center', alignItems: 'center'}}>
+                <PayMode style={{borderColor: payName === item.label ? Color.main : 'lightgray', backgroundColor: payName === item.label ? Color.main : 'white'}} onPress={()=>{changePayData('pg', item)}}>
+                    <Text style={{color: payName === item.label ? 'white' : 'black'}}>{item.label}</Text>
                 </PayMode>
             </View>
         )
@@ -366,7 +397,7 @@ function PaymentScreen(props){
                         )})}
                 </Row>
             </View>
-            <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>결제하기</Button>
+            <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}} contentStyle={{width: '100%', height: '100%'}}>결제하기</Button>
             {test && <Button mode={"contained"} color={Color.main} onPress={()=>{sendData()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>넘어가기</Button>}
             </ScrollView>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>

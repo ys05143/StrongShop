@@ -1,6 +1,7 @@
 import React from 'react';
 import TotalView from '../components/TotalView';
 import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { Title } from 'react-native-paper';
 import IMP from 'iamport-react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import Color from '../constants/Color';
@@ -17,8 +18,8 @@ function Pay(props){
     const [isSending, setIsSending] = React.useState(false);
 
     function callback(response) {
-        console.log("imp_success "+imp_success);
-        if(response.imp_success){
+        console.log(response);
+        if(response.imp_success === true){
             sendData();
         }
         else{
@@ -50,7 +51,7 @@ function Pay(props){
         }
         catch{
             Alert.alert(
-                '오류',
+                '네트워크 오류',
                 '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
@@ -58,6 +59,14 @@ function Pay(props){
                 { cancelable: false }
             );
         }
+    }
+    const LoadingScreen = () =>{
+        return(
+            <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+                <ActivityIndicator size = 'large' color= {Color.main}/>
+                <Title>로딩중...</Title>
+            </View>
+        )
     }
 
     return(
@@ -68,12 +77,8 @@ function Pay(props){
                     // tierCode={'AAA'}
                     data = {payData}
                     callback= {callback}
+                    loading={<LoadingScreen/>}
                 />
-                <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                    <TouchableOpacity onPress={()=>{props.navigation.replace("PaymentScreen")}}>
-                        <Icon name="close-outline" size={35} color={'black'}></Icon>
-                    </TouchableOpacity>    
-                </View>
             </View>
             {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
