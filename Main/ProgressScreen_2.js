@@ -4,7 +4,6 @@ import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconBut
 import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -13,7 +12,6 @@ import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIc
 //import { request , PERMISSIONS } from 'react-native-permissions';
 import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
-import storage from '../function/storage';
 import TopBar from '../components/TopBar';
 import Color from '../constants/Color';
 import JustShowOrder from '../NewCarPackage/JustShowOrder';
@@ -221,19 +219,6 @@ function ProgressScreen_Ver_2( props ) {
     function getReceiptModal(close){
         setReceiptModal(close);
     }
-
-    // async function rdbOn(id){ //캐시를 이용해서 읽지 않은 채팅 감지
-    //     console.log(`chat${id}`);
-    //     database().goOnline();
-    //     database().ref(`chat${id}`).on('value', snapshot => {
-    //         //console.log(snapshot.numChildren());
-    //         storage.fetch(`chat${id}`)
-    //         .then(res=>{
-    //             console.log(addChat);
-    //             if(snapshot.numChildren() > res) setAddChat(true);
-    //         });
-    //     });
-    // }
 
     async function checkAddChat(id){
         database().ref(`chat${id}`).on('value', snapshot => {
@@ -504,23 +489,23 @@ function ProgressScreen_Ver_2( props ) {
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
         </Modal>
 
-        <TotalView notchColor={Color.main} homeIndicatorColor={'white'}>
+        <TotalView notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{backgroundColor: 'white'}}>
                 {/* <Appbar.Header style={{ backgroundColor: Color.main }}>
                 <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(); }} />
                 <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
                 
                 </Appbar.Header>   */}
-                <TopBar style={{backgroundColor: Color.main}}>
-                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={() => { props.navigation.replace("MainScreen"); rdbOff(); }}>
-                        <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
+                <TopBar style={{backgroundColor: 'white', borderBottomWidth: 0}}>
+                    <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={() => { props.navigation.goBack(); rdbOff(); }}>
+                        <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>
-                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30, color: 'white'}}>{shopData[0].companyName}</Text>
+                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 25, color: 'black'}}>{shopData[0].companyName}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 10}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
-                        <MaterialComunityIcons name={"chat"} size={30} color={'white'} style={{elevation: 0}}/>
-                        {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={13}>{addChatNum}</Badge>}
+                        <MaterialComunityIcons name={"chat"} size={30} color={'black'} style={{elevation: 0}}/>
+                        {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={15}>{addChatNum}</Badge>}
                     </TouchableOpacity>
                 </TopBar>
                 

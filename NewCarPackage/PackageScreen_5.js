@@ -145,7 +145,7 @@ function PackageScreen_5(props){
                     setBidList(newData);
                 }
                 else{
-                    console.log('bidlist is empty');
+                    //console.log('bidlist is empty');
                     setBidList([]);
                 }
                 setIsLoading(false);
@@ -172,7 +172,7 @@ function PackageScreen_5(props){
             );
         }}
     }
-
+/////for 시간계산////////////////////////
     const [time, setTime] = React.useState(moment.duration(moment(props.route.params.createdTime).add(48, 'hours').diff(moment(Date.now()))).asSeconds());
 
     function useInterval(callback, delay) {
@@ -218,7 +218,7 @@ function PackageScreen_5(props){
             second: second.toString().padStart(2,0),
         };
     }
-      
+ ///////////////////////////////////////////////////////     
 
     return(
         <>

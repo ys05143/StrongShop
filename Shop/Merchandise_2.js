@@ -27,8 +27,7 @@ const Total = styled.View`
 `;
 
 const Option = styled.ScrollView`
-    height: 70px;
-    margin-top: 10px;
+    height: 80px;
     margin-bottom: 10px;
     background-color: white;
 `;
@@ -40,12 +39,12 @@ const OptionView = styled.View`
 `;
 const OptionName = styled.TouchableOpacity`
     padding: 5px;
-    border-radius: 10px;
-    border: 2px solid gray;
+    border-radius: 50px;
+    border: 1px solid gray;
     justify-content: center;
     align-items: center;
     width: 90px;
-    height: 40px;
+    height: 50px;
 `;
 
 const merchadiseList= [
@@ -234,8 +233,8 @@ function Merchandise_2(props){
                 {_.map(merchadiseList, (item) => {
                     return(
                         <OptionView key={item.title} style={{alignSelf: 'center'}}>
-                            <OptionName style={{backgroundColor: show === item.title ? Color.main : 'white', borderColor: show === item.title ? Color.main : 'gray'}} onPress={()=>{showOption(item.title)}}>
-                                <Text style={{color: show === item.title ? 'white' : 'gray'}}>{item.name}</Text>
+                            <OptionName style={{backgroundColor: show === item.title ? Color.main : 'white', borderColor: show === item.title ? Color.main : 'white'}} onPress={()=>{showOption(item.title)}}>
+                                <Text style={{color: show === item.title ? 'white' : Color.main, fontWeight: 'bold'}}>{item.name}</Text>
                             </OptionName>
                         </OptionView>
                     );}

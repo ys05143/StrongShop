@@ -68,17 +68,15 @@ static void InitializeFlipper(UIApplication *application) {
                                                    moduleName:@"StrongShop"
                                             initialProperties:appProperties];
 
-  if (@available(iOS 13.0, *)) {
-      rootView.backgroundColor = [UIColor systemBackgroundColor];
-  } else {
-      rootView.backgroundColor = [UIColor whiteColor];
-  }
-
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  if (@available(iOS 13.0, *)) {
+      rootView.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  }
   
   [RNSplashScreen show];
   return YES;

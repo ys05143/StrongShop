@@ -237,11 +237,10 @@ function ShopScreen_1(props){
             marginTop: HEADER_MAX_HEIGHT,
           }}
         >
-          {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{
-                                                              swipeEnabled: true, 
-                                                              tabBarIndicatorStyle: {backgroundColor: Color.main},
-                                                              tabBarActiveTintColor: Color.main,
-                                                              tabBarContentContainerStyle: {height: TAB_HEIGHT}}}>
+          {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{ swipeEnabled: true, 
+                                                                              tabBarIndicatorStyle: {backgroundColor: Color.main},
+                                                                              tabBarActiveTintColor: Color.main,
+                                                                              tabBarContentContainerStyle: {height: TAB_HEIGHT} }}>
                                                                                  
             <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} companyId={companyId}/>}/>
             <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} companyId={companyId}/>}/>
@@ -314,8 +313,8 @@ topBar: {
   left: 0,
   right: 0,
   flexDirection: 'row',
-  borderColor: 'lightgray',
-  borderBottomWidth: 1,
+  // borderColor: 'lightgray',
+  // borderBottomWidth: 1,
 },
 title: {
   color: 'black',

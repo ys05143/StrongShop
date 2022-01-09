@@ -37,6 +37,7 @@ import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
 import ProgressScreen_2 from './Main/ProgressScreen_2';
 import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
+import Context from './function/Context';
 
 const Stack = createStackNavigator();
 
@@ -166,6 +167,7 @@ function App (props) {
   
   return (
     <>
+    <Context>
     <React.Fragment>
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
@@ -222,6 +224,7 @@ function App (props) {
     </NavigationContainer>
     <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />
     </React.Fragment>
+    </Context>
     </>
   );
 };

@@ -3,6 +3,7 @@ import { Text,Animated,PanResponder,View, ScrollView, Alert, ActivityIndicator }
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import styled from 'styled-components/native';
 import { useIsFocused } from '@react-navigation/native';
+import Icon from "react-native-vector-icons/Ionicons";
 //constants
 import AppWindow from '../constants/AppWindow';
 //constant
@@ -11,7 +12,6 @@ import Color from '../constants/Color';
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
-import { parseInt } from 'lodash';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -22,7 +22,7 @@ const HEADER_MIN_HEIGHT = 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const MapView = styled.View`
-    width: 90%;
+    width: 95%;
     height: 300px;
     background-color: white;
     margin-top: 5px;
@@ -36,15 +36,25 @@ const AddressView = styled.View`
 `;
 const IntroView = styled.View`
     width: 100%;
-    margin-top: 10px;
-    padding: 10px 15px;
+    padding: 15px;
     background-color: white;
+`;
+const TextView = styled.View`
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
 `;
 
 const DATA = {
-    introduceText : '',
+    introduceText : null,
     coord : {latitude: 0, longitude: 0},
-    region : '',
+    region : null,
+    blogUrl: null,
+    siteUrl: null,
+    snsUrl: null,
+    phoneNum: null,
 }
 
 const Total = styled.View`
@@ -71,11 +81,15 @@ function IntroduceShop(props){
                     headers : {Auth: auth},
                 }).catch(e=>console.log(e))
                 const rawData = response.data.data;
-                //console.log('introduce',rawData);
+                console.log('introduce',rawData);
                 const newData = {
-                    introduceText : rawData.introduceText,
+                    introduceText : rawData.introduction,
                     coord : {latitude: parseFloat(rawData.latitude), longitude: parseFloat(rawData.longitude)},
                     region : rawData.address+' '+rawData.detailAddress,
+                    blogUrl: rawData.blogUrl,
+                    siteUrl: rawData.siteUrl,
+                    snsUrl: rawData.snsUrl,
+                    phoneNum: rawData.contact,
                 }
                 setInfoData(newData);
                 setIsLoading(false);
@@ -186,18 +200,34 @@ function IntroduceShop(props){
                 <IntroView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
                     <View style={{width: '100%', alignItems: 'center'}}>
-                        <View style={{width: '90%', marginTop: 5}}>
-                            <Text>{infoData.introduceText}</Text>
-                        </View>
+                        <TextView style={{marginTop: 20}}>
+                            <Text style={{fontSize: 15}}>{infoData.introduceText}</Text>
+                        </TextView>
+                        <TextView>
+                            <Icon name={'call'} size={15} style={{marginRight: 10}}/>
+                            <Text style={{fontSize: 15}}>{infoData.phoneNum}</Text>
+                        </TextView>
+                        <TextView>
+                            <Icon name={'globe-outline'} size={15} style={{marginRight: 10}}/>
+                            <Text style={{fontSize: 15}}>{infoData.siteUrl}</Text>
+                        </TextView>
+                        <TextView>
+                            <Icon name={'link-outline'} size={15} style={{marginRight: 10}}/>
+                            <Text style={{fontSize: 15}}>{infoData.blogUrl}</Text>
+                        </TextView>
+                        <TextView>
+                            <Icon name={'logo-instagram'} size={15} style={{marginRight: 10}}/>
+                            <Text style={{fontSize: 15}}>{'@'+infoData.snsUrl}</Text>
+                        </TextView>
                     </View>
                 </IntroView>
                 {isFocused && 
                 <AddressView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
                     <View style={{width: '100%', alignItems: 'center'}}>
-                        <View style={{width: '90%', marginTop:  20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18}}>{infoData.region}</Text>
-                        </View>
+                        <TextView style={{marginVertical: 15}}>
+                            <Text style={{fontSize: 15}}>{infoData.region}</Text>
+                        </TextView>
                         <MapView>
                             <NaverMapView style={{width: '100%', height: '100%'}}
                                                 scrollGesturesEnabled={true}

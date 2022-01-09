@@ -20,6 +20,7 @@ import checkErrorCode from '../function/checkErrorCode';
 import TotalView from '../components/TotalView';
 //navigation
 import { createNavigationContainerRef } from '@react-navigation/native';
+import { userContext } from '../function/Context';
 
 export const navigationRef = createNavigationContainerRef();
 export function navigate(name, params) {
@@ -166,6 +167,8 @@ function MainScreen( props ) {
     const [myOrderList, setMyOrderList] = React.useState([]);
     const [orderTimeList, setOrderTimeList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
+    
+    const context = React.useContext(userContext);
 
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -269,6 +272,7 @@ function MainScreen( props ) {
                         setMyOrderList([]);
                         //console.log(newData);
                     }
+                    checkNewAlarm();
                     setIsLoading(false);
                 })
                 .catch(e=>{
@@ -324,6 +328,19 @@ function MainScreen( props ) {
                 ],
                 { cancelable: false }
             );}
+        }
+    }
+
+    async function checkNewAlarm(){
+        try{
+            const savedLength = await storage.fetch("NumAlarm");
+            const newAlarms = await storage.fetch("Alarm");
+            if( savedLength !== newAlarms.length){
+                context.setIsNewAlarm(true);
+            }
+        }
+        catch{
+            console.log("cache 오류");
         }
     }
     
@@ -474,6 +491,7 @@ function MainScreen( props ) {
             <TopBar>
                 <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.navigate("AlarmScreen")}}>
                     <Icon name="notifications-outline" size={25} color={'white'}></Icon>
+                    {context.isNewAlarm && <Badge style={{position: 'absolute', elevation: 1}} size={10}/>}
                 </TouchableOpacity>
                 <TouchableOpacity style={{padding: 5, marginLeft: 15}} onPress={()=>{MoveMypage();}}>
                     <Icon name="person-circle-outline" size={25} color={'white'}></Icon>

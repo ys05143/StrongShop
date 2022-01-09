@@ -5,6 +5,7 @@ import database from '@react-native-firebase/database';
 //component
 import TotalView from '../components/TotalView';
 import TopBar from "../components/TopBar";
+import Row from '../components/Row';
 //constants
 import Color from "../constants/Color";
 import { Avatar , Button, Title , Appbar , IconButton , ActivityIndicator } from 'react-native-paper';
@@ -245,13 +246,13 @@ function ChatScreen(props){
     return(
         <TotalView color={'white'} notchColor={Color.main} homeIndicatorColor={'white'}>
             <TopBar style={{backgroundColor: Color.main}}>
-                <TouchableOpacity onPress={()=>{finalChatNum(); props.navigation.goBack()}}>
-                    <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
-                </TouchableOpacity>
-                <View style={{width: '60%'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{props.route.params.companyName}</Text>
-                </View>
-                <TouchableOpacity onPress={()=>{props.navigation.navigate("MainScreen")}}>
+                <Row style={{alignItems: 'center'}}>
+                    <TouchableOpacity onPress={()=>{finalChatNum(); props.navigation.goBack()}}>
+                        <Icon name="chevron-back-outline" size={30} color={'white'}></Icon>
+                    </TouchableOpacity>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', marginLeft: 15}}>{props.route.params.companyName}</Text>                 
+                </Row>
+                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 10}} onPress={()=>{props.navigation.popToTop()}}>
                     <Icon name="home-outline" size={25} color={'white'}></Icon>
                 </TouchableOpacity>
             </TopBar>

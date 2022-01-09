@@ -57,11 +57,6 @@ function Receipt(props){
                         },
                         headers : {Auth: auth},
                     })
-                    .then(async res=>{
-                        //console.log(res.data.data.id);
-                        const stringOrderId = res.data.data.id.toString();
-                        await storage.store(stringOrderId, receipt);
-                    })
                     await AsyncStorage.removeItem('BidOrder', ()=>{
                         Alert.alert(
                             '완료',

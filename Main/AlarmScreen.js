@@ -11,6 +11,7 @@ import TopBar from "../components/TopBar";
 import storage from "../function/storage";
 //constants
 import Color from "../constants/Color";
+import { userContext } from "../function/Context";
 
 const AlarmView = styled.TouchableOpacity`
     width: 100%;
@@ -33,6 +34,7 @@ function AlarmScreen(props){
     const [alarmList, setAlarmList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const context = React.useContext(userContext);
 
     React.useEffect(()=>{
         GetAlarm();
@@ -50,6 +52,9 @@ function AlarmScreen(props){
             })
             setAlarmList(response !== null ? response: null);
         }
+        await storage.store("NumAlarm", response.length);
+        context.setIsNewAlarm(false);
+
     }
 
     async function ClearAlarmList(){

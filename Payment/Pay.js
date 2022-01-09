@@ -19,7 +19,7 @@ function Pay(props){
 
     function callback(response) {
         console.log(response);
-        if(response.imp_success === true){
+        if(response.imp_success === 'true'){
             sendData();
         }
         else{
