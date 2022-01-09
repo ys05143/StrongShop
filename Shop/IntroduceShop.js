@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text,Animated,PanResponder,View, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { Text,Animated,PanResponder,View, ScrollView, Alert, ActivityIndicator, Linking } from 'react-native';
 import NaverMapView, {Circle, Marker, Path, Polyline, Polygon} from "react-native-nmap";
 import styled from 'styled-components/native';
 import { useIsFocused } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
 //constants
 import AppWindow from '../constants/AppWindow';
+import Row from '../components/Row';
 //constant
 import Color from '../constants/Color';
 //for server
@@ -42,11 +43,17 @@ const IntroView = styled.View`
 const TextView = styled.View`
     width: 100%;
     margin-top: 10px;
-    margin-bottom: 10px;
     flex-direction: row;
     align-items: center;
 `;
-
+const LinkView = styled.TouchableOpacity`
+    height: 35px;
+    border-radius: 5px;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 0px 15px;
+`;
 const DATA = {
     introduceText : null,
     coord : {latitude: 0, longitude: 0},
@@ -81,7 +88,7 @@ function IntroduceShop(props){
                     headers : {Auth: auth},
                 }).catch(e=>console.log(e))
                 const rawData = response.data.data;
-                console.log('introduce',rawData);
+                //console.log('introduce',rawData);
                 const newData = {
                     introduceText : rawData.introduction,
                     coord : {latitude: parseFloat(rawData.latitude), longitude: parseFloat(rawData.longitude)},
@@ -109,6 +116,26 @@ function IntroduceShop(props){
                 { cancelable: false }
             );}
         }  
+    }
+
+    function MoveToUrl(url){
+        if(url.startsWith('http')){
+            Linking.openURL(url);
+        }
+        else{
+            Linking.openURL('https://'+url);
+        }
+
+    }
+    function MoveToInstagram(id){
+        Linking.openURL('instagram://user?username='+id)
+        .catch((e) => {
+            console.log(e);
+            Linking.openURL('https://www.instagram.com/'+id);
+        })
+    }
+    function MoveToCall(phone){
+        Linking.openURL('tel:'+phone);
     }
  
     /*React.useEffect(() => {
@@ -199,26 +226,34 @@ function IntroduceShop(props){
             {!isLoading ? <ScrollView scrollEnabled={true}>
                 <IntroView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
-                    <View style={{width: '100%', alignItems: 'center'}}>
+                    <View style={{width: '100%'}}>
                         <TextView style={{marginTop: 20}}>
                             <Text style={{fontSize: 15}}>{infoData.introduceText}</Text>
                         </TextView>
-                        <TextView>
+                        <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'call'} size={15} style={{marginRight: 10}}/>
-                            <Text style={{fontSize: 15}}>{infoData.phoneNum}</Text>
-                        </TextView>
-                        <TextView>
+                            <LinkView  onPress={()=>{MoveToCall(infoData.phoneNum)}}>
+                                <Text style={{fontSize: 15}}>{infoData.phoneNum}</Text>
+                            </LinkView>
+                        </Row>
+                        <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'globe-outline'} size={15} style={{marginRight: 10}}/>
-                            <Text style={{fontSize: 15}}>{infoData.siteUrl}</Text>
-                        </TextView>
-                        <TextView>
+                            <LinkView onPress={()=>{MoveToUrl(infoData.siteUrl)}}>
+                                <Text style={{fontSize: 15}}>{infoData.siteUrl}</Text>
+                            </LinkView>
+                        </Row>
+                        <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'link-outline'} size={15} style={{marginRight: 10}}/>
-                            <Text style={{fontSize: 15}}>{infoData.blogUrl}</Text>
-                        </TextView>
-                        <TextView>
+                            <LinkView onPress={()=>{MoveToUrl(infoData.blogUrl)}}>
+                                <Text style={{fontSize: 15}}>{infoData.blogUrl}</Text>
+                            </LinkView>
+                        </Row>
+                        <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'logo-instagram'} size={15} style={{marginRight: 10}}/>
-                            <Text style={{fontSize: 15}}>{'@'+infoData.snsUrl}</Text>
-                        </TextView>
+                            <LinkView onPress={()=>{MoveToInstagram(infoData.snsUrl)}}>
+                                <Text style={{fontSize: 15}}>{'@'+infoData.snsUrl}</Text>
+                            </LinkView>
+                        </Row>
                     </View>
                 </IntroView>
                 {isFocused && 
