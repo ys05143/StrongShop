@@ -44,7 +44,7 @@ function JustShowReceipt(props){
     async function getData(){
         try{
             setIsLoading(true);
-            console.log(props.orderId);
+            //console.log(props.orderId);
             const auth = await checkJwt();
             if(auth !== null){
                 const response = await axios({

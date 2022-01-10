@@ -67,9 +67,13 @@ function App (props) {
   }
 
   React.useEffect(()=>{
-    requestUserPermission().catch((e) =>{ console.log('firebase errror')});
-    messaging().getToken().then(res=>{console.log(res)});
-    //RootNavigation.navigate("MainScreen");
+    requestUserPermission()
+    .then(res => {
+      messaging().getToken()
+      .then(res=>{console.log(res)})
+      .catch(e=>{console.log(e)})
+    })
+    .catch((e) =>{ console.log('firebase errror')});
   },[]);
 
   React.useEffect(()=>{  //foreground
