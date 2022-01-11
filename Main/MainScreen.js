@@ -8,6 +8,8 @@ import { useIsFocused } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import FastImage from 'react-native-fast-image';
 import moment from 'moment';
+//component
+import Row from '../components/Row';
 //constants
 import Color from '../constants/Color';
 //function
@@ -32,20 +34,12 @@ export function navigate(name, params) {
     }
 }
 
-const Row = styled.View`
-    flex-direction: row;
-    justify-content: center;
-
-    /* background-color: ${Color.main}; */
-    /* border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px; */
-    height: 200px;
-`;
-const TextRow = styled.View`
+const RowCenter = styled.View`
     flex-direction: row;
     align-items: center;
 `;
 const View = styled.View``;
+
 const TopBar = styled.View`
     height: 60px;
     width: 100%;
@@ -58,11 +52,12 @@ const TopBar = styled.View`
 
 const MenuButton = styled.TouchableOpacity`
     border: 1px lightgray;
-    margin: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
     flex: 1;
     height: 170px;
     border-radius: 10px;
-    background-color: 'rgb(240,240,240)';
+    background-color: white;
 `;
 
 const styles = {
@@ -511,20 +506,19 @@ function MainScreen( props ) {
             <ScrollView 
             onScroll={e=>{scrollY.setValue(e.nativeEvent.contentOffset.y);}}
             scrollEventThrottle={16}>
-                <Row style={{backgroundColor: 'white', marginBottom: 10}}>
-                    <MenuButton onPress={()=>{CheckAsync();}} style={{backgroundColor: 'white'}}>
-                        <TextRow>
+                <Row style={{backgroundColor: 'white', marginBottom: 10, alignItems: 'center', paddingVertical: 20}}>
+                    <MenuButton onPress={()=>{CheckAsync();}}>
+                        <RowCenter>
                             <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
                             <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
                                         onPress={ () => { alert('신차패키지 설명') } }
                                     />
-                        </TextRow>
+                        </RowCenter>
                         <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                         <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                     </MenuButton>
                     <MenuButton 
                     disabled={true}
-                    style={{backgroundColor: 'white'}}
                     //onPress={()=>props.navigation.navigate("PackageScreen_3_2")}
                     >
                         <Text style={styles.text}>케어</Text>
@@ -536,21 +530,23 @@ function MainScreen( props ) {
                     </MenuButton>
                 </Row>
                 
-                <View style={{backgroundColor: 'white', marginBottom: 10}}>
-                    <TextRow>
-                        <Title style={styles.text}>
+                <View style={{backgroundColor: 'white', marginBottom: 10, paddingVertical: 20}}>
+                    <RowCenter>
+                        <Title style={{fontFamily: 'DoHyeon-Regular', fontSize: 25, paddingLeft: 10, paddingBottom: 10}}>
                             당신의 차량
                         </Title>
                         <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
                         <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
-                    </TextRow>
+                    </RowCenter>
                     <View style={{height: 250}}>
                         {!isLoading ? 
                         <>
                             { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
-                                <ScrollView horizontal={true}>
-                                    {
-                                    myOrderList.map((item, index) =>{
+                                <ScrollView 
+                                horizontal={true}
+                                showsHorizontalScrollIndicator ={false}
+                                >
+                                    {myOrderList.map((item, index) =>{
                                         return(
                                             <View key={item.orderId}>
                                             <Card style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
@@ -569,44 +565,41 @@ function MainScreen( props ) {
                                             {item.state <=2 && <Badge style={{position: 'absolute', elevation: 1}}>{item.bidNum}</Badge>}
                                             </View>
                                         )
-                                    })
-                                    }
+                                    })}
                                 </ScrollView>                
                             ) : 
                             (
                                 <Swiper 
-                                    autoplay={false} 
-                                    style={{ marginVertical: 10 }}
-                                    loop={false}
-                                    renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
-                                    >
-                                    {
-                                        myOrderList.map((item, index)=>{
-                                            return(
-                                                <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
-                                                    <TextRow style={{ flex: 1}}>
-                                                        <View style={{ flex: 3 }}>
-                                                            <View style={{flex: 1}}>
-                                                                <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                                            </View>
-                                                            {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
+                                autoplay={false} 
+                                style={{ marginVertical: 10 }}
+                                loop={false}
+                                renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
+                                >
+                                    {myOrderList.map((item, index)=>{
+                                        return(
+                                            <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <RowCenter style={{ flex: 1}}>
+                                                    <View style={{ flex: 3 }}>
+                                                        <View style={{flex: 1}}>
+                                                            <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                                         </View>
-                                                        <View style={{ flex: 2 }}>
-                                                            <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                                                subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
-                                                            <Card.Content>
-                                                            { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
-                                                            </Card.Content>
-                                                        </View>
-                                                    </TextRow>
-                                                    {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
-                                                        <Icon name="close-outline" size={30} color={'black'}></Icon>
-                                                    </TouchableOpacity>}
-                                                    
-                                                </Card> 
-                                            )
-                                        })
-                                    }
+                                                        {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
+                                                    </View>
+                                                    <View style={{ flex: 2 }}>
+                                                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
+                                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
+                                                        <Card.Content>
+                                                        { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
+                                                        </Card.Content>
+                                                    </View>
+                                                </RowCenter>
+                                                {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
+                                                    <Icon name="close-outline" size={30} color={'black'}></Icon>
+                                                </TouchableOpacity>}
+                                                
+                                            </Card> 
+                                        )
+                                    })}
                                 </Swiper>
                             )}     
                         </> :

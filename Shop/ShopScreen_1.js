@@ -260,11 +260,11 @@ function ShopScreen_1(props){
         </Animated.View>
       </View>
     </View>
-    
+{/*     
     {isLoading && 
     <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
         <ActivityIndicator size = 'large' color= {Color.main}/>
-    </View>}
+    </View>} */}
     </>
   );
 }
