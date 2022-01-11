@@ -89,10 +89,12 @@ const AfterDATA = [{
 }];
 
 const ImageView = styled.TouchableOpacity`
-    width: ${WIDTH/3}px;
-    height: ${WIDTH/3}px;
+    width: ${(WIDTH/3)-6}px;
+    height: ${(WIDTH/3)-6}px;
     background-color: #ffffff;
     padding: 1px;
+    margin-left: 1px;
+    margin-right: 1px;
 `;
 const Total = styled.View`
     flex: 1;

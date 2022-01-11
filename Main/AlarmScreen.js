@@ -43,16 +43,19 @@ function AlarmScreen(props){
     async function GetAlarm(){
         let response = await storage.fetch("Alarm");
         //console.log(response);
+        let newLength;
         if(response === null ){
             setAlarmList([]);
+            newLength = 0;
         }
         else {
             response.sort((a,b)=>{
                 return moment(b.date) - moment(a.date);
             })
             setAlarmList(response !== null ? response: null);
+            newLength = response.length;
         }
-        await storage.store("NumAlarm", response.length);
+        await storage.store("NumAlarm", newLength);
         context.setIsNewAlarm(false);
 
     }

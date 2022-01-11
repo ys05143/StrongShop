@@ -39,7 +39,7 @@ const Tab = createMaterialTopTabNavigator();
 function ShopScreen_1(props){
   const [totalFirst, setTotalFirst] = React.useState(false);
   const [Pan, setPan] = React.useState(new Animated.ValueXY({ x: 0, y: -HEADER_SCROLL_DISTANCE }));
-  const [shopData, setShopData] = React.useState({companyName: '',companyImg: 'https://picsum.photos/0'});
+  const [shopData, setShopData] = React.useState({companyName: '',companyImg: ''});
   const [companyId, setCompanyId] = React.useState(props.route.params.companyId);
   const twinkle = new Animated.Value(0);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -59,7 +59,7 @@ function ShopScreen_1(props){
                 headers : {Auth: auth},
             })
             const rawData = response.data.data;
-            //console.log(rawData);
+            // console.log(rawData);
             const newData = {
               companyName : rawData.company_name,
               companyImg : rawData.backgroundImageUrl,
@@ -179,17 +179,21 @@ function ShopScreen_1(props){
       <View style={{flex: 1, marginTop: NOTCH}}>
         <Animated.View
           style={[styles.header]}>
-          {!isLoading && <Animated.Image
+
+          {!isLoading && 
+          <Animated.Image
           style={[
               styles.headerBackground,
               {
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslateY }],
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslateY }],
               },
           ]}
           source={{uri: shopData.companyImg}}
           />}
-          {!isLoading && <Animated.View
+
+          {!isLoading && 
+          <Animated.View
             style={[
               styles.subTitleView,
               {
@@ -202,6 +206,7 @@ function ShopScreen_1(props){
                 <Icon name="chevron-up-outline" color={'black'} size={20} style={{marginLeft: 5}}/>
               </TouchableOpacity> */}
           </Animated.View>}
+
         </Animated.View>
         <View>
           <Animated.View
@@ -228,6 +233,7 @@ function ShopScreen_1(props){
             <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
           </TouchableOpacity>  
         </View>
+
         <Animated.View
           style={{
             position: 'absolute',
@@ -254,9 +260,11 @@ function ShopScreen_1(props){
         </Animated.View>
       </View>
     </View>
-    {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
-                <ActivityIndicator size = 'large' color= {Color.main}/>
-            </View>}
+    
+    {isLoading && 
+    <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+        <ActivityIndicator size = 'large' color= {Color.main}/>
+    </View>}
     </>
   );
 }

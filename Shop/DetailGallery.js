@@ -12,18 +12,19 @@ import Color from '../constants/Color';
 import AppWindow from '../constants/AppWindow';
 
 const TOPBAR = AppWindow.TopBar;
+const WIDTH = AppWindow.width;
 ///////////////////////////////
 const ImageView = styled.View`
     flex: 1;
     width: 100%;
-    padding: 5px;
+    height: ${WIDTH}px;
     background-color: white;
 `;
 const TextView = styled.View`
     flex: 1;
     width: 100%;
-    padding: 5px;
-    border: 1px solid lightgray;
+    padding: 5px 15px;
+    border: 2px solid #e5e5e5;
 `;
 ///////////////////////////////////
   
@@ -31,8 +32,7 @@ function DetailGallery(props){
     const [contents, setContents]=React.useState(props.route.params.contents);
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-            <TopBar>
-                
+            <TopBar style={{borderBottomWidth: 0}}>
                 <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>

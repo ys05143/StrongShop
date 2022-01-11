@@ -27,24 +27,26 @@ const MapView = styled.View`
     height: 300px;
     background-color: white;
     margin-top: 5px;
-    border: 2px solid lightgray;
+    border: 1px solid lightgray;
 `;
 const AddressView = styled.View`
     width: 100%;
     background-color: white;
-    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 15px;
 `;
 const IntroView = styled.View`
     width: 100%;
     padding: 15px;
     background-color: white;
+    margin-bottom: 10px;
 `;
 const TextView = styled.View`
     width: 100%;
-    margin-top: 10px;
     flex-direction: row;
     align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 `;
 const LinkView = styled.TouchableOpacity`
     height: 35px;
@@ -119,6 +121,7 @@ function IntroduceShop(props){
     }
 
     function MoveToUrl(url){
+        if(url === null) return;
         if(url.startsWith('http')){
             Linking.openURL(url);
         }
@@ -128,6 +131,7 @@ function IntroduceShop(props){
 
     }
     function MoveToInstagram(id){
+        if(id === null) return;
         Linking.openURL('instagram://user?username='+id)
         .catch((e) => {
             console.log(e);
@@ -135,6 +139,7 @@ function IntroduceShop(props){
         })
     }
     function MoveToCall(phone){
+        if(phone === null) return;
         Linking.openURL('tel:'+phone);
     }
  
@@ -223,44 +228,51 @@ function IntroduceShop(props){
 
     return(
         <Total>
-            {!isLoading ? <ScrollView scrollEnabled={true}>
+            {!isLoading ? 
+            <ScrollView 
+            scrollEnabled={true}
+            showsVerticalScrollIndicator ={false}>
                 <IntroView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>인사말</Text>
                     <View style={{width: '100%'}}>
-                        <TextView style={{marginTop: 20}}>
+                        <TextView>
                             <Text style={{fontSize: 15}}>{infoData.introduceText}</Text>
                         </TextView>
+                        {infoData.phoneNum !== null && 
                         <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'call'} size={15} style={{marginRight: 10}}/>
                             <LinkView  onPress={()=>{MoveToCall(infoData.phoneNum)}}>
                                 <Text style={{fontSize: 15}}>{infoData.phoneNum}</Text>
                             </LinkView>
-                        </Row>
+                        </Row>}
+                        {infoData.siteUrl !== null && 
                         <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'globe-outline'} size={15} style={{marginRight: 10}}/>
                             <LinkView onPress={()=>{MoveToUrl(infoData.siteUrl)}}>
                                 <Text style={{fontSize: 15}}>{infoData.siteUrl}</Text>
                             </LinkView>
-                        </Row>
+                        </Row>}
+                        {infoData.blogUrl !== null && 
                         <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'link-outline'} size={15} style={{marginRight: 10}}/>
                             <LinkView onPress={()=>{MoveToUrl(infoData.blogUrl)}}>
                                 <Text style={{fontSize: 15}}>{infoData.blogUrl}</Text>
                             </LinkView>
-                        </Row>
+                        </Row>}
+                        {infoData.snsUrl !== null && 
                         <Row style={{alignItems: 'center', marginTop: 10}}>
                             <Icon name={'logo-instagram'} size={15} style={{marginRight: 10}}/>
                             <LinkView onPress={()=>{MoveToInstagram(infoData.snsUrl)}}>
                                 <Text style={{fontSize: 15}}>{'@'+infoData.snsUrl}</Text>
                             </LinkView>
-                        </Row>
+                        </Row>}
                     </View>
                 </IntroView>
                 {isFocused && 
                 <AddressView>
                     <Text style={{fontSize: 30, fontFamily: 'DoHyeon-Regular'}}>위치</Text>
                     <View style={{width: '100%', alignItems: 'center'}}>
-                        <TextView style={{marginVertical: 15}}>
+                        <TextView>
                             <Text style={{fontSize: 15}}>{infoData.region}</Text>
                         </TextView>
                         <MapView>

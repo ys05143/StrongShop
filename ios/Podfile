@@ -12,9 +12,7 @@ target 'StrongShop' do
     :hermes_enabled => false
   )
 
-  pod 'react-native-in-app-message', :path => '../node_modules/react-native-in-app-message'
 
-  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
   target 'StrongShopTests' do
     inherit! :complete

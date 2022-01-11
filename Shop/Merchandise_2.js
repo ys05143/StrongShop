@@ -26,7 +26,7 @@ const Total = styled.View`
     align-items: center;
 `;
 
-const Option = styled.ScrollView`
+const Option = styled.SectionList`
     height: 80px;
     margin-bottom: 10px;
     background-color: white;
@@ -47,38 +47,92 @@ const OptionName = styled.TouchableOpacity`
     height: 50px;
 `;
 
+// const merchadiseList= [
+//     {
+//         name: '틴팅',
+//         title: 'tinting',
+//     },{
+//         name: 'PPF',
+//         title: 'ppf',
+//     },{
+//         name: '블랙박스',
+//         title: 'blackBox',
+//     },{
+//         name: '보조배터리',
+//         title: 'battery',
+//     },{
+//         name: '애프터블로우',
+//         title: 'afterblow',
+//     },{
+//         name: '방음',
+//         title: 'deafening',
+//     },{
+//         name: '랩핑',
+//         title: 'warpping',
+//     },{
+//         name: '유리막코팅',
+//         title: 'glassCoating',
+//     },{
+//         name: '하부코팅',
+//         title: 'underCoating',
+//     },{
+//         name: '기타',
+//         title: 'etc',
+//     },];
+
 const merchadiseList= [
     {
+        id: 0,
+        data: ['틴팅'],
         name: '틴팅',
         title: 'tinting',
     },{
+        id: 1,
+        data: ['PPF'],
         name: 'PPF',
         title: 'ppf',
     },{
+        id: 2,
+        data: ['블랙박스'],
         name: '블랙박스',
         title: 'blackBox',
     },{
+        id: 3,
+        data: ['보조배터리'],
         name: '보조배터리',
         title: 'battery',
     },{
+        id: 4,
+        data: ['애프터블로우'],
         name: '애프터블로우',
         title: 'afterblow',
     },{
+        id: 5,
+        data: ['방음'],
         name: '방음',
         title: 'deafening',
     },{
+        id: 6,
+        data: ['랩핑'],
         name: '랩핑',
         title: 'warpping',
     },{
+        id: 7,
+        data: ['유리막코팅'],
         name: '유리막코팅',
         title: 'glassCoating',
     },{
+        id: 8,
+        data: ['하부코팅'],
         name: '하부코팅',
         title: 'underCoating',
     },{
+        id: 9,
+        data: ['기타'],
         name: '기타',
         title: 'etc',
-    },];
+    }
+];
 
 const DATA = {
     afterblow: [], 
@@ -100,6 +154,7 @@ function Merchandise_2(props){
     const [show, setShow] = React.useState('tinting');
     const [productData, setProductData] = React.useState([])
     const [isLoading, setIsLoading] = React.useState(false);
+    const scrollX = React.useRef();
     
     const isFocused = useIsFocused();
     React.useEffect(()=>{
@@ -110,7 +165,6 @@ function Merchandise_2(props){
         try{
             setIsLoading(true);
             const auth = await checkJwt();
-            console.log(`${server.url}/api/product/${props.companyId}`);
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
@@ -229,8 +283,24 @@ function Merchandise_2(props){
 
     return(
         <Total>
-            <Option horizontal={true}>
-                {_.map(merchadiseList, (item) => {
+            <Option 
+            horizontal={true}
+            showsHorizontalScrollIndicator ={false}
+            style={{width: '100%'}}
+            ref={scrollX}
+            horizontal={true}
+            sections={merchadiseList}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({item, section} ) => {
+                return(
+                    <OptionView key={item.title} style={{alignSelf: 'center'}}>
+                        <OptionName style={{backgroundColor: show === section.title ? Color.main : 'white', borderColor: show === section.title ? Color.main : 'white'}} onPress={()=>{showOption(section.title); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
+                            <Text style={{color: show === section.title ? 'white' : Color.main, fontWeight: 'bold'}}>{item}</Text>
+                        </OptionName>
+                    </OptionView>
+                );
+            }}>
+                {/* {_.map(merchadiseList, (item) => {
                     return(
                         <OptionView key={item.title} style={{alignSelf: 'center'}}>
                             <OptionName style={{backgroundColor: show === item.title ? Color.main : 'white', borderColor: show === item.title ? Color.main : 'white'}} onPress={()=>{showOption(item.title)}}>
@@ -238,10 +308,13 @@ function Merchandise_2(props){
                             </OptionName>
                         </OptionView>
                     );}
-                )}
+                )} */}
             </Option>
             <View style={{width: '100%'}}>
-                {!isLoading ? <ScrollView scrollEnabled={true}>
+                {!isLoading ? 
+                <ScrollView 
+                scrollEnabled={true}
+                showsVerticalScrollIndicator ={false}>
                     {(show === 'tinting' && !isLoading) && <ProductDetail list={productData.tinting} title={'틴팅'}/>}
                     {(show === 'blackBox' && !isLoading) && <ProductDetail list ={productData.blackbox} title={'블랙박스'}/>}
                     {(show === 'glassCoating' && !isLoading) && <ProductDetail list ={productData.glasscoating} title={'유리막코팅'}/>}

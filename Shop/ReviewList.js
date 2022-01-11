@@ -24,7 +24,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const Total = styled.View`
     width: 100%;
-    padding-top: 20px;
+    padding-top: 10px;
     align-items: center;
     flex: 1;
 `;
@@ -33,7 +33,6 @@ const ReviewView = styled.View`
     border-radius: 5px;
     background-color: white;
     padding-bottom: 10px;
-    margin-bottom: 20px;
 `;
 const NameView = styled.View`
     width: 100%;
@@ -243,7 +242,7 @@ function ReviewList(props){
 
     function renderItem({item}){ //구버전 review
         return(
-            <View style={{width: WIDTH, alignItems: 'center'}}>
+            <View style={{width: WIDTH, alignItems: 'center', marginBottom: 10}}>
             <ReviewView key={item.reviewId}>
                 <NameView>
                     <ProfileImg>
@@ -260,7 +259,7 @@ function ReviewList(props){
                     </Content>
                     <Divider style={{backgroundColor: 'black', height: 2, marginTop: 5, width: '100%'}}/>
                     <Content>
-                        <Row style={{alignItems: 'center'}}>
+                        <Row style={{alignItems: 'center', marginBottom: 5}}>
                             <Avatar.Icon size={24} icon="face" color={'white'} backgroundColor={Color.main}/>
                             <View style={{justifyContent: 'center', paddingLeft: 5}}>
                                 <Text style={{fontWeight: 'bold', marginBottom: 5}}>{'사장님의 답변:'}</Text>

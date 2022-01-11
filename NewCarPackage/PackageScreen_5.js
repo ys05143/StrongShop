@@ -133,6 +133,7 @@ function PackageScreen_5(props){
                     //내가 사용할 DATA만들기
                     let newData = [];
                     rawData.map(item => {
+                        //console.log(item);
                         newData.push({
                             companyId: item.company_id,
                             simpleRegion: item.address === null? 'null':item.address,

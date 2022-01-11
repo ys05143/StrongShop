@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider, Badge } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ScrollView, Alert, ActivityIndicator, TouchableOpacity, Animated } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -80,12 +80,6 @@ const styles = {
     subText : {
         padding: 10 ,
     },
-    scrollview : {
-        width: '100%',
-        height: 250 ,
-        borderBottomWidth: 6 ,
-        borderBottomColor : 'rgb(240,240,240)'
-    } ,
     card : {
         margin: 10,
         width: 150,
@@ -167,6 +161,7 @@ function MainScreen( props ) {
     const [myOrderList, setMyOrderList] = React.useState([]);
     const [orderTimeList, setOrderTimeList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
+    const scrollY = React.useRef(new Animated.Value(0)).current;
     
     const context = React.useContext(userContext);
 
@@ -333,9 +328,17 @@ function MainScreen( props ) {
 
     async function checkNewAlarm(){
         try{
-            const savedLength = await storage.fetch("NumAlarm");
-            const newAlarms = await storage.fetch("Alarm");
-            if( savedLength !== newAlarms.length){
+            let savedLength = await storage.fetch("NumAlarm");
+            if(savedLength === null) savedLength = 0
+            let newAlarms = await storage.fetch("Alarm");
+            let newLength
+            if(newAlarms === null){
+                newLength = 0;
+            }
+            else{
+                newLength = newAlarms.length
+            }
+            if( savedLength !== newLength){
                 context.setIsNewAlarm(true);
             }
         }
@@ -482,12 +485,16 @@ function MainScreen( props ) {
             ],
             { cancelable: true }
         );
-    
     }
 
+    const headerTranslateY = scrollY.interpolate({
+        inputRange: [0, 200 , 300],
+        outputRange: [100, 100 ,0],
+        extrapolate: 'clamp',
+      });
+    
     return(
         <TotalView notchColor={Color.main}>
-            <ScrollView>
             <TopBar>
                 <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.navigate("AlarmScreen")}}>
                     <Icon name="notifications-outline" size={25} color={'white'}></Icon>
@@ -497,114 +504,117 @@ function MainScreen( props ) {
                     <Icon name="person-circle-outline" size={25} color={'white'}></Icon>
                 </TouchableOpacity>
             </TopBar>
-
-            <View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20}}>
+            <Animated.View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20, height: headerTranslateY}}>
                 <Title style={styles.title}>{'안녕하세요,\n무엇을 도와드릴까요?'}</Title>
-            </View>
+            </Animated.View>
 
-            <Row>
-                <MenuButton onPress={()=>{CheckAsync();}}>
+            <ScrollView 
+            onScroll={e=>{scrollY.setValue(e.nativeEvent.contentOffset.y);}}
+            scrollEventThrottle={16}>
+                <Row style={{backgroundColor: 'white', marginBottom: 10}}>
+                    <MenuButton onPress={()=>{CheckAsync();}} style={{backgroundColor: 'white'}}>
+                        <TextRow>
+                            <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
+                            <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
+                                        onPress={ () => { alert('신차패키지 설명') } }
+                                    />
+                        </TextRow>
+                        <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
+                        <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
+                    </MenuButton>
+                    <MenuButton 
+                    disabled={true}
+                    style={{backgroundColor: 'white'}}
+                    //onPress={()=>props.navigation.navigate("PackageScreen_3_2")}
+                    >
+                        <Text style={styles.text}>케어</Text>
+                        <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
+                        <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
+                        <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
+                            <Text style={{color: 'red', fontSize: 12}}>{'빠른 시일안에\n찾아뵙겠습니다'}</Text>
+                        </View>
+                    </MenuButton>
+                </Row>
+                
+                <View style={{backgroundColor: 'white', marginBottom: 10}}>
                     <TextRow>
-                        <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
-                        <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
-                                    onPress={ () => { alert('신차패키지 설명') } }
-                                />
+                        <Title style={styles.text}>
+                            당신의 차량
+                        </Title>
+                        <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
+                        <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
                     </TextRow>
-                    <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
-                    <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
-                </MenuButton>
-                <MenuButton 
-                disabled={true}
-                //onPress={()=>props.navigation.navigate("PackageScreen_3_2")}
-                >
-                    <Text style={styles.text}>케어</Text>
-                    <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
-                    <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
-                    <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
-                        <Text style={{color: 'red', fontSize: 12}}>{'빠른 시일안에\n찾아뵙겠습니다'}</Text>
+                    <View style={{height: 250}}>
+                        {!isLoading ? 
+                        <>
+                            { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
+                                <ScrollView horizontal={true}>
+                                    {
+                                    myOrderList.map((item, index) =>{
+                                        return(
+                                            <View key={item.orderId}>
+                                            <Card style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <View style={styles.cover}>
+                                                    <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
+                                                </View>
+                                                <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
+                                                    subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
+                                                <Card.Content style={{flexDirection: 'row'}}>
+                                                    {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold'}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
+                                                </Card.Content>
+                                                {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
+                                                    <Icon name="close-outline" size={25} color={'black'}></Icon>
+                                                </TouchableOpacity>}
+                                            </Card> 
+                                            {item.state <=2 && <Badge style={{position: 'absolute', elevation: 1}}>{item.bidNum}</Badge>}
+                                            </View>
+                                        )
+                                    })
+                                    }
+                                </ScrollView>                
+                            ) : 
+                            (
+                                <Swiper 
+                                    autoplay={false} 
+                                    style={{ marginVertical: 10 }}
+                                    loop={false}
+                                    renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
+                                    >
+                                    {
+                                        myOrderList.map((item, index)=>{
+                                            return(
+                                                <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                    <TextRow style={{ flex: 1}}>
+                                                        <View style={{ flex: 3 }}>
+                                                            <View style={{flex: 1}}>
+                                                                <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
+                                                            </View>
+                                                            {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
+                                                        </View>
+                                                        <View style={{ flex: 2 }}>
+                                                            <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
+                                                                subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
+                                                            <Card.Content>
+                                                            { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
+                                                            </Card.Content>
+                                                        </View>
+                                                    </TextRow>
+                                                    {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
+                                                        <Icon name="close-outline" size={30} color={'black'}></Icon>
+                                                    </TouchableOpacity>}
+                                                    
+                                                </Card> 
+                                            )
+                                        })
+                                    }
+                                </Swiper>
+                            )}     
+                        </> :
+                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <ActivityIndicator size = 'small' color= {Color.main}/>
+                        </View>}
                     </View>
-                </MenuButton>
-            </Row>
-
-            <Divider style={styles.divider}/>
-            
-            <TextRow>
-                <Title style={styles.text}>
-                    당신의 차량
-                </Title>
-                <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
-                <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
-            </TextRow>
-            <View style={{height: 250, borderBottomWidth: 3 , borderBottomColor: 'lightgray'}}>
-                {!isLoading ? 
-                <>
-                    { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
-                        <ScrollView horizontal={true} style={styles.scrollview}>
-                            {
-                            myOrderList.map((item, index) =>{
-                                return(
-                                    <View key={item.orderId}>
-                                    <Card style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
-                                        <View style={styles.cover}>
-                                            <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                        </View>
-                                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
-                                        <Card.Content style={{flexDirection: 'row'}}>
-                                            {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold'}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
-                                        </Card.Content>
-                                        {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
-                                            <Icon name="close-outline" size={25} color={'black'}></Icon>
-                                        </TouchableOpacity>}
-                                    </Card> 
-                                    {item.state <=2 && <Badge style={{position: 'absolute', elevation: 1}}>{item.bidNum}</Badge>}
-                                    </View>
-                                )
-                            })
-                            }
-                        </ScrollView>                
-                    ) : 
-                    (
-                        <Swiper 
-                            autoplay={false} 
-                            style={{ marginVertical: 10 }}
-                            loop={false}
-                            renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , bottom : 20 , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
-                            >
-                            {
-                                myOrderList.map((item, index)=>{
-                                    return(
-                                        <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
-                                            <TextRow style={{ flex: 1}}>
-                                                <View style={{ flex: 3 }}>
-                                                    <View style={{flex: 1}}>
-                                                        <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                                    </View>
-                                                    {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
-                                                </View>
-                                                <View style={{ flex: 2 }}>
-                                                    <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
-                                                    <Card.Content>
-                                                    { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
-                                                    </Card.Content>
-                                                </View>
-                                            </TextRow>
-                                            {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
-                                                <Icon name="close-outline" size={30} color={'black'}></Icon>
-                                            </TouchableOpacity>}
-                                            
-                                        </Card> 
-                                    )
-                                })
-                            }
-                        </Swiper>
-                    )}     
-                </> :
-                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size = 'small' color= {Color.main}/>
-                </View>}
-            </View>
+                </View>
             </ScrollView>
 
             <PaperProvider>
@@ -619,8 +629,8 @@ function MainScreen( props ) {
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
-            </PaperProvider>
-            
+            </PaperProvider> 
+
         </TotalView>
     );
 }
