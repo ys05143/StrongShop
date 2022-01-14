@@ -33,7 +33,7 @@ const SelectResult = styled.View`
 `;
 const DetailModal = styled.View`
     width: 90%;
-    height: ${HEIGHT*2/5+40}px;
+    height: ${450+40}px;
 `;
 function Select4Screen3_3 (props){
     const [isChoose, setIsChoose] = React.useState(props.choose);
@@ -51,12 +51,11 @@ function Select4Screen3_3 (props){
         <>
         <SelectView>
             <Row style={{flex: 1, alignItems: 'center'}}>
-                <TouchableOpacity style={{flexDirection: 'row'}} onPress={()=>{ sendChoose(!isChoose);
+                <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=>{ sendChoose(!isChoose);
                                     setIsChoose(!isChoose)}} >
                     <Icon name={isChoose===false?"square-outline": "checkbox"} size={30} color= 'gray'></Icon>
                     <SelectName>{props.name}</SelectName>
                 </TouchableOpacity>
-                
                 <Icon name="help-circle-outline" size={25} style={{color: 'rgb(200,0,0)'}} onPress={()=>{setModal(true)}}></Icon>
             </Row>
         </SelectView>
@@ -72,8 +71,8 @@ function Select4Screen3_3 (props){
                     <View style={{width: '100%', height: 40, alignItems: 'flex-end'}}>
                         <Icon name="close-outline" size={35} color={'white'} onPress={()=>{setModal(false)}}></Icon>
                     </View>
-                    <View style={{borderRadius: 10, overflow: 'hidden', width: '100%', height: HEIGHT*2/5}}>
-                        <Description image={null}>신차 패키지란?</Description>
+                    <View style={{borderRadius: 5, overflow: 'hidden', width: '100%', height: 450}}>
+                        <Description image={null}>{props.name}</Description>
                     </View>
                 </DetailModal>
             </ModalView>

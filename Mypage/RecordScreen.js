@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/native';
 import { Text, View, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
-import { Card, Provider as PaperProvider } from 'react-native-paper';
+import { Card, Provider as PaperProvider, Button } from 'react-native-paper';
 import _ from 'lodash';
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
@@ -16,6 +16,7 @@ import Color from '../constants/Color';
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
+import Row from '../components/Row';
 
 const TextRow = styled.View`
     flex-direction: row;
@@ -67,7 +68,7 @@ function RecordScreen(props) {
     const [isLoading, setIsLoading] = React.useState(false);
 
     function gotoRegisterReview(completedContractId, companyName, receipt){
-        props.navigation.navigate("RegisterReviewScreen", {completedContractId: completedContractId, companyName: companyName, receipt: receipt});
+        props.navigation.navigate("RegisterReviewScreen", {completedContractId: completedContractId, companyName: companyName, receipt: receipt, flag: false});
     }
 
     const isFocused = useIsFocused();
@@ -130,44 +131,63 @@ function RecordScreen(props) {
     }
     function renderItem({item}){
         return(
-            <Card style={{flex: 1}}>
-                <TextRow style={{flex: 1}}>
-                    <View style={{flex: 2}}>
-                        <View style={{flex: 1}}>
-                            <FastImage  source={item.companyImage === null ? require('../LOGO_2.png'):{uri: item.companyImage}} style={{width: '100%', height: '100%'}}/>
-                        </View>  
+            // <Card style={{height: 130, margin: 10 ,elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+            //     <Row>
+            //         <View style={{height: 130, width: 130}}>
+            //             <FastImage  source={item.companyImage === null ? require('../LOGO_2.png'):{uri: item.companyImage}} style={{width: '100%', height: '100%'}}/>
+            //         </View>  
+            //         <View style={{ height: 130, flex : 1}}>
+            //             <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }} 
+            //                         right={(props) => !item.reviewStatus &&<TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
+            //                                                             onPress={()=>{gotoRegisterReview(item.completedContractId, item.companyName, item.receipt);}}>
+            //                                                 <Text>리뷰쓰기</Text>           
+            //                                             </TouchableOpacity>}/>
+            //             <Card.Content>
+            //                 <Text style={{fontSize: 20}}>{moment(item.date).format('YYYY-MM-DD')}</Text>
+            //                 <Text style={{fontSize: 20}}>{item.companyName}</Text>
+            //                 <Text style={{fontSize: 15}}>{item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
+            //             </Card.Content>
+            //         </View>
+            //     </Row>
+            // </Card> 
+            <Card style={{margin: 10 ,elevation: 2}}>
+                <Row>
+                    <View style={{justifyContent: 'center', alignItems: 'center', height: 130, width: 120}}>
+                        <View style={{width: 100, height: 100, backgroundColor: '#e5e5e5', borderRadius: 15, overflow: 'hidden'}}>
+                            <FastImage  source={{uri: item.companyImage}} style={{width: '100%', height: '100%'}}/>
+                        </View>
                     </View>
-                    <View style={{flex: 3}}>
-                        <Card.Title title={item.companyName} 
-                                    titleStyle={{fontWeight: 'bold', fontSize: 20 , padding: 10}} 
-                                    subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                    subtitle={item.carName} 
-                                    right={(props) => !item.reviewStatus &&<TouchableOpacity style={{width: 80, height: 40, borderWidth:1, borderWidthColor: 'black', borderRadius: 15, justifyContent:'center', alignItems:'center', marginRight: 10}}
-                                                                        onPress={()=>{gotoRegisterReview(item.completedContractId, item.companyName, item.receipt);}}>
-                                                            <Text>리뷰쓰기</Text>           
-                                                        </TouchableOpacity>}/>
-                        <Card.Content>
-                            <Text style={{fontSize: 20 , padding: 10}}>{moment(item.date).format('YYYY-MM-DD')}</Text>
-                        </Card.Content>
-                        <Card.Content style={{alignItems: 'flex-end'}}>
-                            <Text style={{fontSize: 15 , padding: 10}}>{item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
+                    <View style={{ flex: 1, paddingVertical: 10, paddingRight: 5}}>
+                        <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }} titleNumberOfLines={2}
+                            subtitle={`${item.companyName}\n${moment(item.date).format('YYYY-MM-DD')}`}
+                            subtitleNumberOfLines={2}/>
+                        <Card.Content style={{flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+                            <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
                         </Card.Content>
                     </View>
-                </TextRow>
-            </Card> 
+                </Row>
+                <Card.Actions>
+                    <Button mode={'outlined'} style={{flex: 1}} color={'black'} onPress={()=>gotoRegisterReview(item.completedContractId, item.companyName, item.receipt)}>
+                        리뷰쓰기
+                    </Button>
+                </Card.Actions>
+            </Card>
         )
     }
 
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
+                <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
-                <View style={{width: 40}}/>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>과거 시공 기록</Text>
+                </View>
+                <View style={{width: 60}}/>
             </TopBar>
             {!isLoading ? <FlatList  data={recordData}
+                    style={{marginTop: 10}}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.completedContractId}/>:
                     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>

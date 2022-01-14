@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, Alert, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, Image, Alert, ActivityIndicator, Platform, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Title, List, Divider } from 'react-native-paper';
@@ -10,6 +10,7 @@ import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
 import Accordion from 'react-native-collapsible/Accordion';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import TopBar from '../components/TopBar';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -116,6 +117,7 @@ function RegisterReviewScreen(props) {
     const [isSending, setIsSending] = React.useState(false);
     const [activeSections, setActiveSections] = React.useState([]);
     const [selectedImg, setSelectedImg] = React.useState(null);
+    const [flag, setFlag] = React.useState(props.route.params.flag);
 
     function ImgPick(){
         MultipleImagePicker.openPicker({
@@ -329,9 +331,20 @@ function RegisterReviewScreen(props) {
     return(
         <KeyboardAwareScrollView>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-            <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
+            {/* <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{companyName}</Text>
-            </View>
+            </View> */}
+            <TopBar>
+                {flag ? 
+                <View style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}}/> : 
+                <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
+                </TouchableOpacity>}
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>{item.companyName}</Text>
+                </View>
+                <View style={{width: 60}}/>
+            </TopBar>
             <View>
                 <ReceiptView item={[receipt]} key={receipt}></ReceiptView>
             </View>
@@ -363,7 +376,7 @@ function RegisterReviewScreen(props) {
             </TextView>
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                    <Button mode={"contained"} onPress={() => {props.navigation.popToTop();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>
+                    {flag && <Button mode={"contained"} onPress={() => {props.navigation.popToTop();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>건너뛰기</Button>}
                     <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); SendData();}} contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main}>{isSending?'등록중...':'등록'}</Button>
                 </Row>
             </BtnView>

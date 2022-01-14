@@ -27,13 +27,13 @@ const Total = styled.View`
 `;
 
 const Option = styled.SectionList`
-    height: 80px;
+    height: 70px;
     margin-bottom: 10px;
     background-color: white;
 `;
 const OptionView = styled.View`
     width: 100px;
-    height: 60px;
+    height: 50px;
     justify-content: center;
     align-items: center;
 `;
@@ -44,7 +44,7 @@ const OptionName = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     width: 90px;
-    height: 50px;
+    height: 40px;
 `;
 
 // const merchadiseList= [
@@ -294,7 +294,7 @@ function Merchandise_2(props){
             renderItem={({item, section} ) => {
                 return(
                     <OptionView key={item.title} style={{alignSelf: 'center'}}>
-                        <OptionName style={{backgroundColor: show === section.title ? Color.main : 'white', borderColor: show === section.title ? Color.main : 'white'}} onPress={()=>{showOption(section.title); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
+                        <OptionName style={{backgroundColor: show === section.title ? Color.main : 'white', borderColor: show === section.title ? Color.main : 'white'}} onPress={async ()=>{getData(); showOption(section.title); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
                             <Text style={{color: show === section.title ? 'white' : Color.main, fontWeight: 'bold'}}>{item}</Text>
                         </OptionName>
                     </OptionView>

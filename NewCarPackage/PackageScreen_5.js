@@ -8,6 +8,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon  from "react-native-vector-icons/Ionicons";
+import FastImage from 'react-native-fast-image';
 //pages
 import BidShops from './BidShops';
 //components
@@ -133,14 +134,14 @@ function PackageScreen_5(props){
                     //내가 사용할 DATA만들기
                     let newData = [];
                     rawData.map(item => {
-                        //console.log(item);
                         newData.push({
                             companyId: item.company_id,
-                            simpleRegion: item.address === null? 'null':item.address,
-                            companyName: item.company_name === null? 'null':item.company_name,
+                            simpleRegion: item.address === null? '':item.address,
+                            companyName: item.company_name === null? '':item.company_name,
                             price: parseInt(item.detail.totalPrice)*10000,
                             quote: JSON.stringify(item.detail),
                             bidId: item.id,
+                            companyImage: item.companyImage,
                         })
                     });  
                     setBidList(newData);
@@ -244,7 +245,9 @@ function PackageScreen_5(props){
                             return(
                                 <View key={item.bidId} style={{width: '100%', alignItems: 'center'}}>
                                     <ShopView2>
-                                        <TouchableOpacity style={{width: 70, height: 70, backgroundColor: '#e5e5e5', borderRadius: 15}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: item.companyId});}}/> 
+                                        <TouchableOpacity style={{width: 70, height: 70, backgroundColor: '#e5e5e5', borderRadius: 15, overflow: 'hidden'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: item.companyId});}}>
+                                            <FastImage  source={{uri: item.companyImage}} style={{width: '100%', height: '100%'}}/>
+                                        </TouchableOpacity> 
                                         <View style={{flex: 1}}>
                                             <NameView2 onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: item.companyId});}}> 
                                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>

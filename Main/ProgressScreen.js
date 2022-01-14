@@ -281,7 +281,7 @@ function ProgressScreen( props ) {
                     //console.log(response);
                     const receiptDetails = response.data.data.details;
                     rdbOff();
-                    props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails});
+                    props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails, flag: false});
                 }
               }},
               {text: '아니요', onPress: () => {}}

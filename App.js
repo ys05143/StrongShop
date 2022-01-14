@@ -29,6 +29,7 @@ import PayFinish from './Payment/PayFinish';
 import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
 import MyPageScreen from './Mypage/MypageScreen';
+import Certification from './Mypage/Certification';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import ProgressScreen from './Main/ProgressScreen';
@@ -213,6 +214,8 @@ function App (props) {
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
         {/* 마이페이지 */}
         {<Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{headerShown:false}}/>}
+        {/* 휴대폰인증 */}
+        {<Stack.Screen name="Certification" component={Certification} options={{headerShown:false}}/>}
         {/* 과거 기록 페이지 */}
         {<Stack.Screen name="RecordScreen" component={RecordScreen} options={{headerShown:false}}/>}
         {/* 리뷰 등록 페이지 */}

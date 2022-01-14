@@ -13,7 +13,7 @@ const DetailView = styled.View`
     border: 1px;
     border-radius: 5px;
     width: 100%;
-    padding: 15px;
+    padding: 10px 15px;
 `;
     
 function ExpandProduct(props){
@@ -23,7 +23,7 @@ function ExpandProduct(props){
     function _renderHeader (section, index, isActive) {
         return (
             <NameView>
-                <Text style={{fontSize: 18}}>{section.name}</Text>
+                <Text style={{fontSize: 18, marginRight: 10, fontWeight: 'bold'}}>{section.name}</Text>
                 <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black'></MaterialIcons>
             </NameView>
         );
@@ -32,7 +32,8 @@ function ExpandProduct(props){
     const _renderContent = section => {
         return(
             <DetailView>
-                <Text>{section.additionalInfo}</Text>
+                <Text style={{fontWeight: 'bold', color: 'gray'}}>[상세설명]</Text>
+                <Text style={{marginTop: 5}}>{section.additionalInfo}</Text>
             </DetailView>
         )
     };
