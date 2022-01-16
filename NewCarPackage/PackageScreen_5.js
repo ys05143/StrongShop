@@ -157,7 +157,7 @@ function PackageScreen_5(props){
                     '실패',
                     '로그인이 필요합니다.',
                     [
-                        {text: 'OK', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                        {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
                     ],
                     { cancelable: false }
                 );
@@ -165,10 +165,10 @@ function PackageScreen_5(props){
         }
         catch{e=>{
             Alert.alert(
-                '오류',
-                'PackageScreen_5 오류',
+                '정보 조회 오류',
+                '다시 시도해주세요.',
                 [
-                    {text: 'OK', onPress: () => {props.navigation.navigate("MainScreen")}},
+                    {text: '확인', onPress: () => {props.navigation.navigate("MainScreen")}},
                 ],
                 { cancelable: false }
             );

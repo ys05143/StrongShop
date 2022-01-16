@@ -157,10 +157,10 @@ function PaymentScreen(props){
         catch{e=>{
             //console.log(e);
             Alert.alert(
-                '오류',
-                '정보 불러오기에 실패했습니다.',
+                '정보 조회 오류',
+                '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {props.navigation.goBack();}},
                 ],
                 { cancelable: false }
             );}
@@ -194,7 +194,7 @@ function PaymentScreen(props){
                 '오류',
                 '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {props.navigation.goBack();}},
                 ],
                 { cancelable: false }
             );

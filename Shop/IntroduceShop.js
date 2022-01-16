@@ -110,8 +110,8 @@ function IntroduceShop(props){
         catch{e=>{
             //console.log(e);
             Alert.alert(
-                '오류',
-                'ReviewList 오류',
+                '업체 소개 조회 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],

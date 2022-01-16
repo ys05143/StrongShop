@@ -205,8 +205,8 @@ function RegisterReviewScreen(props) {
         }
         catch{
             Alert.alert(
-                '오류',
                 '리뷰 등록을 실패했습니다.',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],

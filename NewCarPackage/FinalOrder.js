@@ -90,7 +90,7 @@ function Receipt(props){
                     '실패',
                     '작성한 견적이 없습니다.',
                     [
-                        {text: '확인', onPress: () => { setIsSending(false)}},
+                        {text: '확인', onPress: () => { props.getModal(false); setIsSending(false)}},
                     ],
                     { cancelable: false }
                 );
@@ -99,10 +99,10 @@ function Receipt(props){
         }
         catch{
             Alert.alert(
-                '오류',
                 '견적 등록을 실패했습니다.',
+                '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => { setIsSending(false)}},
+                    {text: '확인', onPress: () => { props.getModal(false); setIsSending(false)}},
                 ],
                 { cancelable: false }
             );
@@ -111,13 +111,13 @@ function Receipt(props){
 
     function finalCheck(){
         Alert.alert(
-            '확인',
+            '최종 확인',
             '입찰을 시작하시겠습니까',
             [
-                {text: '예', onPress: () => {
+                {text: '취소', onPress: () => {}},
+                {text: '확인', onPress: () => {
                     finishOrder();
-                }},
-                {text: '아니요', onPress: () => {}},
+                }}
             ],
             { cancelable: false }
         );
@@ -136,11 +136,10 @@ function Receipt(props){
             })
             .catch(e => {
                 Alert.alert(
-                    '오류',
+                    '주문 불러오기 실패',
                     '다시 시도해주세요.',
                     [
-                        {text: '예', onPress: () => {}},
-                        {text: '아니요', onPress: () => {}},
+                        {text: '확인', onPress: () => {props.getModal(false);}}
                     ],
                     { cancelable: false }
                 );

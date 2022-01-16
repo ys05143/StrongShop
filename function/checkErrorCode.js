@@ -15,7 +15,7 @@ function CheckErrorCode(e, navigation) {
     else if(e.response.status === 403){
         Alert.alert(
             '현재 다른 기기에서 로그인 중입니다.',
-            '다시 로그인 해야 합니다.',
+            '다시 로그인해야 합니다.',
             [
                 {text: '확인', onPress: () => { navigation.navigate("LoginScreen")}},
             ],

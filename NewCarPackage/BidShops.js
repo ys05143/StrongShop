@@ -148,16 +148,16 @@ function BidShop(props, {navigation}) {
 
     function finalCheck(orderId, bidId){
         Alert.alert(
-            '확인',
+            '최종 확인',
             '이 업체로 선택하시겠습니까?',
             [
-                {text: '예', onPress: async () => {
+                {text: '취소', onPress: () => {
+                    props.getSending(false);
+                }},
+                {text: '확인', onPress: async () => {
                     //sendData(orderId, bidId);
                     props.navigation.replace("PaymentScreen", {orderId: orderId, bidId: bidId, receipt: props.item});
-                }},
-                {text: '아니요', onPress: () => {
-                     props.getSending(false);
-                    }},
+                }}
             ],
             { cancelable: false }
         );

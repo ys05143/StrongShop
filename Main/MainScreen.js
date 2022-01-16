@@ -311,8 +311,8 @@ function MainScreen( props ) {
         }
         catch{e=>{
             Alert.alert(
-                '오류',
-                'MainScreen 오류',
+                '입찰 삭제 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
@@ -473,8 +473,8 @@ function MainScreen( props ) {
             '등록한 입찰을 취소하겠습니까?',
             '되돌릴 수 없습니다.',
             [
-              {text: '입찰 취소', onPress: () => { CancelOrder(orderId);}, style: 'destructive'},
-              {text: '돌아가기', onPress: () => {}}
+              {text: '취소', onPress: () => { CancelOrder(orderId);}},
+              {text: '확인', onPress: () => {}}
             ],
             { cancelable: true }
         );
@@ -509,7 +509,7 @@ function MainScreen( props ) {
                         <RowCenter>
                             <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
                             <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
-                                        onPress={ () => { alert('신차패키지 설명') } }
+                                        // onPress={ () => { alert('신차패키지 설명') } }
                                     />
                         </RowCenter>
                         <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>

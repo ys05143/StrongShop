@@ -216,22 +216,22 @@ function PackageScreen_2 (props, {navigation}) {
     function askCancelCarName(){
         Alert.alert(
             '경고',
-            '입력을 취소하시겠습니까?',
+            '입력을 취소하겠습니까?',
             [
-              {text: '예', onPress: () => {
-                //지금 까지의 입력 싹 다 취소
-                setSearch(null);
-                setResult(null);
-                AsyncStorage.removeItem('BidOrder')
-                    .then(() => {
-                        console.log('remove bidOrder Async');
-                        props.navigation.navigate("MainScreen");
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
-              }},
-              {text: '아니요', onPress: () => {}}
+                {text: '취소', onPress: () => {}},
+                {text: '확인', onPress: () => {
+                    //지금 까지의 입력 싹 다 취소
+                    setSearch(null);
+                    setResult(null);
+                    AsyncStorage.removeItem('BidOrder')
+                        .then(() => {
+                            console.log('remove bidOrder Async');
+                            props.navigation.navigate("MainScreen");
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                }},
             ],
             { cancelable: true }
         );

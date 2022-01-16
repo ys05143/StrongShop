@@ -229,15 +229,15 @@ function PackageScreen_4(props){
 
     function askCancelRequire(){
         Alert.alert(
-            '경고',
-            '현재 페이지의 변경을 취소하시겠습니까?\n현재 페이지에서 변경된 내용은 저장되지 않습니다.',
+            '입력을 취소하겠습니까?',
+            '현재 페이지에서 입력된 내용은 저장되지 않습니다.',
             [
-              {text: '예', onPress: () => {
+              {text: '취소', onPress: () => {}},
+              {text: '확인', onPress: () => {
                 setText(null);
                 setSelectedRegion(null);
                 props.navigation.navigate("MainScreen");
               }},
-              {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );

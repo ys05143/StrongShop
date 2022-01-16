@@ -63,7 +63,7 @@ function JustShowReceipt(props){
         catch{e=>{
             console.log(e);
             Alert.alert(
-                '오류',
+                '정보 조회 실패',
                 '다시 시도해주세요.',
                 [
                     {text: '예', onPress: () => {props.getModal(false);}},

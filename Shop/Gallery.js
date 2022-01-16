@@ -152,8 +152,8 @@ function Gallery(props){
         catch{e=>{
             //console.log(e);
             Alert.alert(
-                '오류',
-                'gallery 오류',
+                '갤러리 조회 오류',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],

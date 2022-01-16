@@ -272,10 +272,11 @@ function ProgressScreen_Ver_2( props ) {
 
     async function FinalConfirm(){
         Alert.alert(
-            '확인',
+            '최종 확인',
             '출고를 확정하시겠습니까?',
             [
-              {text: '예', onPress: async () => {
+              {text: '취소', onPress: () => {}},
+              {text: '확인', onPress: async () => {
                 setIsLoading(true);
                 setIsSending(true);
                 database().ref(`chat${contractId}`).remove();
@@ -295,7 +296,6 @@ function ProgressScreen_Ver_2( props ) {
                     props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails, flag: true});
                 }
               }},
-              {text: '아니요', onPress: () => {}}
             ],
             { cancelable: true }
         );
@@ -390,10 +390,10 @@ function ProgressScreen_Ver_2( props ) {
         }
         catch{
             Alert.alert(
-                '오류',
-                'ProgressScreen get 오류',
+                '정보 조회 실패',
+                '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {props.navigation.navigate("MainScreen");}},
                 ],
                 { cancelable: false }
             );
@@ -407,7 +407,8 @@ function ProgressScreen_Ver_2( props ) {
                 state === 3 ? '탁송지를 변경하셨습니까?' : state === 5 ? '차량을 인수하시겠습니까?' : '승인하시겠습니까?',
                 state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '인수를 결정하시면 바로 시공을 시작합니다.' : '되돌릴 수 없습니다.',
                 [
-                    {text: '예', onPress: async () => {
+                    {text: '취소', onPress: () => {}},
+                    {text: '확인', onPress: async () => {
                         const auth = await checkJwt();
                         if(auth !== null){
                             const response = await axios({
@@ -433,7 +434,6 @@ function ProgressScreen_Ver_2( props ) {
                             );
                         }
                     }},
-                    {text: '아니요', onPress: () => {}},
                 ],
                 { cancelable: false }
             );
@@ -441,8 +441,8 @@ function ProgressScreen_Ver_2( props ) {
         }
         catch{e => {  
             Alert.alert(
-                '오류',
-                'ProgressScreen Next 오류',
+                '정보 전송 실패',
+                '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
                 ],
@@ -501,7 +501,7 @@ function ProgressScreen_Ver_2( props ) {
                         <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>
-                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 25, color: 'black'}}>{'shopData[0].companyName'}</Text>
+                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 25, color: 'black'}}>{shopData[0].companyName}</Text>
                         {/* shopData[0].companyName */}
                     </TouchableOpacity>
                     <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 15}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>

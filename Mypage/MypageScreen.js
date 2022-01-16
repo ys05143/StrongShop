@@ -153,7 +153,7 @@ function MyPageScreen(props){
         catch{e=>{
             console.log(e);
             Alert.alert(
-                '오류',
+                '정보 조회 오류',
                 '다시 시도해주세요.',
                 [
                     {text: '확인', onPress: () => {}},
@@ -308,7 +308,7 @@ function MyPageScreen(props){
                                     onChangeText={value=>setphoneNumInput(value)}
                                     returnKeyType="done"
                                     maxLength={13}
-                                    onSubmitEditing={() => {regex.test(phoneNumInput) ? alert('형식 맞음') : alert('형식 틀림')}}/>
+                                    onSubmitEditing={() => {regex.test(phoneNumInput)}}/>
                         {afterUpdate && <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{props.navigation.navigate("Certification", {phoneNum: myData.phoneNum})}}>
                             <Text style={{color: 'white'}}>인증</Text>
                         </TouchableOpacity>}

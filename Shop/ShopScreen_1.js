@@ -74,10 +74,10 @@ function ShopScreen_1(props){
       catch{e=>{
           //console.log(e);
           Alert.alert(
-              '오류',
-              'shopScreen 오류',
+              '정보 조회 오류',
+              '다시 시도해주세요.',
               [
-                  {text: '확인', onPress: () => {}},
+                  {text: '확인', onPress: () => {props.navigation.goBack();}},
               ],
               { cancelable: false }
           );}
