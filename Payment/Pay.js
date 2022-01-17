@@ -54,7 +54,7 @@ function Pay(props){
                 '네트워크 오류',
                 '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {props.navigation.replace("MainScreen")}},
                 ],
                 { cancelable: false }
             );

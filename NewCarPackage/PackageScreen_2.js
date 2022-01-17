@@ -216,7 +216,7 @@ function PackageScreen_2 (props, {navigation}) {
     function askCancelCarName(){
         Alert.alert(
             '경고',
-            '입력을 취소하겠습니까?',
+            '입력을 중단하겠습니까?',
             [
                 {text: '취소', onPress: () => {}},
                 {text: '확인', onPress: () => {

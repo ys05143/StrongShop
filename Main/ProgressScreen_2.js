@@ -497,14 +497,13 @@ function ProgressScreen_Ver_2( props ) {
                 
                 </Appbar.Header>   */}
                 <TopBar style={{backgroundColor: 'white', borderBottomWidth: 0}}>
-                    <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingLeft: 5}} onPress={() => { props.navigation.goBack(); rdbOff(); }}>
+                    <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}}  onPress={() => { props.navigation.goBack(); rdbOff(); }}>
                         <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>
                         <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 25, color: 'black'}}>{shopData[0].companyName}</Text>
-                        {/* shopData[0].companyName */}
                     </TouchableOpacity>
-                    <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 15}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
+                    <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'flex-end'}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
                         <MaterialComunityIcons name={"chat"} size={30} color={'black'} style={{elevation: 0}}/>
                         {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={15}>{addChatNum}</Badge>}
                     </TouchableOpacity>

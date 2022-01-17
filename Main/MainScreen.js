@@ -34,6 +34,18 @@ export function navigate(name, params) {
     }
 }
 
+const PolicySeperator = styled.View`
+    width: 1px;
+    height: 13px;
+    border-right-width: 1px;
+    border-color: gray;
+    margin-right: 5px;
+    margin-left: 5px;
+`;
+const PolicyText = styled.Text`
+    color: gray;
+`;
+
 const RowCenter = styled.View`
     flex-direction: row;
     align-items: center;
@@ -473,8 +485,8 @@ function MainScreen( props ) {
             '등록한 입찰을 취소하겠습니까?',
             '되돌릴 수 없습니다.',
             [
-              {text: '취소', onPress: () => { CancelOrder(orderId);}},
-              {text: '확인', onPress: () => {}}
+              {text: '취소', onPress: () => {}},
+              {text: '확인', onPress: () => { CancelOrder(orderId);}}
             ],
             { cancelable: true }
         );
@@ -517,7 +529,7 @@ function MainScreen( props ) {
                     </MenuButton>
                     <MenuButton 
                     disabled={true}
-                    //onPress={()=>props.navigation.navigate("PackageScreen_3_2")}
+                    //onPress={()=>{}}
                     >
                         <Text style={styles.text}>케어</Text>
                         <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
@@ -528,7 +540,7 @@ function MainScreen( props ) {
                     </MenuButton>
                 </Row>
                 
-                <View style={{backgroundColor: 'white', paddingVertical: 20}}>
+                <View style={{backgroundColor: 'white', paddingVertical: 20, marginBottom: 10}}>
                     <Row style={{alignItems: 'center'}}> 
                         <Title style={{fontFamily: 'DoHyeon-Regular', fontSize: 25, paddingLeft: 10}}>
                             당신의 차량
@@ -536,7 +548,7 @@ function MainScreen( props ) {
                         <IconButton icon='autorenew' size={20}  color={'gray'} onPress={()=>{getData();}}/>
                         <IconButton icon='format-list-bulleted' style={{ position: 'absolute' , right: 0 }} onPress={()=>{setChangeView(!changeView)}}/>
                     </Row>
-                <View>
+                    <View>
                     {!isLoading ? 
                         <>
                             { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
@@ -635,6 +647,45 @@ function MainScreen( props ) {
                             <ActivityIndicator size = 'small' color= {Color.main}/>
                         </View>}
                     </View>
+                </View>
+                <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
+                    <Row style={{alignItems: 'center'}}>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>이용약관</Text>
+                        </TouchableOpacity>
+                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>개인정보처리방침</Text>
+                        </TouchableOpacity>
+                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>청소년보호정책</Text>
+                        </TouchableOpacity>
+                    </Row>
+                    <Text style={{marginTop: 10}}>어메이킹스튜디오</Text>
+                    <View style={{marginTop: 10, alignItems: 'center'}}>
+                        <Row style={{alignItems: 'center'}}>
+                            <PolicyText>주소</PolicyText>
+                            <PolicySeperator/>
+                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, 기숙사 S921호'}</PolicyText>
+                        </Row>
+                        <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
+                    </View>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>대표</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>이용희</PolicyText>
+                    </Row>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>사업자등록번호</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>437-07-02325</PolicyText>
+                    </Row>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>제공자</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>어메이킹스튜디오</PolicyText>
+                    </Row>
                 </View>
             </ScrollView>
 

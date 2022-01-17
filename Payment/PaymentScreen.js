@@ -40,12 +40,23 @@ const PayMode = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
 `;
+const PolicySeperator = styled.View`
+    width: 1px;
+    height: 13px;
+    border-right-width: 1px;
+    border-color: gray;
+    margin-right: 5px;
+    margin-left: 5px;
+`;
+const PolicyText = styled.Text`
+    color: gray;
+`;
 
 const Pay = [
-    {label: '신용카드', pg: 'uplus', pay_method: 'card'},
-    {label: '무통장입금', pg: 'uplus', pay_method: 'vbank'},
-    {label: '카카오페이', pg: 'kakaopay', pay_method: 'card'},
-    {label: '토스페이', pg: 'tosspay', pay_method: 'card'},
+    {id: 0, label: '신용카드', pg: 'uplus', pay_method: 'card'},
+    {id: 1, label: '무통장입금', pg: 'uplus', pay_method: 'vbank'},
+    {id: 2, label: '카카오페이', pg: 'kakaopay', pay_method: 'card'},
+    {id: 3, label: '토스페이', pg: 'tosspay', pay_method: 'card'},
 ]
 
 const styles = {
@@ -86,6 +97,7 @@ function PaymentScreen(props){
     const [payData, setPayData] = React.useState(DATA);
     const [baseData, setBaseData] = React.useState(null);
     const [payName, setPayName] = React.useState('');
+    const [payIndex, setPayIndex] = React.useState()
     const [isLoading, setIsLoading] = React.useState(false);
     const [activeSections, setActiveSections] = React.useState([]);
     const [test, setTest] = React.useState(true);
@@ -134,6 +146,7 @@ function PaymentScreen(props){
                     // [Deprecated v1.0.3]: m_redirect_url
                 });
                 setPayName('신용카드');
+                setPayIndex(0);
                 console.log({
                     pg: 'uplus',
                     pay_method: 'card',
@@ -207,6 +220,7 @@ function PaymentScreen(props){
         console.log(newData);
         setPayData(newData);
         setPayName(item.label);
+        setPayIndex(item.id)
     }
 
     function MoveToPay(){
@@ -230,21 +244,25 @@ function PaymentScreen(props){
         }
     }
 
-    function OnePayMode(item){
+    function OnePayMode(item, index){
         return(
-            <View key={item.label} style={{width: WIDTH/3, height: 70, justifyContent: 'center', alignItems: 'center'}}>
-                <PayMode style={{borderColor: payName === item.label ? Color.main : 'lightgray', backgroundColor: payName === item.label ? Color.main : 'white'}} onPress={()=>{changePayData('pg', item)}}>
-                    <Text style={{color: payName === item.label ? 'white' : 'black'}}>{item.label}</Text>
-                </PayMode>
-            </View>
+            // <View key={item.label} style={{width: WIDTH/3, height: 70, justifyContent: 'center', alignItems: 'center'}}>
+            //     <PayMode style={{borderColor: payName === item.label ? Color.main : 'lightgray', backgroundColor: payName === item.label ? Color.main : 'white'}} onPress={()=>{changePayData('pg', item)}}>
+            //         <Text style={{color: payName === item.label ? 'white' : 'black'}}>{item.label}</Text>
+            //     </PayMode>
+            // </View>
+            <TouchableOpacity key={item.label} style={{paddingHorizontal: 10, flexDirection: 'row', width: '100%', height: 50, alignItems: 'center', borderColor: payName === item.label? Color.main : 'lightgray', borderBottomWidth: index === payIndex -1 ? 0 : 2, borderLeftWidth: 2, borderRightWidth: 2, borderTopWidth: index === 0 || payName === item.label ? 2 : 0}} onPress={()=>{changePayData('pg', item)}}>
+                <Icon name={payName === item.label ? "radio-button-on-outline" : "radio-button-off-outline"} size={20} style={{color: Color.main}}/>
+                <Text style={{marginLeft: 10, color: payName === item.label ? Color.main : 'black'}}>{item.label}</Text>
+            </TouchableOpacity>
         )
     }
 
     function _renderHeader (section, index, isActive) {
         return (
-            <Row style={{width: '100%', alignItems: 'center',}}>
+            <Row style={{width: '100%', alignItems: 'center'}}>
                 <Title style={{paddingHorizontal: 10, fontWeight: 'bold'}}>결제 항목</Title>
-                <Icon name={isActive ? "chevron-down-outline" : "chevron-forward-outline"} size={25}/>
+                <Icon name={isActive ? "chevron-up-outline" : "chevron-down-outline"} size={25}/>
             </Row>
         )
     }
@@ -361,7 +379,6 @@ function PaymentScreen(props){
                         </ReceiptItemView>
                     )
                 }
-                <ReceiptMatrixLine/>
             </View>
             </View>
         )
@@ -372,38 +389,84 @@ function PaymentScreen(props){
     };
 
     return(
-        <TotalView notchColor={'white'}>
+        <>
+        <TotalView notchColor={'white'} homeIndicatorColor={'white'}>
             <ScrollView>
-            <Accordion
-                containerStyle={{backgroundColor: 'white', paddingVertical: 10}}
-                sections={receipt}
-                activeSections={activeSections}
-                renderHeader={_renderHeader}
-                renderContent={_renderContent}
-                onChange={_updateSections}
-                underlayColor='transparent'
-                touchableComponent={TouchableOpacity}
-                />
-            <Row style={{height: 50, justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', marginBottom: 10, paddingHorizontal: 10}}>
-                <Text style={styles.receiptTitle}>{"최 종 가 격: "}</Text>
-                <Text style={styles.receiptPrice}>{JSON.parse(receipt[0].quote).totalPrice+' 만원'}</Text>
-            </Row>
-            <View style={{backgroundColor: 'white', paddingVertical: 10, marginBottom: 10}}>
-                <Title style={{paddingHorizontal: 10, fontWeight: 'bold'}}>결제 방법</Title>
-                <Row style={{width: '100%', flexWrap: 'wrap'}}>
-                    {_.map(Pay , (item)=>{
-                        return( 
-                            OnePayMode(item) 
-                        )})}
+                <View style={{borderBottomWidth: 1, borderColor: 'lightgray'}}>
+                <Accordion
+                    containerStyle={{backgroundColor: 'white', paddingVertical: 10}}
+                    sections={receipt}
+                    activeSections={activeSections}
+                    renderHeader={_renderHeader}
+                    renderContent={_renderContent}
+                    onChange={_updateSections}
+                    underlayColor='transparent'
+                    touchableComponent={TouchableOpacity}
+                    />
+                </View>
+                <Row style={{height: 50, justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', marginBottom: 10, paddingHorizontal: 10}}>
+                    <Text style={styles.receiptTitle}>{"총 결제 예상 금액: "}</Text>
+                    <Text style={styles.receiptPrice}>{JSON.parse(receipt[0].quote).totalPrice+' 만원'}</Text>
                 </Row>
-            </View>
-            <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}} contentStyle={{width: '100%', height: '100%'}}>결제하기</Button>
-            {test && <Button mode={"contained"} color={Color.main} onPress={()=>{sendData()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>넘어가기</Button>}
+                <View style={{backgroundColor: 'white', paddingHorizontal: 10, marginBottom: 15}}>
+                    <Title style={{fontWeight: 'bold', marginTop: 15, marginBottom: 10}}>결제 방법</Title>
+                    <Row style={{width: '100%', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20}}>
+                        {_.map(Pay , (item, index)=>{
+                            return( 
+                                OnePayMode(item, index) 
+                            )})}
+                    </Row>
+                </View>
+                <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
+                    <Row style={{alignItems: 'center'}}>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>이용약관</Text>
+                        </TouchableOpacity>
+                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>개인정보처리방침</Text>
+                        </TouchableOpacity>
+                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                            <Text>청소년보호정책</Text>
+                        </TouchableOpacity>
+                    </Row>
+                    <Text style={{marginTop: 10}}>어메이킹스튜디오</Text>
+                    <View style={{marginTop: 10, alignItems: 'center'}}>
+                        <Row style={{alignItems: 'center'}}>
+                            <PolicyText>주소</PolicyText>
+                            <PolicySeperator/>
+                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, 기숙사 S921호'}</PolicyText>
+                        </Row>
+                        <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
+                    </View>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>대표</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>이용희</PolicyText>
+                    </Row>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>사업자등록번호</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>437-07-02325</PolicyText>
+                    </Row>
+                    <Row style={{marginTop: 10, alignItems: 'center'}}>
+                        <PolicyText>제공자</PolicyText>
+                        <PolicySeperator/>
+                        <PolicyText>어메이킹스튜디오</PolicyText>
+                    </Row>
+                </View>
+                {false && <Button mode={"contained"} color={Color.main} onPress={()=>{sendData()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>넘어가기</Button>}
             </ScrollView>
+            <View style={{width: '100%', height: 80, backgroundColor: 'white', paddingVertical: 10}}>
+                <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}} contentStyle={{width: '100%', height: '100%'}}>결제하기</Button>
+            </View>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
         </TotalView>
+        
+        </>
     )
 }
 

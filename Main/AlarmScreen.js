@@ -103,11 +103,13 @@ function AlarmScreen(props){
     return(
         <TotalView notchColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={()=>{props.navigation.goBack()}}>
+                <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>알림</Text>
-                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 10}} onPress={()=>{ClearAlarmList();}}>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>알림</Text>
+                </View>
+                <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'flex-end'}} onPress={()=>{ClearAlarmList();}}>
                     <Icon name="trash-outline" size={25} color={'black'}></Icon>
                 </TouchableOpacity>
             </TopBar>

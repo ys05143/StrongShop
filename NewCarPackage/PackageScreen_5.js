@@ -154,7 +154,6 @@ function PackageScreen_5(props){
             }
             else{
                 Alert.alert(
-                    '실패',
                     '로그인이 필요합니다.',
                     [
                         {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},

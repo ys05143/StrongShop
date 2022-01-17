@@ -266,17 +266,15 @@ function MyPageScreen(props){
     return(
         <TotalView notchColor={'white'}>
             <TopBar>
-                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}} onPress={()=>{props.navigation.goBack()}}>
+                <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
-                {afterUpdate ? <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 10}} onPress={()=>{sendData();}}>
-                    <Text style={{fontSize: 15}}>{'저장'}</Text>
-                </TouchableOpacity> : 
-                <TouchableOpacity style={{height: 60, justifyContent: 'center', paddingRight:5, paddingLeft: 5}} onPress={()=>{logOut();}}>
-                    <Text style={{fontSize: 13}}>{'로그아웃'}</Text>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
+                </View>
+                <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center'}} onPress={()=>{afterUpdate ? sendData() : logOut();}}>
+                    <Text>{afterUpdate ? '저장': '로그아웃'}</Text>
                 </TouchableOpacity>
-                }
             </TopBar>
             <ProfileView>
                 <ProfileImg>

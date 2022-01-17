@@ -229,7 +229,7 @@ function PackageScreen_4(props){
 
     function askCancelRequire(){
         Alert.alert(
-            '입력을 취소하겠습니까?',
+            '입력을 중단하겠습니까?',
             '현재 페이지에서 입력된 내용은 저장되지 않습니다.',
             [
               {text: '취소', onPress: () => {}},
