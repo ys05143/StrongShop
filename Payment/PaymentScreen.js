@@ -458,7 +458,7 @@ function PaymentScreen(props){
                 </View>
                 {false && <Button mode={"contained"} color={Color.main} onPress={()=>{sendData()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>넘어가기</Button>}
             </ScrollView>
-            <View style={{width: '100%', height: 80, backgroundColor: 'white', paddingVertical: 10}}>
+            <View style={{width: '100%', height: 80, backgroundColor: 'white', paddingVertical: 10, borderTopStartRadius: 15, borderTopEndRadius: 15}}>
                 <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}} contentStyle={{width: '100%', height: '100%'}}>결제하기</Button>
             </View>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>

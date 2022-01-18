@@ -482,7 +482,7 @@ function MainScreen( props ) {
 
     function askCancelOptions(orderId){
         Alert.alert(
-            '등록한 입찰을 취소하겠습니까?',
+            '진행중인 입찰을 중단하겠습니까?',
             '되돌릴 수 없습니다.',
             [
               {text: '취소', onPress: () => {}},
@@ -540,7 +540,7 @@ function MainScreen( props ) {
                     </MenuButton>
                 </Row>
                 
-                <View style={{backgroundColor: 'white', paddingVertical: 20, marginBottom: 10}}>
+                <View style={{backgroundColor: 'white', paddingTop: 20, paddingBottom: changeView ? 20 : 5, marginBottom: 10}}>
                     <Row style={{alignItems: 'center'}}> 
                         <Title style={{fontFamily: 'DoHyeon-Regular', fontSize: 25, paddingLeft: 10}}>
                             당신의 차량
@@ -598,9 +598,12 @@ function MainScreen( props ) {
                             (
                                 <Swiper 
                                 autoplay={false} 
-                                style={{height: 150 }}
+                                style={{height: 145}}
                                 loop={false}
-                                renderPagination={(index,total)=><Text style={{ alignSelf: 'flex-end' , right: 5 , color: 'gray' , fontSize: 15 }}>{index+1}/{total}</Text>}
+                                renderPagination={(index,total)=>
+                                <View style={{alignItems: 'flex-end', paddingRight: 10, height: 20}}>
+                                    <Text style={{color: 'gray'}}>{index+1}/{total}</Text>
+                                </View>}
                                 >
                                     {myOrderList.map((item, index)=>{
                                         return(
@@ -626,7 +629,7 @@ function MainScreen( props ) {
                                                 
                                             // </Card> 
                                             <View key={item.orderId}>
-                                                <Card style={{height: 130, margin: 10 ,elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <Card style={{height: 130, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 0, elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                                         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
                                                     <Card.Content style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end'}}>
@@ -643,7 +646,7 @@ function MainScreen( props ) {
                                 </Swiper>
                             )}     
                         </> :
-                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                        <View style={{height: 150, width: '100%', alignItems: 'center', justifyContent: 'center'}}>
                             <ActivityIndicator size = 'small' color= {Color.main}/>
                         </View>}
                     </View>
