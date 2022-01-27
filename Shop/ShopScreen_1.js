@@ -175,11 +175,9 @@ function ShopScreen_1(props){
     
   return(
     <>
-    <View style={{backgroundColor:'white', width: '100%', height: '100%'}}>
-      <View style={{flex: 1, marginTop: NOTCH}}>
-        <Animated.View
-          style={[styles.header]}>
-
+    <TotalView notchColor={'white'}>
+      <View style={{flex: 1}}>
+        <Animated.View style={[styles.header]}>
           {!isLoading && 
           <Animated.Image
           style={[
@@ -206,8 +204,8 @@ function ShopScreen_1(props){
                 <Icon name="chevron-up-outline" color={'black'} size={20} style={{marginLeft: 5}}/>
               </TouchableOpacity> */}
           </Animated.View>}
-
         </Animated.View>
+
         <View>
           <Animated.View
             style={[
@@ -230,7 +228,7 @@ function ShopScreen_1(props){
             </Animated.View>
           </Animated.View>
           <TouchableOpacity style={{position: 'absolute' , height: HEADER_MIN_HEIGHT, justifyContent: 'center', paddingRight: 10, paddingLeft: 5}}>
-            <Icon name="chevron-back-outline" size={35} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
+            <Icon name="chevron-back-outline" size={30} color={'black'} onPress={()=>{props.navigation.goBack()}}></Icon>
           </TouchableOpacity>  
         </View>
 
@@ -259,7 +257,7 @@ function ShopScreen_1(props){
           </View>}
         </Animated.View>
       </View>
-    </View>
+    </TotalView>
 {/*     
     {isLoading && 
     <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
@@ -308,11 +306,13 @@ headerBackground: {
   right: 0,
   width: '90%',
   marginTop: HEADER_MIN_HEIGHT,
-  height: HEADER_MAX_HEIGHT*0.5,
+  height: HEADER_MAX_HEIGHT-HEADER_MIN_HEIGHT-20,
   resizeMode: 'cover',
+  backgroundColor: '#e5e5e5',
+  borderRadius: 5
 },
 topBar: {
-  height: HEADER_MIN_HEIGHT,
+  height: HEADER_MIN_HEIGHT, // 60
   width: '100%',
   alignItems: 'center',
   position: 'absolute',
@@ -326,24 +326,8 @@ topBar: {
 },
 title: {
   color: 'black',
-  fontSize: 30,
+  fontSize: 25,
   fontFamily: 'DoHyeon-Regular',
-},
-avatar: {
-  height: 54,
-  width: 54,
-  resizeMode: 'contain',
-  borderRadius: 54 / 2,
-},
-fullNameText: {
-  fontSize: 16,
-  marginLeft: 24,
-},
-box: {
-  backgroundColor: "#61dafb",
-  width: 80,
-  height: 80,
-  borderRadius: 4,
 },
 subTitleView: {
   width: '90%',

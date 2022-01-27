@@ -170,7 +170,8 @@ function ChatScreen(props){
             //서버로 제대로 전달이 되었다면 보내는 방향으로
             setDisableSend(true);
             const newReference = db.push();
-            msg[0].createdAt = moment( msg[0].createdAt ).format('YYYY-MM-DD kk:mm:ss') ;
+            // msg[0].createdAt = moment( msg[0].createdAt ).format('YYYY-MM-DD kk:mm:ss') ;
+            msg[0].createdAt = moment().format('YYYY-MM-DD kk:mm:ss');
             // 화면에 표시
             setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
     

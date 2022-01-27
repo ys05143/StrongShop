@@ -493,7 +493,7 @@ function MainScreen( props ) {
     }
 
     const headerTranslateY = scrollY.interpolate({
-        inputRange: [0, 200 , 300],
+        inputRange: [0, 200, 300],
         outputRange: [100, 100 ,0],
         extrapolate: 'clamp',
       });
@@ -509,8 +509,9 @@ function MainScreen( props ) {
                     <Icon name="person-circle-outline" size={25} color={'white'}></Icon>
                 </TouchableOpacity>
             </TopBar>
-            <Animated.View style={{ backgroundColor: Color.main , borderBottomRightRadius: 20 , borderBottomLeftRadius: 20, height: headerTranslateY}}>
-                <Title style={styles.title}>{'안녕하세요,\n무엇을 도와드릴까요?'}</Title>
+            <Animated.View style={{ backgroundColor: Color.main , paddingLeft: 15, borderBottomRightRadius: 20 , borderBottomLeftRadius: 20, height: headerTranslateY}}>
+                {/* <Title style={styles.title}>{'안녕하세요,\n무엇을 도와드릴까요?'}</Title> */}
+                <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 35, color: 'white'}}>{'안녕하세요,\n무엇을 도와드릴까요?'}</Text>
             </Animated.View>
 
             <ScrollView 
@@ -653,17 +654,17 @@ function MainScreen( props ) {
                 </View>
                 <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
                     <Row style={{alignItems: 'center'}}>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                        <View style={{paddingHorizontal: 10}}>
                             <Text>이용약관</Text>
-                        </TouchableOpacity>
+                        </View>
                         <PolicySeperator style={{borderColor: 'black'}}/>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                        <View style={{paddingHorizontal: 10}}>
                             <Text>개인정보처리방침</Text>
-                        </TouchableOpacity>
+                        </View>
                         <PolicySeperator style={{borderColor: 'black'}}/>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
+                        <View style={{paddingHorizontal: 10}}>
                             <Text>청소년보호정책</Text>
-                        </TouchableOpacity>
+                        </View>
                     </Row>
                     <Text style={{marginTop: 10}}>어메이킹스튜디오</Text>
                     <View style={{marginTop: 10, alignItems: 'center'}}>
