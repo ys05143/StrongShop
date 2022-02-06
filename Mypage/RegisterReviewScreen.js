@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, Image, Alert, ActivityIndicator, Platform, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
-import { Button, Title, List, Divider } from 'react-native-paper';
+import { Button, Title, List, Divider, Badge } from 'react-native-paper';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
@@ -18,6 +18,8 @@ import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FastImage from 'react-native-fast-image';
+
+const WIDTH = AppWindow.width;
 
 const styles = {
     listAccordionStyle : {
@@ -66,9 +68,31 @@ const DetailView = styled.View`
     background-color: 'rgb(246,246,246)';
     height: 200px;
 `;
+
+// 여러이미지 허용할 경우
+// const AddImgView = styled.TouchableOpacity`
+//     width: 100px;
+//     height: 100px;
+//     border-style: dashed;
+//     border-width: 1px;
+//     border-radius: 1px;
+//     justify-content: center;
+//     align-items: center;
+//     border-color: gray;
+//     margin-left: 10px;
+// `;
+// const AddImg = styled.View`
+//     width: 100px;
+//     height: 100px;
+//     justify-content: center;
+//     align-items: center;
+//     margin-left: 10px;
+// `;
+
+//리뷰이미지 하나일 경우
 const AddImgView = styled.TouchableOpacity`
-    width: 100px;
-    height: 100px;
+    width: ${WIDTH*0.7}px;
+    height: ${WIDTH*0.7}px;
     border-style: dashed;
     border-width: 1px;
     border-radius: 1px;
@@ -78,12 +102,13 @@ const AddImgView = styled.TouchableOpacity`
     margin-left: 10px;
 `;
 const AddImg = styled.View`
-    width: 100px;
-    height: 100px;
+    width: ${WIDTH*0.7}px;
+    height: ${WIDTH*0.7}px;
     justify-content: center;
     align-items: center;
     margin-left: 10px;
 `;
+
 const BtnView = styled.View`
     width: 100%;
     height: 80px;
@@ -336,34 +361,30 @@ function RegisterReviewScreen(props) {
             </View> */}
             <TopBar>
                 {flag ? 
-                <View style={{height: 60, justifyContent: 'center', paddingHorizontal: 5}}/> : 
+                <View style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}}/> : 
                 <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}} onPress={()=>{props.navigation.goBack()}}>
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>}
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>{item.companyName}</Text>
+                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>{companyName}</Text>
                 </View>
                 <View style={{width: 60}}/>
             </TopBar>
             <View>
                 <ReceiptView item={[receipt]} key={receipt}></ReceiptView>
             </View>
-            <View style={{height: 120, paddingVertical: 10}}>
-                <ScrollView horizontal={true}>
-                    <AddImgView onPress={()=>{ImgPick();}}>
-                        <Icon name={'camera'} size={30} color={'gray'}/> 
-                    </AddImgView>
-                    {/* {selectedImg !== null && 
-                        selectedImg.map((item)=>{
-                        return( 
-                            <AddImg key={item}>
-                                <FastImage style={{height:'100%',width:'100%'}} source={{uri:item.path}}/>
-                            </AddImg>);
-                        })} */}
-                        {selectedImg !== null && <AddImg>
-                            <FastImage style={{height:'100%',width:'100%'}} source={{uri:selectedImg.path}}/>
-                        </AddImg>}
-                </ScrollView>
+            <View style={{height: WIDTH*0.8, justifyContent: 'center', alignItems: 'center'}}>
+                {selectedImg === null ? <AddImgView onPress={()=>{ImgPick();}}>
+                    <Icon name={'camera'} size={30} color={'gray'}/> 
+                </AddImgView> :
+                <View style={{width: WIDTH*0.8, height: WIDTH*0.75, justifyContent: 'center', alignItems: 'center'}}>
+                    <AddImg>
+                        <FastImage style={{height:'100%',width:'100%'}} source={{uri:selectedImg.path}}/>
+                    </AddImg>
+                    <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'gray', position: 'absolute', top: 0}} size={27} onPress={()=>{ImgPick();}}>
+                        <Icon name="pencil-sharp" color={'gray'}></Icon>
+                    </Badge>
+                </View>}
             </View>
             <TextView>
                 <Text style={{fontSize: 20}}>후기를 작성해주세요.</Text>
@@ -371,7 +392,7 @@ function RegisterReviewScreen(props) {
                             style={{textAlignVertical:'top', borderRadius: 5}}//only for android
                             value={text}
                             onChangeText={value=>setText(value)}
-                            placeholder={"솔직한 후기를 작성해주헤요"}
+                            placeholder={"솔직한 후기를 작성해주세요"}
                             placeholderTextColor="gray"/>
             </TextView>
             <BtnView>

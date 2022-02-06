@@ -34,6 +34,10 @@ import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import ProgressScreen from './Main/ProgressScreen';
 
+import CareScreen_1 from './Care/CareScreen_1';
+import CareScreen_2 from './Care/CareScreen_2';
+import CareScreen_3 from './Care/CareScreen_3';
+
 import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
 import ProgressScreen_2 from './Main/ProgressScreen_2';
@@ -200,6 +204,13 @@ function App (props) {
         {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
         {/* 신차패키지 5 */}
         {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
+
+        {/* 케어페이지 1 */}
+        {<Stack.Screen name="CareScreen_1" component={CareScreen_1} options={{headerShown:false}}/>}
+        {/* 케어페이지 2 */}
+        {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>}
+        {/* 케어페이지 3 */}
+        {<Stack.Screen name="CareScreen_3" component={CareScreen_3} options={{headerShown:false}}/>}
 
         {/* 결제페이지 */}
         {<Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{headerShown:false}}/>}

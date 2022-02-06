@@ -528,16 +528,13 @@ function MainScreen( props ) {
                         <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                         <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                     </MenuButton>
-                    <MenuButton 
-                    disabled={true}
-                    //onPress={()=>{}}
-                    >
+                    <MenuButton onPress={()=>{props.navigation.navigate("CareScreen_1")}}>
                         <Text style={styles.text}>케어</Text>
                         <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
                         <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
-                        <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
+                        {/* <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
                             <Text style={{color: 'red', fontSize: 12}}>{'빠른 시일안에\n찾아뵙겠습니다'}</Text>
-                        </View>
+                        </View> */}
                     </MenuButton>
                 </Row>
                 
@@ -671,14 +668,14 @@ function MainScreen( props ) {
                         <Row style={{alignItems: 'center'}}>
                             <PolicyText>주소</PolicyText>
                             <PolicySeperator/>
-                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, 기숙사 S921호'}</PolicyText>
+                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, stay S921호'}</PolicyText>
                         </Row>
                         <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
                     </View>
                     <Row style={{marginTop: 10, alignItems: 'center'}}>
                         <PolicyText>대표</PolicyText>
                         <PolicySeperator/>
-                        <PolicyText>이용희</PolicyText>
+                        <PolicyText>김용희</PolicyText>
                     </Row>
                     <Row style={{marginTop: 10, alignItems: 'center'}}>
                         <PolicyText>사업자등록번호</PolicyText>
