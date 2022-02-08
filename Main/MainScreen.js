@@ -538,7 +538,7 @@ function MainScreen( props ) {
                     </MenuButton>
                 </Row>
                 
-                <View style={{backgroundColor: 'white', paddingTop: 20, paddingBottom: changeView ? 20 : 5, marginBottom: 10}}>
+                <View style={{backgroundColor: 'white', paddingTop: 20, paddingBottom: 5, marginBottom: 10}}>
                     <Row style={{alignItems: 'center'}}> 
                         <Title style={{fontFamily: 'DoHyeon-Regular', fontSize: 25, paddingLeft: 10}}>
                             당신의 차량
@@ -550,31 +550,16 @@ function MainScreen( props ) {
                     {!isLoading ? 
                         <>
                             { changeView ? ( //요청받아서 없으면 빈 리스트 넘겨줌.
+                                myOrderList.length !== 0 ?
                                 <ScrollView 
+                                style={{height: 165}}
                                 horizontal={true}
                                 showsHorizontalScrollIndicator ={false}
                                 >
                                     {myOrderList.map((item, index) =>{
                                         return(
-                                            // <View key={item.orderId}>
-                                            // <Card style={styles.card} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
-                                            //     <View style={styles.cover}>
-                                            //         {/* <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/> */}
-                                            //         <FastImage  source={{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                            //     </View>
-                                            //     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                            //         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
-                                            //     <Card.Content style={{flexDirection: 'row'}}>
-                                            //         {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold'}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
-                                            //     </Card.Content>
-                                            //     {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
-                                            //         <Icon name="close-outline" size={25} color={'black'}></Icon>
-                                            //     </TouchableOpacity>}
-                                            // </Card> 
-                                            // {item.state <=2 && <Badge style={{position: 'absolute', elevation: 1}}>{item.bidNum}</Badge>}
-                                            // </View>
                                             <View key={item.orderId}>
-                                                <Card style={{width: 150, height: 130, margin: 10, elevation: 2}} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <Card style={{width: 140, height: 130, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 25, elevation: 2}} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                                     {/* <View style={styles.cover}>
                                                         <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                                     </View> */}
@@ -591,10 +576,13 @@ function MainScreen( props ) {
                                             </View> 
                                         )
                                     })}
-                                </ScrollView>                
+                                </ScrollView> : 
+                                <View style={{height: 165, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{color: 'gray'}}>진행중인 입찰 및 시공이 없습니다.</Text>
+                                </View>                
                             ) : 
                             (
-                                <Swiper 
+                                myOrderList.length !== 0 ? <Swiper 
                                 autoplay={false} 
                                 style={{height: 145}}
                                 loop={false}
@@ -605,27 +593,6 @@ function MainScreen( props ) {
                                 >
                                     {myOrderList.map((item, index)=>{
                                         return(
-                                            // <Card key={item.orderId} style={{ flex: 1 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
-                                            //     <RowCenter style={{ flex: 1}}>
-                                            //         <View style={{ flex: 3 }}>
-                                            //             <View style={{flex: 1, backgroundColor: 'lightgray'}}>
-                                            //                 <FastImage  source={{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
-                                            //             </View>
-                                            //             {item.state <=2 && <Badge style={{position: 'absolute'}} size={30}>{item.bidNum}</Badge>}  
-                                            //         </View>
-                                            //         <View style={{ flex: 2 }}>
-                                            //             <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' , fontSize: 27 , padding: 10 }} subtitleStyle={{ fontSize: 17 , padding: 10 }}
-                                            //                 subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 만료' : ''} />
-                                            //             <Card.Content>
-                                            //             { item.state <=2 && <Text style={{ fontSize: 20 , padding: 10 }}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
-                                            //             </Card.Content>
-                                            //         </View>
-                                            //     </RowCenter>
-                                            //     {item.state <= 2 && <TouchableOpacity style={{position: 'absolute', alignSelf: 'flex-end', paddingRight: 2, paddingTop: 2}} onPress={()=>{askCancelOptions(item.orderId)}}>
-                                            //         <Icon name="close-outline" size={30} color={'black'}></Icon>
-                                            //     </TouchableOpacity>}
-                                                
-                                            // </Card> 
                                             <View key={item.orderId}>
                                                 <Card style={{height: 130, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 0, elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
@@ -641,10 +608,13 @@ function MainScreen( props ) {
                                             </View>
                                         )
                                     })}
-                                </Swiper>
+                                </Swiper> :
+                                <View style={{height: 165, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{color: 'gray'}}>진행중인 입찰 및 시공이 없습니다.</Text>
+                                </View>
                             )}     
                         </> :
-                        <View style={{height: 150, width: '100%', alignItems: 'center', justifyContent: 'center'}}>
+                        <View style={{height: 165, width: '100%', alignItems: 'center', justifyContent: 'center'}}>
                             <ActivityIndicator size = 'small' color= {Color.main}/>
                         </View>}
                     </View>
