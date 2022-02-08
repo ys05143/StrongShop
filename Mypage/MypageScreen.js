@@ -307,7 +307,7 @@ function MyPageScreen(props){
                                     returnKeyType="done"
                                     maxLength={13}
                                     onSubmitEditing={() => {regex.test(phoneNumInput)}}/>
-                        {afterUpdate && <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{props.navigation.navigate("Certification", {phoneNum: myData.phoneNum})}}>
+                        {afterUpdate && <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{props.navigation.navigate("Certification", {phoneNum: myData.phoneNum, userName: ''})}}>
                             <Text style={{color: 'white'}}>인증</Text>
                         </TouchableOpacity>}
                     </PhoneNum>

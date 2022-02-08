@@ -436,14 +436,14 @@ function PaymentScreen(props){
                         <Row style={{alignItems: 'center'}}>
                             <PolicyText>주소</PolicyText>
                             <PolicySeperator/>
-                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, 기숙사 S921호'}</PolicyText>
+                            <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, stay S921호'}</PolicyText>
                         </Row>
                         <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
                     </View>
                     <Row style={{marginTop: 10, alignItems: 'center'}}>
                         <PolicyText>대표</PolicyText>
                         <PolicySeperator/>
-                        <PolicyText>이용희</PolicyText>
+                        <PolicyText>김용희</PolicyText>
                     </Row>
                     <Row style={{marginTop: 10, alignItems: 'center'}}>
                         <PolicyText>사업자등록번호</PolicyText>

@@ -1,7 +1,7 @@
 import React from 'react' ;
 import styled from 'styled-components/native';
 import { Title , Button , Text, } from 'react-native-paper';
-import { ActivityIndicator, Alert, ScrollView, TextInput, Platform } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, TextInput, Platform, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import storage from '../function/storage';
 //component
 import TotalView from '../components/TotalView';
+import Row from '../components/Row';
 //constants
 import Color from '../constants/Color';
 //server
@@ -22,8 +23,20 @@ import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
 
-const View = styled.View`
-    flex : 1 ;
+const RowCenter = styled.View`
+    flex-direction: row;
+    align-items: center;
+`;
+const InputForVerify = styled.TextInput`
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    background-color: #e5e5e5;
+    margin-top: 10px;
+    border-color: ${(props) => (props.focused ? Color.main : '#e5e5e5')};
+    border-bottom-width: 2px;
+    font-size: 17px;
+    justify-content: center;
 `;
 const styles = {
     title : {
@@ -80,11 +93,17 @@ const iosKeys = {
   
 
 function LoginScreen(props) {
-    const snapPoints = React.useMemo(() => ['80%'], []);
+    const snapPoints = React.useMemo(() => ['95%'], []);
     const [userName,setUserName] = React.useState("");
     const [dtoData,setDtoData] = React.useState(null);
     const [loginVer, setLoginVer] = React.useState('');
     const [isSending, setIsSending] = React.useState(false);
+    const [stage, setStage] = React.useState(0);
+    const [isGeneral, setIsGeneral] = React.useState(true);
+    const [businessNumber, setBusinessNumber] = React.useState('');
+    const [openDate, setOpenDate] = React.useState('');
+    const [bossName, setBossName] = React.useState('');
+    const [focusInput, setFocusInput] = React.useState(0);
 
     const bottomSheetModalRef = React.useRef(null);
     const handlePresentModalPress = React.useCallback(() => {
@@ -95,7 +114,7 @@ function LoginScreen(props) {
     }, []);  
 
 
-    // 카카오 AccessToken을 서버로 전달
+    // AccessToken을 서버로 전달
     async function requestAccessToken(accessToken, name) {
         setIsSending(true);
         let fcmToken = '';
@@ -112,12 +131,12 @@ function LoginScreen(props) {
             } ,
         })
         .then( async (res) =>  {
-
             // 회원가입 필요
             if ( res.data.statusCode == 201 ) {
                 // 추가정보를 사용자로부터 받음.
-                handlePresentModalPress();       
-                setDtoData(res.data.data);         
+                setDtoData(res.data.data);
+                setUserName(res.data.data.nickname);
+                handlePresentModalPress();                
             }
             // 이미 가입된 회원 => jwt token을 발급받음.
             else if ( res.data.statusCode == 200 ) {
@@ -189,9 +208,10 @@ function LoginScreen(props) {
             url : `${server.url}/api/login/user/${name}` ,
             data : {
                 ...dtoData ,
-                phoneNumber: '01012341234' ,
-                name: '허지훈',
+                phoneNumber: '01012341234' , //본인인증결과로 삽입
+                name: userName,
                 fcmToken: fcmToken,
+                businessNumber: isGeneral ? null : businessNumber //딜러인경우 사업자등록번호 전달
             }
         })
         .then(async(res) =>{
@@ -252,6 +272,7 @@ function LoginScreen(props) {
 
 
     const handleKakaoLogin = async() =>  {
+        setStage(0);
         // 카카오 인증요청
         setIsSending(true);
         setLoginVer('kakao');
@@ -275,6 +296,7 @@ function LoginScreen(props) {
     }
 
     const naverLogin = props => {
+        setStage(0);
         setIsSending(true);
         return new Promise((resolve, reject) => {
           NaverLogin.login(props, (err, token) => {
@@ -298,56 +320,46 @@ function LoginScreen(props) {
 
     // 휴대폰인증
     function phoneAuth(response) {
-       if ( response.success ) {
-           // 최종 회원가입요청
-           requestSignIn(loginVer);
-       }
-       else {
-           // 인증 취소 / 대표자명과 맞지않을때
-           handleDismissModalPress();
-       }
-    }
-
-    async function logOut(){
-        const auth = await checkJwt();
-        if(auth !== null){
-            axios({
-                method : 'PUT' ,
-                url : `${server.url}/api/logout/user` ,
-                headers : {Auth: auth},
-            })
-            .then(res => {
-                console.log(res);
-                AsyncStorage.removeItem('auth', ()=>{
-                    Alert.alert(
-                        '로그아웃',
-                        '로그아웃 하였습니다.',
-                        [
-                            {text: '확인', onPress: async() => {
-                                    const allKey = await AsyncStorage.getAllKeys();
-                                    console.log(allKey);
-                                    props.navigation.popToTop();
-                                }
-                            },
-                        ],
-                        { cancelable: false }
-                    );
-                });
-            })
-            .catch(e=>{
-                checkErrorCode(e, props.navigation);
-            })
+        console.log(response);
+        if ( response.success ) {
+            // 최종 회원가입요청
+            requestSignIn(loginVer);
         }
         else {
-            Alert.alert(
-                '오류',
-                '로그인상태가 아닙니다.',
-                [
-                    {text: '확인', onPress: () => {} },
-                ],
-                { cancelable: false }
-            );
+            // 인증 취소
+            handleDismissModalPress();
         }
+    }
+
+    // 사업자등록번호 인증
+    function verify() {
+        // 사업자등록 인증
+        axios({
+            method: 'post' ,
+            url :  'https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=Te7HPGFjEojhi4%2B4sRjikWXlBCD1Bg%2FAVQzCa9A4gUihNPh%2FRxaFkxk2IJ670MBNRDarlpFsPX67kda7XMXaLA%3D%3D' ,
+            data : {
+                businesses : [
+                    {
+                        b_no : businessNumber ,
+                        start_dt : openDate ,
+                        p_nm : bossName ,
+                        p_nm2 : '' ,
+                        b_nm : '' ,
+                        corp_no : '' ,
+                        b_sector : '' ,
+                        b_type : '' ,
+                    }
+                ]
+            }
+        })
+        .then( res =>   { 
+
+            if(res.data.data[0].valid === '01')  {
+                setStage(2);
+            }
+            else Alert.alert('유효하지 않은 사업자등록증입니다.','다시 한번 확인해주세요.');
+        }) 
+        .catch(e => Alert.alert('필수사항을 입력해주세요.') ) ;
     }
 
     return(
@@ -360,7 +372,7 @@ function LoginScreen(props) {
                     <Button style={styles.loginButton} color='white' icon='chat' onPress={handleKakaoLogin}>
                         카카오로 시작하기
                     </Button>
-                    <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>naverLogin(initials)}>
+                    <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>{naverLogin(initials)}}>
                         네이버로 시작하기
                     </Button>
                 {/* </ImageBackground> */}
@@ -369,31 +381,81 @@ function LoginScreen(props) {
                 <BottomSheetModal
                     ref={bottomSheetModalRef}
                     snapPoints={snapPoints}
-                    // enablePanDownToClose={false}
+                    enablePanDownToClose={true}
                 >
-                <KeyboardAwareScrollView>
-                    <>
-                        <Title style={styles.title}> {userName}님으로 인증할게요.(2/2)</Title>
-                        <View style={{ width: '100%' , height: 700 }}>
-                            <Button onPress={()=>requestSignIn(loginVer)} disabled={isSending}>테스트</Button>
+                <KeyboardAwareScrollView extraScrollHeight={30}>
+                    {stage === 0 ?<>
+                    <Title style={styles.title}> 회원 유형을 선택해주세요.</Title>
+                    <RowCenter style={{ width: '100%', height: 100, justifyContent: 'space-around'}}>
+                        <TouchableOpacity onPress={()=>{setIsGeneral(true);}} style={{borderWidth: 1, borderColor: 'gray', width: '50%', height: 80, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <Icon name={isGeneral===true?"radio-button-on-outline": "radio-button-off-outline"} size={20} color= 'black'></Icon>
+                            <Text>일반고객</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{setIsGeneral(false)}} style={{borderWidth: 1, borderColor: 'gray', width: '50%', height: 80, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <Icon name={isGeneral===false?"radio-button-on-outline": "radio-button-off-outline"} size={20} color= 'black'></Icon>
+                            <Text>딜러</Text>
+                        </TouchableOpacity>
+                    </RowCenter>
+                    <Row style={{alignItems: 'center', justifyContent: 'space-around', marginTop: 30}}>
+                        <Button mode={"contained"} onPress={() => {handleDismissModalPress()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {isGeneral ? setStage(2) : setStage(1)}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>다음</Button>
+                    </Row>
+                    </> :
+                    stage === 1 ? <>
+                        <Title style={styles.title}> 사업자인증이 필요합니다.</Title>
+                        <View style={{ width: '100%' , height: 700}}>
+                            <Text style={{marginLeft: 5, fontSize: 18, marginTop: 10}}> 사업자등록번호</Text>
+                            <InputForVerify value={businessNumber}
+                                            onChangeText={(value)=>{setBusinessNumber(value)}}
+                                            placeholder={"10자리를 입력하세요 (- 없이)"}
+                                            placeholderTextColor="gray"
+                                            onFocus={()=>{setFocusInput(1)}}
+                                            onBlur={()=>setFocusInput(0)}
+                                            focused={focusInput === 1}/>
+                            <Text style={{marginLeft: 5, fontSize: 18, marginTop: 10}}> 개업일자</Text>
+                            <InputForVerify value={openDate}
+                                            onChangeText={(value)=>{setOpenDate(value)}}
+                                            placeholder={"YYYYMMDD (예) 2021년 9월 27일 -> 20210927"}
+                                            placeholderTextColor="gray"
+                                            onFocus={()=>{setFocusInput(2)}}
+                                            onBlur={()=>setFocusInput(0)}
+                                            focused={focusInput === 2}/>
+                            <Text style={{marginLeft: 5, fontSize: 18, marginTop: 10}}> 대표자성명</Text>
+                            <InputForVerify 
+                                            onChangeText={(value)=>{setBossName(value)}}
+                                            placeholder={"홍길동"}
+                                            placeholderTextColor="gray"
+                                            onFocus={()=>{setFocusInput(3)}}
+                                            onBlur={()=>setFocusInput(0)}
+                                            focused={focusInput === 3}/>
+                            <Row style={{alignItems: 'center', justifyContent: 'space-around', marginTop: 30}}>
+                                <Button mode={"contained"} onPress={() => {setStage(0)}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>이전</Button>
+                                <Button mode={"contained"} onPress={() => {verify()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>다음</Button>
+                            </Row>
+                        </View>
+                    </> : 
+                    stage === 2 ? <>
+                    <Title style={styles.title}> {userName} 님으로 인증할게요.</Title>
+                    <View style={{ width: '100%' , height: 700 }}>
+                        <Button onPress={()=>requestSignIn(loginVer)} disabled={isSending}>테스트</Button>
                         {/* <IMP.Certification
-                        userCode={'iamport'}  // 가맹점 식별코드
+                        userCode={'imp10391932'}  // 가맹점 식별코드
                         // tierCode={'AAA'}      // 티어 코드: agency 기능 사용자에 한함
                         data = {{
                             merchant_uid: `mid_${new Date().getTime()}`,
                             company: '',
                             carrier: '',
-                            name: '',
+                            name: userName,
                             phone: '',
                             min_age: '',
                         }
                         }
-                        loading={<ActivityIndicator />} // 로딩 컴포넌트
+                        loading={<View style={{flex: 1}}><ActivityIndicator /></View>} // 로딩 컴포넌트
                         callback={phoneAuth}   // 본인인증 종료 후 콜백
-                    />   */}
+                        />   */}
                     </View>
-                </>
-                    </KeyboardAwareScrollView>
+                </> : <></>}
+                </KeyboardAwareScrollView>
                 </BottomSheetModal> 
             </View>
             <Icon name={'chevron-back-outline'} size={25} style={{position: 'absolute', marginTop: 10, marginLeft: 10}} color={'white'} onPress={()=>{props.navigation.goBack();}}/>

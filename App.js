@@ -15,8 +15,9 @@ import SplashScreen from 'react-native-splash-screen'
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
 import AlarmScreen from './Main/AlarmScreen';
-import ChatListScreen from './Mypage/ChatListScreen';
+import ProgressScreen from './Main/ProgressScreen';
 import ChatScreen from './Main/ChatScreen';
+
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
@@ -28,11 +29,13 @@ import PayFinish from './Payment/PayFinish';
 
 import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
+
 import MyPageScreen from './Mypage/MypageScreen';
 import Certification from './Mypage/Certification';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
-import ProgressScreen from './Main/ProgressScreen';
+import RegisterMyCar from './Mypage/RegisterMyCar';
+import ChatListScreen from './Mypage/ChatListScreen';
 
 import CareScreen_1 from './Care/CareScreen_1';
 import CareScreen_2 from './Care/CareScreen_2';
@@ -231,7 +234,9 @@ function App (props) {
         {<Stack.Screen name="RecordScreen" component={RecordScreen} options={{headerShown:false}}/>}
         {/* 리뷰 등록 페이지 */}
         {<Stack.Screen name="RegisterReviewScreen" component={RegisterReviewScreen} options={{headerShown:false}}/>}
-        {/* 시공중 페이지 */}
+        {/* 사용자 차량 등록 페이지 */}
+        {<Stack.Screen name="RegisterMyCar" component={RegisterMyCar} options={{headerShown:false}}/>}
+        {/* (구) 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
         {/* 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}

@@ -168,6 +168,7 @@ function MainScreen( props ) {
     const [myOrderList, setMyOrderList] = React.useState([]);
     const [orderTimeList, setOrderTimeList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [isLogin, setIsLogin] = React.useState(false);
     const scrollY = React.useRef(new Animated.Value(0)).current;
     
     const context = React.useContext(userContext);
@@ -239,6 +240,7 @@ function MainScreen( props ) {
             setIsLoading(true);
             const auth = await checkJwt();
             if(auth !== null){
+                setIsLogin(true);
                 const myOrderResponse = await axios({
                     method: 'GET',
                     url : `${server.url}/api/orders/user`,
@@ -283,6 +285,7 @@ function MainScreen( props ) {
             }
             else{
                 console.log("no login");
+                setIsLogin(false);
                 setMyOrderList([]);
                 setIsLoading(false);
             }
@@ -578,7 +581,7 @@ function MainScreen( props ) {
                                     })}
                                 </ScrollView> : 
                                 <View style={{height: 165, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{color: 'gray'}}>진행중인 입찰 및 시공이 없습니다.</Text>
+                                    <Text style={{color: 'gray'}}>{isLogin ? '진행중인 입찰 및 시공이 없습니다.' : '로그인을 하셔야 합니다.'}</Text>
                                 </View>                
                             ) : 
                             (

@@ -15,7 +15,7 @@ const ImgView = styled.View`
     align-items: center;
 `;
 
-function MyCar({item}){
+function MyCar({item, navigation}){
     return(
         <View style={{width: '100%', height: '100%', justifyContent: 'space-between'}}>
         {item.id !== 5 ? <View>
@@ -27,7 +27,7 @@ function MyCar({item}){
             </View>
         </View> : 
         <View style={{width: '100%', height: '100%', backgroundColor: 'lightgray', justifyContent: 'center', alignItems: 'center'}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{navigation.navigate("RegisterMyCar")}}>
                 <Icon name={'add-circle-outline'} size={80} color={'gray'}/>
             </TouchableOpacity>
         </View>}

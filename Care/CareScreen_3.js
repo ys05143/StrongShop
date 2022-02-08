@@ -116,7 +116,7 @@ function CareScreen_3(props){
             [
                 {text: '취소', onPress: () => {}},
                 {text: '확인', onPress: () => {
-                    props.navigation.propToTop()
+                    props.navigation.popToTop()
                 }},
             ],
             { cancelable: true }
@@ -125,7 +125,16 @@ function CareScreen_3(props){
 
     function MoveToNext(){
         let newData = _.cloneDeep(carData);
-        newData.require = contents;
+        let formdataArray=[]
+        let textArray=[]
+        _.map(contents, (item)=>{
+            formdataArray.push(item.formdata);
+            textArray.push(item.text);
+        })
+        newData.require = {
+            formdata: formdataArray,
+            text: textArray
+        }
         console.log(newData);
     }
 

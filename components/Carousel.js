@@ -50,14 +50,14 @@ const IndicatorWrapper = styled.View`
   margin-top: 16px;
 `;
 
-function Carousel({gap, offset, pages, pageWidth, pageHeight, Content, getState}){
+function Carousel({gap, offset, pages, pageWidth, pageHeight, Content, getState, navigation}){
     const [page, setPage] = React.useState(0);
     
     function renderItem({item}){
         return (
             <View key={item.id} style={{...styles.shadow, width: pageWidth, height: pageHeight, marginHorizontal: gap / 2, backgroundColor: 'white', borderRadius: 10}}>
                 <PageItem>
-                    <Content item={item}/>
+                    <Content item={item} navigation={navigation}/>
                 </PageItem>
             </View>
             );

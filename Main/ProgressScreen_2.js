@@ -409,6 +409,8 @@ function ProgressScreen_Ver_2( props ) {
                 [
                     {text: '취소', onPress: () => {}},
                     {text: '확인', onPress: async () => {
+                        setIsLoading(true);
+                        setIsSending(true);
                         const auth = await checkJwt();
                         if(auth !== null){
                             const response = await axios({
@@ -433,6 +435,8 @@ function ProgressScreen_Ver_2( props ) {
                                 { cancelable: false }
                             );
                         }
+                        setIsLoading(false);
+                        setIsSending(false);
                     }},
                 ],
                 { cancelable: false }
@@ -743,7 +747,7 @@ function ProgressScreen_Ver_2( props ) {
                 <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center', elevation: 0, width: 70, height: 70, borderRadius: 50}} icon="chat" onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
                 {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1}}>{addChatNum}</Badge>}
             </View> */}
-            {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+            {(isLoading || isSending) && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
 
