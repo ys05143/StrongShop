@@ -266,7 +266,7 @@ function MainScreen( props ) {
                                 carImage: null,
                                 bidNum: item.bidcount,
                             });
-                            timeData.push(moment.duration(moment(item.created_time).add(48, 'hours').diff(moment(curTime))).asSeconds());
+                            timeData.push(moment.duration(moment(item.created_time).add(24, 'hours').diff(moment(curTime))).asSeconds());
                         });
                         setMyOrderList(newData.reverse());
                         setOrderTimeList(timeData.reverse());

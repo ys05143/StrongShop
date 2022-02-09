@@ -174,7 +174,7 @@ function PackageScreen_5(props){
         }}
     }
 /////for 시간계산////////////////////////
-    const [time, setTime] = React.useState(moment.duration(moment(props.route.params.createdTime).add(48, 'hours').diff(moment(Date.now()))).asSeconds());
+    const [time, setTime] = React.useState(moment.duration(moment(props.route.params.createdTime).add(24, 'hours').diff(moment(Date.now()))).asSeconds());
 
     function useInterval(callback, delay) {
         const savedCallback = React.useRef();

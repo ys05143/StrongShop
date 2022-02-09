@@ -118,7 +118,6 @@ function PackageScreen_4(props){
     const [text, setText] = React.useState('');
     //서버와 통신 전에 항상 start 조작하기
     const [ReceiptModal, setReceiptModal] = React.useState(false);
-    const [selectedRegion, setSelectedRegion] = React.useState('seoul');
     const [displayRegion, setDisplayRegion] = React.useState('서울');
     const [regionModal, setRegionModal] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -134,9 +133,7 @@ function PackageScreen_4(props){
                     setText(response.require);
                 }
                 if(response.region !== null){
-                    setSelectedRegion(response.region);
-                    const result = REGION.filter(item => item.key === response.region);
-                    setDisplayRegion(result[0].value);
+                    setDisplayRegion(response.region);
                 }
             }
             else{
@@ -165,7 +162,7 @@ function PackageScreen_4(props){
                 newOrder = {...response};
                 newOrder.processPage = 3;
                 newOrder.require = text !==null ? text : null;
-                newOrder.region = selectedRegion;
+                newOrder.region = displayRegion;
                 await storage.store('BidOrder', newOrder)
                 .then(res => {
                     setReceiptModal(true);
@@ -223,7 +220,7 @@ function PackageScreen_4(props){
     function cancelRequire(){
         //지금 까지의 입력 싹 다 취소
         setText(null);
-        setSelectedRegion(null);
+        setDisplayRegion(null);
         props.navigation.navigate("MainScreen");
     }
 
@@ -235,7 +232,7 @@ function PackageScreen_4(props){
               {text: '취소', onPress: () => {}},
               {text: '확인', onPress: () => {
                 setText(null);
-                setSelectedRegion(null);
+                setDisplayRegion(null);
                 props.navigation.navigate("MainScreen");
               }},
             ],
@@ -319,7 +316,7 @@ function PackageScreen_4(props){
                                 showsVerticalScrollIndicator={true}>
                         {_.map(REGION, (item)=>{
                             return(
-                                <PickItem key={item.key} onPress={()=>{setSelectedRegion(item.key); setDisplayRegion(item.value); setRegionModal(false);}}>
+                                <PickItem key={item.key} onPress={()=>{setDisplayRegion(item.value); setRegionModal(false);}}>
                                     <Text>{item.value}</Text>
                                 </PickItem>
                             )

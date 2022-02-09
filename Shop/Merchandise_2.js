@@ -118,14 +118,14 @@ const merchadiseList= [
         title: 'warpping',
     },{
         id: 7,
+        data: ['하부코팅'],
+        name: '하부코팅',
+        title: 'bottomCoating',
+    },{
+        id: 8,
         data: ['유리막코팅'],
         name: '유리막코팅',
         title: 'glassCoating',
-    },{
-        id: 8,
-        data: ['하부코팅'],
-        name: '하부코팅',
-        title: 'underCoating',
     },{
         id: 9,
         data: ['기타'],
@@ -142,7 +142,7 @@ const DATA = {
     etc: [], 
     glasscoating: [], 
     ppf: [], 
-    tinting: [{additionalInfo: "ㅇㅇㅇㅇ", companyId: 5, id: 5, item: 'TINTING', name: "ㅇㅇ"}],
+    tinting: [{additionalInfo: "", companyId: 5, id: 5, item: 'TINTING', name: ""}],
     undercoating: [], 
     wrapping: [],
 }
@@ -183,7 +183,7 @@ function Merchandise_2(props){
                     glasscoating: rawData.glasscoating,  
                     ppf: rawData.ppf, 
                     tinting: rawData.tinting, 
-                    undercoating: rawData.undercoating, 
+                    bottomcoating: rawData.bottomcoating, 
                     wrapping: rawData.wrapping, 
                 }
                 setProductData(newData);
@@ -317,13 +317,14 @@ function Merchandise_2(props){
                 showsVerticalScrollIndicator ={false}>
                     {(show === 'tinting' && !isLoading) && <ProductDetail list={productData.tinting} title={'틴팅'}/>}
                     {(show === 'blackBox' && !isLoading) && <ProductDetail list ={productData.blackbox} title={'블랙박스'}/>}
+                    {(show === 'deafening' && !isLoading) && <ProductDetail list={productData.deafening} title={'방음'}/>}
                     {(show === 'glassCoating' && !isLoading) && <ProductDetail list ={productData.glasscoating} title={'유리막코팅'}/>}
-                    {(show === 'underCoating' && !isLoading) && <ProductDetail list ={productData.undercoating} title={'하부코팅'}/>}
+                    {(show === 'bottomCoating' && !isLoading) && <ProductDetail list ={productData.bottomcoating} title={'하부코팅'}/>}
                     {(show === 'ppf' && !isLoading) && <ProductDetail list ={productData.ppf} title={'PPF'}/>}
-                    {(show === 'afterblow' && !isLoading) && <ProductDetail list ={productData.deafening} title={'애프터블로우'}/>}
-                    {(show === 'battery' && !isLoading) && <ProductDetail list ={productData.deafening} title={'보조배터리'}/>}
-                    {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.deafening} title={'랩핑'}/>}
-                    {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.deafening} title={'기타'}/>}
+                    {(show === 'afterblow' && !isLoading) && <ProductDetail list ={productData.afterblow} title={'애프터블로우'}/>}
+                    {(show === 'battery' && !isLoading) && <ProductDetail list ={productData.battery} title={'보조배터리'}/>}
+                    {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.wrapping} title={'랩핑'}/>}
+                    {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.etc} title={'기타'}/>}
                 </ScrollView> :
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
                     <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 20}}/>

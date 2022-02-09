@@ -140,24 +140,24 @@ function FinalReceipt(props){
                     )
                 }
                 {
-                    shopData.glasscoating != null && (
+                    item.bottomcoating != null && (
                         <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[유리막코팅]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{shopData.glasscoating}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{shopData.glasscoatingPrice+' 만원'}</Text>
+                            <Row>
+                                <Text style={styles.receiptTitle}>{"[하부코팅]"}</Text>
+                                <Text style={styles.receiptSubTitle}>{item.bottomcoating}</Text>
+                            </Row>
+                            <Text style={styles.receiptPrice}>{item.coating.bottomcoatingPrice+' 만원'}</Text>
                         </ReceiptItemView>
                     )
                 }
                 {
-                    shopData.undercoating != null && (
+                    item.glasscoating != null && (
                         <ReceiptItemView>
-                            <Row>
-                                <Text style={styles.receiptTitle}>{"[언더코팅]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{shopData.undercoating}</Text>
-                            </Row>
-                            <Text style={styles.receiptPrice}>{shopData.undercoatingPrice+' 만원'}</Text>
+                            <RowCenter>
+                                <Text style={styles.receiptTitle}>{"[유리막코팅]"}</Text>
+                                <Text style={styles.receiptSubTitle}>{item.glasscoating}</Text>
+                            </RowCenter>
+                            <Text style={styles.receiptPrice}>{item.glasscoatingPrice+' 만원'}</Text>
                         </ReceiptItemView>
                     )
                 }

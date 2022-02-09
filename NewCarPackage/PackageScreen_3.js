@@ -135,7 +135,6 @@ const InitialOptions = {
     //추가옵션
     soundproof: false,
     detailSoundproof: {
-        UNDER: false,
         DOORSOUND: false,
         INSIDEFLOOR: false,
         FENDER: false,
@@ -147,8 +146,12 @@ const InitialOptions = {
     detailWrapping: {
         DESIGN: '',
     },
+    bottomcoating: false,
+    detailBottomcoating:{
+        UNDER: false,
+        POLYMER: false,
+    },
     glasscoating: false,
-    undercoating: false,
 }
 
 const compareOptions = {
@@ -199,7 +202,6 @@ const compareOptions = {
     //추가옵션
     soundproof: false,
     detailSoundproof: {
-        UNDER: false,
         DOORSOUND: false,
         INSIDEFLOOR: false,
         FENDER: false,
@@ -211,8 +213,12 @@ const compareOptions = {
     detailWrapping: {
         DESIGN: '',
     },
+    bottomcoating: false,
+    detailBottomcoating:{
+        UNDER: false,
+        POLYMER: false,
+    },
     glasscoating: false,
-    undercoating: false,
 }
 
 const merchadiseList= [
@@ -239,10 +245,10 @@ const merchadiseList= [
         data: ['랩핑'],
     },{
         id: 7,
-        data: ['유리막코팅'],
+        data: ['하부코팅'],
     },{
         id: 8,
-        data: ['하부코팅'],
+        data: ['유리막코팅'],
     }];
 
 function PackageScreen_3(props) {
@@ -547,7 +553,6 @@ function PackageScreen_3(props) {
     function getSoundproofChoose(bool){
         setSoundproofChoose(bool);
         if(bool === false){
-            setUNDER(false);
             setINSIDEFLOOR(false);
             setFENDER(false);
             setDOORSOUND(false);
@@ -556,13 +561,7 @@ function PackageScreen_3(props) {
             setSoundproofETC('');
         }
     }
-    const [UNDER, setUNDER] = React.useState(false);
-    function getUNDER(bool){
-        setUNDER(bool);
-        if(bool === true){
-            setSoundproofChoose(true);
-        }
-    }
+
     const [INSIDEFLOOR, setINSIDEFLOOR] = React.useState(false);
     function getINSIDEFLOOR(bool){
         setINSIDEFLOOR(bool);
@@ -621,10 +620,31 @@ function PackageScreen_3(props) {
         }
     }
 /////////////////////////////////////////////////////////////////
+    const [BottomCoatingChoose, setBottomCoatingChoose] = React.useState(false);
+    function getBottomCoatingChoose(bool){
+        setBottomCoatingChoose(bool);
+        if(bool === false){
+            setUNDER(false);
+            setPOLYMER(false);
+        }
+    }
+    const [UNDER, setUNDER] = React.useState(false);
+    function getUNDER(bool){
+        setUNDER(bool);
+        if(bool === true){
+            setBottomCoatingChoose(true);
+        }
+    }
+    const [POLYMER, setPOLYMER] = React.useState(false);
+    function getPOLYMER(bool){
+        setPOLYMER(bool);
+        if(bool === true){
+            setBottomCoatingChoose(true);
+        }
+    }
+/////////////////////////////////////////////////////////////////
     const [GlassCoatingChoose, setGlassCoatingChoose] = React.useState(false);
 /////////////////////////////////////////////////////////////////
-    const [UnderCoatingChoose, setUnderCoatingChoose] = React.useState(false);
- /////////////////////////////////////////////////////////////////   
     async function makeTotal(){
         let finalresult = {...InitialOptions};
         
@@ -668,7 +688,6 @@ function PackageScreen_3(props) {
         finalresult.detailAfterblow.ETC = AfterblowETC;
 
         finalresult.soundproof = SoundproofChoose;
-        finalresult.detailSoundproof.UNDER = UNDER;
         finalresult.detailSoundproof.INSIDEFLOOR = INSIDEFLOOR;
         finalresult.detailSoundproof.FENDER = FENDER;
         finalresult.detailSoundproof.DOORSOUND = DOORSOUND;
@@ -679,9 +698,11 @@ function PackageScreen_3(props) {
         finalresult.wrapping = WrappingChoose;
         finalresult.detailWrapping.DESIGN = WrappingETC;
 
-        finalresult.glasscoating = GlassCoatingChoose;
+        finalresult.bottomcoating = BottomCoatingChoose;
+        finalresult.detailBottomcoating.UNDER = UNDER;
+        finalresult.detailBottomcoating.POLYMER = POLYMER;
 
-        finalresult.undercoating = UnderCoatingChoose;
+        finalresult.glasscoating = GlassCoatingChoose;
 
         return finalresult;
     }
@@ -691,7 +712,6 @@ function PackageScreen_3(props) {
         setIsLoading(true);
         storage.fetch('BidOrder')
         .then(res => {
-            console.log(res);
             if(res.options !== null){
                 console.log("In page 3 useEffect: ", res.options);
                 setTintingChoose(res.options.tinting);
@@ -734,7 +754,6 @@ function PackageScreen_3(props) {
                 setAfterblowETC(res.options.detailAfterblow.ETC);
 
                 setSoundproofChoose(res.options.soundproof);
-                setUNDER(res.options.detailSoundproof.UNDER);
                 setINSIDEFLOOR(res.options.detailSoundproof.INSIDEFLOOR);
                 setFENDER(res.options.detailSoundproof.FENDER);
                 setDOORSOUND(res.options.detailSoundproof.DOORSOUND);
@@ -744,17 +763,22 @@ function PackageScreen_3(props) {
 
                 setWrappingChoose(res.options.wrapping);
                 setWrappingETC(res.options.detailWrapping.DESIGN);
+
+                setBottomCoatingChoose(res.options.bottomcoating);
+                setUNDER(res.options.detailBottomcoating.UNDER);
+                setPOLYMER(res.options.detailBottomcoating.POLYMER);
+
                 setGlassCoatingChoose(res.options.glasscoating);
-                setUnderCoatingChoose(res.options.undercoating);
+
                 setIsLoading(false); 
             }
             else{
-                console.log('no result');
+                console.log('no options result');
                 setIsLoading(false);
             }
         })
-        .catch(error => {
-            console.log(error);
+        .catch(e => {
+            console.log(e);
             Alert.alert(
                 '오류',
                 '오류가 발생했습니다.',
@@ -804,8 +828,7 @@ function PackageScreen_3(props) {
             const check = await storage.fetch('BidOrder');
             //console.log('In page 3 check: ', check);
         }
-        catch(error){
-            console.log(error);
+        catch{
             cancelOptions();
         }
     }
@@ -1032,10 +1055,6 @@ function PackageScreen_3(props) {
                             <SelectTitleOption getChoose={getSoundproofChoose} 
                                                 choose={SoundproofChoose} 
                                                 name={'방음'}/>
-                            <SelectDetailOption getChoose={getUNDER} 
-                                                choose={UNDER}
-                                                name={'하부 방음'}
-                                                touchable={true}/>
                             <SelectDetailOption getChoose={getINSIDEFLOOR} 
                                                 choose={INSIDEFLOOR}
                                                 name={'실내 바닥 방음'}
@@ -1082,14 +1101,22 @@ function PackageScreen_3(props) {
                             </Row>
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <SelectTitleOption getChoose={setGlassCoatingChoose} 
-                                                choose={GlassCoatingChoose} 
-                                                name={'유리막코팅'}/>
+                            <SelectTitleOption getChoose={getBottomCoatingChoose} 
+                                                choose={BottomCoatingChoose} 
+                                                name={'하부코팅'}/>
+                            <SelectDetailOption getChoose={getUNDER} 
+                                                choose={UNDER}
+                                                name={'언더코팅'}
+                                                touchable={true}/>
+                            <SelectDetailOption getChoose={getPOLYMER} 
+                                                choose={POLYMER}
+                                                name={'폴리머코팅'}
+                                                touchable={true}/>         
                         </SelectInSwiper>
                         <SelectInSwiper>
-                            <SelectTitleOption getChoose={setUnderCoatingChoose} 
-                                                choose={UnderCoatingChoose} 
-                                                name={'하부코팅'}/>
+                            <SelectTitleOption getChoose={setGlassCoatingChoose} 
+                                                choose={GlassCoatingChoose} 
+                                                name={'유리막코팅'}/>         
                         </SelectInSwiper>
                     </SwiperFlatList>  : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
                 </AllSelectView>

@@ -36,7 +36,7 @@ const DetailOptions = styled.View`
     justify-content: center;
 `;
 
-function Receipt(props){
+function FinalOrder(props){
     const [receipt, setReceipt] = React.useState(null);
     const [region, setRegion] = React.useState(null);
     const [isSending, setIsSending] = React.useState(false);
@@ -50,7 +50,7 @@ function Receipt(props){
                 if(auth !== null){
                     const response = await axios({
                         method: 'POST',
-                        url : `${server.url}/api/orders` ,
+                        url : `${server.url}/api/orders/ncp` ,
                         data : {
                             details: JSON.stringify(receipt),
                             region: region,
@@ -123,29 +123,6 @@ function Receipt(props){
         );
     }
     
-    const isFocused = useIsFocused();
-    React.useEffect( ()=>{
-        //console.log(isFocused);
-        if(isFocused){
-            setIsLoading(true);
-            storage.fetch('BidOrder')
-            .then(res =>{
-                setReceipt(res);
-                setRegion(res.region);
-                setIsLoading(false);
-            })
-            .catch(e => {
-                Alert.alert(
-                    '주문 불러오기 실패',
-                    '다시 시도해주세요.',
-                    [
-                        {text: '확인', onPress: () => {props.getModal(false);}}
-                    ],
-                    { cancelable: false }
-                );
-            })
-        }
-    },[]);
 
     function translate(option,item){
         const res_Tinting = {
@@ -188,7 +165,6 @@ function Receipt(props){
             ETC: receipt.options.detailAfterblow.ETC,
         }
         const res_Soundproof = {
-            UNDER: '하부방음',
             DOORSOUND: '도어방음',
             INSIDEFLOOR: '실내바닥방음',
             FENDER: '휀다방음',
@@ -199,15 +175,11 @@ function Receipt(props){
         const res_Wrapping = {
             DESIGN: receipt.options.detailWrapping.DESIGN,
         }
-        const res_Region = {
-            seoul: '서울',
-            daejeon: '대전',
-            daegu: '대구',
-            incheon: '인천',
-            busan: '부산',
-            gwangju: '광주',
-            jeju: '제주',
+        const res_BottomCoating = {
+            UNDER: '언더코팅',
+            POLYMER: '폴리머코팅',
         }
+        const res_GlassCoating = '유리막코팅'
         if(option === 'tinting') return res_Tinting[item];
         else if(option === 'ppf') return res_Ppf[item];
         else if(option === 'blackbox') return res_Blackbox[item];
@@ -215,8 +187,34 @@ function Receipt(props){
         else if(option === 'afterblow') return res_Afterblow[item];
         else if(option === 'soundproof') return res_Soundproof[item];
         else if(option === 'wrapping') return res_Wrapping[item];
-        else if(option === 'region') return res_Region[item];
+        else if(option === 'bottomcoating') return res_BottomCoating[item];
+        else if(option === 'glasscoating') return res_GlassCoating;
     }
+
+    const isFocused = useIsFocused();
+    React.useEffect( ()=>{
+        //console.log(isFocused);
+        if(isFocused){
+            setIsLoading(true);
+            storage.fetch('BidOrder')
+            .then(res =>{
+                setReceipt(res);
+                setRegion(res.region);
+                setIsLoading(false);
+            })
+            .catch(e => {
+                console.log(e);
+                Alert.alert(
+                    '주문 불러오기 실패',
+                    '다시 시도해주세요.',
+                    [
+                        {text: '확인', onPress: () => {props.getModal(false);}}
+                    ],
+                    { cancelable: false }
+                );
+            })
+        }
+    },[]);
 
     return (
         <>
@@ -296,6 +294,16 @@ function Receipt(props){
                             {_.map(receipt.options['detailWrapping'], (key,item)=>{ if(key) return(translate('wrapping',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('wrapping',item)}</Chip>: null)})}
                         </ScrollView>
                     </View>}
+                    {receipt.options.bottomcoating === true &&
+                    <View>
+                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                            <Icon name="chevron-forward-outline" size={20}></Icon>
+                            <Text style={{fontSize: 20}}>하부코팅</Text>
+                        </View>
+                        <ScrollView horizontal={true}>
+                            {_.map(receipt.options['detailBottomcoating'], (key,item)=>{ if(key) return(translate('bottomcoating',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('bottomcoating',item)}</Chip>: null)})}
+                        </ScrollView>
+                    </View>}
                     {receipt.options.glasscoating === true &&
                     <View>
                         <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
@@ -303,19 +311,12 @@ function Receipt(props){
                             <Text style={{fontSize: 20}}>유리막코팅</Text>
                         </View>
                     </View>}
-                    {receipt.options.undercoating === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>언더코팅</Text>
-                        </View>
-                    </View>}
                 </View>
                 {receipt.region !== null &&
                 <View style={{width: '100%', marginBottom: 10, alignItems: 'center', flexDirection: 'row'}}>
                     <Icon name="chevron-forward-outline" size={20}></Icon>
                     <Text style={{fontSize: 20, marginRight: 10}}>시공 지역</Text>
-                    <Chip style={{margin: 3}}>{receipt === null ? '': translate('region', receipt.region)}</Chip>
+                    <Chip style={{margin: 3}}>{receipt === null ? '': receipt.region}</Chip>
                 </View>}
                 
                 {receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>
@@ -348,4 +349,4 @@ function Receipt(props){
     );
 }
 
-export default Receipt
+export default FinalOrder;

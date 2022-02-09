@@ -316,6 +316,14 @@ function RegisterReviewScreen(props) {
                         )
                     }
                     {
+                        item.bottomcoating != null && (
+                            <View style={styles.total}>
+                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
+                                <List.Item titleStyle={styles.listStyle} title ={item.bottomcoating} right={props => <Text style={styles.itemText}>{item.bottomcoatingPrice}{' 만원'}</Text>} />
+                            </View>
+                        )
+                    }
+                    {
                         item.glasscoating != null && (
                             <View style={styles.total}>
                                 <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
@@ -323,14 +331,7 @@ function RegisterReviewScreen(props) {
                             </View>
                         )
                     }
-                    {
-                        item.undercoating != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.undercoating} right={props => <Text style={styles.itemText}>{item.undercoatingPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
+                    
                     <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{item.totalPrice}{' 만원'}</Text>}/>
                     </ScrollView>
                 </DetailView>

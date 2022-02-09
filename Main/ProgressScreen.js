@@ -18,6 +18,7 @@ import TopBar from '../components/TopBar';
 import Color from '../constants/Color';
 import JustShowOrder from '../NewCarPackage/JustShowOrder';
 import ModalView from '../components/ModalView';
+import FinalReceipt from '../NewCarPackage/FinalReceipt';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -575,86 +576,7 @@ function ProgressScreen( props ) {
                             <View style={{paddingHorizontal: 10, marginTop: 10, marginBottom: 15}}>
                                 <Title style={{color: 'black', fontSize: 15}}>{'모든시공이 완료되었는지 확인 후\n아래 \'출고 확정\' 버튼을 눌러주세요'}</Title>
                             </View>
-                            <View style={{alignItems: 'center'}}>
-                                <InfoView>
-                                    
-                                    {
-                                        shopData[4].receipt.tinting != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='틴팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.tinting} right={ props => <Text style={styles.itemText}>{shopData[4].receipt.tintingPrice}{'만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.ppf != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='PPF' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.ppf} right={props => <Text style={styles.itemText}>{shopData[4].receipt.ppfPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.blackbox != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='블랙박스' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.blackbox} right={props => <Text style={styles.itemText}>{shopData[4].receipt.blackboxPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.battery != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='보조배터리' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.battery} right={props => <Text style={styles.itemText}>{shopData[4].receipt.batteryPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.afterblow != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='애프터블로우' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.afterblow} right={props => <Text style={styles.itemText}>{shopData[4].receipt.afterblowPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.soundproof != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='방음' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.soundproof} right={props => <Text style={styles.itemText}>{shopData[4].receipt.soundproofPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.wrapping != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='랩핑' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.wrapping} right={props => <Text style={styles.itemText}>{shopData[4].receipt.wrappingPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.glasscoating != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.glasscoating} right={props => <Text style={styles.itemText}>{shopData[4].receipt.glasscoatingPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        shopData[4].receipt.undercoating != null && (
-                                            <>
-                                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                                <List.Item titleStyle={styles.listStyle} title ={shopData[4].receipt.undercoating} right={props => <Text style={styles.itemText}>{shopData[4].receipt.undercoatingPrice}{' 만원'}</Text>} />
-                                            </>
-                                        )
-                                    }
-                                    <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{shopData[4].receipt.totalPrice}{' 만원'}</Text>}/>
-                                    
-                                    
-                                </InfoView>
-                            </View>
+                            <FinalReceipt receipt={shopData[4].receipt} isModal={false}/>
                             <Button contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center', marginTop: 20}} labelStyle={{fontSize: 15}} color={Color.main}mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
                             </ScrollView>
                         </View>
