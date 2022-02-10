@@ -122,11 +122,10 @@ function ReviewList(props){
     const [isRefreshing, setIsRefreshing] = React.useState(false);
     const [reviewData, setReviewData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
-    
-    const isFocused = useIsFocused();
+
     React.useEffect(()=>{
-        if(isFocused) getData();
-    },[isFocused]);
+        getData();
+    },[]);
 
     async function getData(){
         try{
@@ -137,9 +136,9 @@ function ReviewList(props){
                     method: 'GET',
                     url : `${server.url}/api/review/${props.companyId}`,
                     headers : {Auth: auth},
-                }).catch(e=>{console.log(e)})
+                })
                 const rawData = response.data.data;
-                //console.log('review',rawData);
+                console.log("load review");
                 let newData = [];
                 rawData.map(item => {
                     newData.push({ 

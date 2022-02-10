@@ -14,7 +14,8 @@ import ModalView from '../components/ModalView';
 import FinalOrder from './FinalOrder';
 //constants
 import AppWindow from '../constants/AppWindow';
-import Color from '../constants/Color'
+import Color from '../constants/Color';
+import { KorRegion } from '../constants/LIST';
 //function
 import storage from '../function/storage';
 
@@ -91,29 +92,6 @@ const PickItem = styled.TouchableOpacity`
     border-color: gray;
 `;
 
-const REGION =[
-    {
-        value: '서울',
-        key: 'seoul',
-    },{
-        value: '인천',
-        key: 'incheon',
-    },{
-        value: '대전',
-        key: 'daejeon',
-    },{
-        value: '대구',
-        key: 'daegu',
-    },{
-        value: '부산',
-        key: 'busan',
-    },{
-        value: '광주',
-        key: 'gwangju',
-    },{
-        value: '제주',
-        key: 'jeju',
-    },];
 function PackageScreen_4(props){
     const [text, setText] = React.useState('');
     //서버와 통신 전에 항상 start 조작하기
@@ -314,10 +292,10 @@ function PackageScreen_4(props){
                     <ScrollView contentContainerStyle={{alignItems: 'center'}}
                                 persistentScrollbar={true}
                                 showsVerticalScrollIndicator={true}>
-                        {_.map(REGION, (item)=>{
+                        {_.map(KorRegion, (item)=>{
                             return(
-                                <PickItem key={item.key} onPress={()=>{setDisplayRegion(item.value); setRegionModal(false);}}>
-                                    <Text>{item.value}</Text>
+                                <PickItem key={item} onPress={()=>{setDisplayRegion(item); setRegionModal(false);}}>
+                                    <Text style={{fontWeight: 'bold'}}>{item}</Text>
                                 </PickItem>
                             )
                         })}

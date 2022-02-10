@@ -123,15 +123,7 @@ const Input = styled.TextInput`
     border: 1px;
     color: #000000;
     padding: 10px;
-`;
-
-const sendDATA = {
-    orderId: 1,
-    userName: '허지훈',
-    companyName: '올댓카니발',
-    images: [ '', '' ],
-    text: '좋습니다...'
-}
+`;x
 
 function RegisterReviewScreen(props) {
     const [companyName, setCompanyName] = React.useState(props.route.params.companyName);

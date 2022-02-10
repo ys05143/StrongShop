@@ -115,11 +115,10 @@ function Gallery(props){
     const [isRefreshing, setIsRefreshing] = React.useState(false);
     const [galleryData, setGalleryData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
-    
-    const isFocused = useIsFocused();
+
     React.useEffect(()=>{
-        if(isFocused) getData();
-    },[isFocused]);
+        getData();
+    },[]);
 
     async function getData(){
         try{
@@ -132,7 +131,7 @@ function Gallery(props){
                     headers : {Auth: auth},
                 })
                 const rawData = response.data.data;
-                console.log('gallery',rawData);
+                console.log("load gallery");
                 let newData = [];
                 rawData.map(item => {
                     newData.push({ 

@@ -59,20 +59,6 @@ const ShopList = styled.View`
     flex: 1;
     width: 100%;
 `;
-//현재 입찰에 참여중인 업체들
-const DATA = [{
-    companyId:1,
-    companyName: '올댓 오토모빌',
-    simpleRegion: '서울 광진',
-    price: 20000000,
-    quote: '구체 견적들 ex) 썬팅: T70 15, 블랙박스: 파인뷰LX5000 ...',
-},{
-    companyId:2,
-    companyName: '카샵1',
-    simpleRegion: '서울 금천',
-    price: 15000000,
-    quote: '구체 견적들 ex) 썬팅 T70 15, 블랙박스 파인뷰LX5000 ...',
-},];
 
 const ShopView2 = styled.View`
     width: 95%;

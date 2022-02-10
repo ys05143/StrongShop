@@ -288,10 +288,10 @@ const merchadiseList= [
         data: ['랩핑'],
     },{
         id: 7,
-        data: ['유리막코팅'],
+        data: ['하부코팅'],
     },{
         id: 8,
-        data: ['하부코팅'],
+        data: ['유리막코팅'],
     }];
 
 function PackageScreen_3_2(props) {

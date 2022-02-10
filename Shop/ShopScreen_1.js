@@ -10,6 +10,7 @@ import Merchandise_2 from './Merchandise_2';
 import ReviewList from './ReviewList';
 //components
 import TotalView from '../components/TotalView';
+import MyTabBar from './MyTabBar';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';

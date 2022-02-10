@@ -35,7 +35,6 @@ import Certification from './Mypage/Certification';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import RegisterMyCar from './Mypage/RegisterMyCar';
-import ChatListScreen from './Mypage/ChatListScreen';
 
 import CareScreen_1 from './Care/CareScreen_1';
 import CareScreen_2 from './Care/CareScreen_2';
@@ -44,7 +43,7 @@ import CareScreen_3 from './Care/CareScreen_3';
 import Temp from './Temp';
 import SearchScreen from './NewCarPackage/SearchScreen';
 import ProgressScreen_2 from './Main/ProgressScreen_2';
-import PackageScreen_3_2 from './NewCarPackage/PackageScreen_3_2';
+import PackageScreen_3_testVer from './NewCarPackage/PackageScreen_3_testVer';
 import Context from './function/Context';
 
 const Stack = createStackNavigator();
@@ -192,8 +191,6 @@ function App (props) {
         {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
         {/* 알림 화면 */}
         {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>}
-        {/* 채팅목록 화면 */}
-        {<Stack.Screen name="ChatListScreen" component={ChatListScreen} options={{headerShown:false}}/>}
         {/* 채팅 화면 */}
         {<Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown:false}}/>}
 
@@ -242,7 +239,7 @@ function App (props) {
         {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
 
         {/* 신차패키지 3 ver 3.0*/}
-        {<Stack.Screen name="PackageScreen_3_2" component={PackageScreen_3_2} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="PackageScreen_3_testVer" component={PackageScreen_3_testVer} options={{headerShown:false}}/>} */}
       </Stack.Navigator>
     </NavigationContainer>
     <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />

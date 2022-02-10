@@ -16,6 +16,7 @@ import ModalView from '../components/ModalView';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
+import { KorRegion, CareList } from '../constants/LIST';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -90,48 +91,6 @@ const PickItem = styled.TouchableOpacity`
     align-items: center;
     border-color: gray;
 `;
-
-const merchadiseList= [
-    {
-        id: 0,
-        data: ['세차'],
-    },{
-        id: 1,
-        data: ['내부'],
-    },{
-        id: 2,
-        data: ['외부'],
-    },{
-        id: 3,
-        data: ['스크레치'],
-    },{
-        id: 4,
-        data: ['직접입력'],
-    }];
-
-const REGION =[
-    {
-        value: '서울',
-        key: 'seoul',
-    },{
-        value: '인천',
-        key: 'incheon',
-    },{
-        value: '대전',
-        key: 'daejeon',
-    },{
-        value: '대구',
-        key: 'daegu',
-    },{
-        value: '부산',
-        key: 'busan',
-    },{
-        value: '광주',
-        key: 'gwangju',
-    },{
-        value: '제주',
-        key: 'jeju',
-    },];
 
 function CareScreen_2(props) {
     
@@ -322,7 +281,7 @@ function CareScreen_2(props) {
                         ref={scrollX}
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
-                        sections={merchadiseList}
+                        sections={CareList}
                         keyExtractor={(item, index) => item + index}
                         renderItem={({item, section} ) => {
                             return(
@@ -445,33 +404,33 @@ function CareScreen_2(props) {
         </KeyboardAwareScrollView>
 
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={regionModal}
-        onRequestClose={() => {setRegionModal(!regionModal);}}
+            animationType="slide"
+            transparent={true}
+            visible={regionModal}
+            onRequestClose={() => {setRegionModal(!regionModal);}}
         >
-        <ModalView>
-            <View style={{width: '90%', height: 400, backgroundColor: 'white'}}>
-                <ScrollView contentContainerStyle={{alignItems: 'center'}}
-                            persistentScrollbar={true}
-                            showsVerticalScrollIndicator={true}>
-                    {_.map(REGION, (item)=>{
-                        return(
-                            <PickItem key={item.key} onPress={()=>{setSelectedRegion(item.key); setDisplayRegion(item.value); setRegionModal(false);}}>
-                                <Text>{item.value}</Text>
-                            </PickItem>
-                        )
-                    })}
-                </ScrollView>
-                <View style={{height: 70, justifyContent: 'center', alignItems: 'center'}}>
-                    <View style={{width: 100}}>
-                        <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{setRegionModal(false);}}>
-                            <Text>완료</Text>
-                        </Button>
+            <ModalView>
+                <View style={{width: '90%', height: 400, backgroundColor: 'white'}}>
+                    <ScrollView contentContainerStyle={{alignItems: 'center'}}
+                                persistentScrollbar={true}
+                                showsVerticalScrollIndicator={true}>
+                        {_.map(KorRegion, (item)=>{
+                            return(
+                                <PickItem key={item} onPress={()=>{setDisplayRegion(item); setRegionModal(false);}}>
+                                    <Text style={{fontWeight: 'bold'}}>{item}</Text>
+                                </PickItem>
+                            )
+                        })}
+                    </ScrollView>
+                    <View style={{height: 70, justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{width: 100}}>
+                            <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center'}} color={Color.main} onPress={()=>{setRegionModal(false);}}>
+                                <Text>완료</Text>
+                            </Button>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </ModalView>
+            </ModalView>
         </Modal>
         </>
     );

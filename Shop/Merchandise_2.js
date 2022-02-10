@@ -134,32 +134,15 @@ const merchadiseList= [
     }
 ];
 
-const DATA = {
-    afterblow: [], 
-    battery: [], 
-    blackbox: [],
-    deafening: [], 
-    etc: [], 
-    glasscoating: [], 
-    ppf: [], 
-    tinting: [{additionalInfo: "", companyId: 5, id: 5, item: 'TINTING', name: ""}],
-    undercoating: [], 
-    wrapping: [],
-}
-
 function Merchandise_2(props){
-    //props로 받은 shopName으로 서버에 그 shop의 정보 요청해서 각 파트별로 useState에 저장
-    //이후 asyncstorage 캐시도 필요할듯.
-    //tinting은 처음에 무조건 받아오고 나머지는 클릭하면 받아오도록
     const [show, setShow] = React.useState('tinting');
-    const [productData, setProductData] = React.useState([])
+    const [productData, setProductData] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const scrollX = React.useRef();
     
-    const isFocused = useIsFocused();
     React.useEffect(()=>{
-        if(isFocused) getData();
-    },[isFocused]);
+        getData();
+    },[]);
 
     async function getData(){
         try{
@@ -170,10 +153,9 @@ function Merchandise_2(props){
                     method: 'GET',
                     url : `${server.url}/api/product/${props.companyId}`,
                     headers : {Auth: auth},
-                }).catch(e=>{console.log(e)});
-
+                })
                 const rawData = response.data.data;
-                console.log("product",rawData);
+                console.log("load product");
                 const newData = { 
                     afterblow: rawData.afterblow, 
                     battery: rawData.battery, 
@@ -294,7 +276,7 @@ function Merchandise_2(props){
             renderItem={({item, section} ) => {
                 return(
                     <OptionView key={item.title} style={{alignSelf: 'center'}}>
-                        <OptionName style={{backgroundColor: show === section.title ? Color.main : 'white', borderColor: show === section.title ? Color.main : 'white'}} onPress={async ()=>{getData(); showOption(section.title); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
+                        <OptionName style={{backgroundColor: show === section.title ? Color.main : 'white', borderColor: show === section.title ? Color.main : 'white'}} onPress={async ()=>{showOption(section.title); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
                             <Text style={{color: show === section.title ? 'white' : Color.main, fontWeight: 'bold'}}>{item}</Text>
                         </OptionName>
                     </OptionView>
@@ -310,11 +292,11 @@ function Merchandise_2(props){
                     );}
                 )} */}
             </Option>
-            <View style={{width: '100%'}}>
-                {!isLoading ? 
+            {!isLoading ?<View style={{width: '100%'}}>
                 <ScrollView 
                 scrollEnabled={true}
                 showsVerticalScrollIndicator ={false}>
+                    {productData !== null && <>
                     {(show === 'tinting' && !isLoading) && <ProductDetail list={productData.tinting} title={'틴팅'}/>}
                     {(show === 'blackBox' && !isLoading) && <ProductDetail list ={productData.blackbox} title={'블랙박스'}/>}
                     {(show === 'deafening' && !isLoading) && <ProductDetail list={productData.deafening} title={'방음'}/>}
@@ -325,11 +307,12 @@ function Merchandise_2(props){
                     {(show === 'battery' && !isLoading) && <ProductDetail list ={productData.battery} title={'보조배터리'}/>}
                     {(show === 'wrapping' && !isLoading) && <ProductDetail list ={productData.wrapping} title={'랩핑'}/>}
                     {(show === 'etc' && !isLoading) && <ProductDetail list ={productData.etc} title={'기타'}/>}
-                </ScrollView> :
-                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}>
-                    <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 20}}/>
-                </View>}
-            </View>          
+                    </>}
+                </ScrollView>
+            </View>:
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}>
+                <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 20}}/>
+            </View>}
         </Total>
     )
 }

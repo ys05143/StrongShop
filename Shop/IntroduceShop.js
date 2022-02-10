@@ -76,8 +76,8 @@ function IntroduceShop(props){
     
     const isFocused = useIsFocused();
     React.useEffect(()=>{
-        if(isFocused) getData();
-    },[isFocused]);
+        getData();
+    },[]);
 
     async function getData(){
         try{
@@ -88,9 +88,9 @@ function IntroduceShop(props){
                     method: 'GET',
                     url : `${server.url}/api/companyinfo/${props.companyId}`,
                     headers : {Auth: auth},
-                }).catch(e=>console.log(e))
+                })
                 const rawData = response.data.data;
-                //console.log('introduce',rawData);
+                console.log("load introduce");
                 const newData = {
                     introduceText : rawData.introduction,
                     coord : {latitude: parseFloat(rawData.latitude), longitude: parseFloat(rawData.longitude)},
