@@ -123,7 +123,7 @@ const Input = styled.TextInput`
     border: 1px;
     color: #000000;
     padding: 10px;
-`;x
+`;
 
 function RegisterReviewScreen(props) {
     const [companyName, setCompanyName] = React.useState(props.route.params.companyName);
