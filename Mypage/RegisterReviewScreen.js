@@ -256,7 +256,7 @@ function RegisterReviewScreen(props) {
             return(
                 <DetailView>
                     <ScrollView contentContainerStyle={{paddingHorizontal: 15}}>
-                        <Receipt item={item}/>
+                        <Receipt item={item} kind={item.kind}/>
                     </ScrollView>
                 </DetailView>
             )

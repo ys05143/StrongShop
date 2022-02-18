@@ -90,6 +90,26 @@ function translate(option, item, value){
         POLYMER: '폴리머코팅',
     }
     const res_GlassCoating = '유리막코팅'
+
+    const res_CarWash = {
+        handCarWash: '손 세차',
+        steamCarWash: '스팀 세차',
+        detailingCarWash: '디테일링 세차',
+    }
+    const res_Inside = {
+        insideCleaning: '내부 클리닝',
+        insideSoundProof: '내부 방음',
+    }
+    const res_Outside = {
+        Wrapping: '랩핑',
+        dent: '뎉트',
+        painting: '도색',
+    }
+    const res_Scratch = {
+        glassCoating: '유리막 코팅',
+        polishing: '광택',
+    }
+
     if(option === 'tinting') return res_Tinting[item];
     else if(option === 'ppf') return res_Ppf[item];
     else if(option === 'blackbox') return res_Blackbox[item];
@@ -99,6 +119,11 @@ function translate(option, item, value){
     else if(option === 'wrapping') return res_Wrapping[item];
     else if(option === 'bottomcoating') return res_BottomCoating[item];
     else if(option === 'glasscoating') return res_GlassCoating;
+
+    else if(option === 'carwash') return res_CarWash[item];
+    else if(option === 'inside') return res_Inside[item];
+    else if(option === 'outside') return res_Outside[item];
+    else if(option === 'scratch') return res_Scratch[item];
 }
 const NewCarPackageList= [
     {

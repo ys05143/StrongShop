@@ -613,7 +613,7 @@ function ProgressScreen_Ver_2( props ) {
                             <View style={{paddingHorizontal: 10, marginTop: 10, marginBottom: 15}}>
                                 <Title style={{color: 'black', fontSize: 15}}>{'모든시공이 완료되었는지 확인 후\n아래 \'출고 확정\' 버튼을 눌러주세요'}</Title>
                             </View>
-                            <FinalReceipt receipt={shopData[4].receipt} isModal={false}/>
+                            <FinalReceipt receipt={shopData[4].receipt} isModal={false} kind={'NewCarPackage'}/>
                             <Button contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center', marginTop: 15}} labelStyle={{fontSize: 15}} color={Color.main}mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
                             </ScrollView>
                         </View>
@@ -641,7 +641,7 @@ function ProgressScreen_Ver_2( props ) {
                 <View style={{width: '90%', height: '90%',backgroundColor: 'white', padding: 20, justifyContent: 'center'}}>
                     <ScrollView>
                     {/* <JustShowOrder getModal={getReceiptModal} orderId={orderId}/> */}
-                    <FinalReceipt getModal={getReceiptModal} receipt={shopData[1].receipt} isModal={true}/>
+                    <FinalReceipt getModal={getReceiptModal} receipt={shopData[1].receipt} isModal={true} kind={'NewCarPackage'}/>
                     </ScrollView>
                 </View>
             </ModalView>

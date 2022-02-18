@@ -43,6 +43,7 @@ const DetailView = styled.View`
 `;
 
 function Receipt(props){
+    const kind = props.kind;
     const item = props.item;
     return(
         <View style={{width: '100%', alignItems: 'center'}}>
@@ -54,7 +55,7 @@ function Receipt(props){
                 <Text style={{fontSize: 13}}>{'금  액'}</Text>
             </Row>
             <ReceiptMatrixLine/>
-            {
+            {kind === 'NewCarPackage' ? <>{
                 item.tinting != null && (
                     <ReceiptItemView>
                         <RowCenter>
@@ -152,7 +153,53 @@ function Receipt(props){
                         <Text style={styles.receiptPrice}>{item.glasscoatingPrice+' 만원'}</Text>
                     </ReceiptItemView>
                 )
+            }</> : 
+            kind === 'Care' ?
+            <>{
+                item.carwash != null && (
+                    <ReceiptItemView>
+                        <Row>
+                            <Text style={styles.receiptTitle}>{"[세차]"}</Text>
+                            <Text style={styles.receiptSubTitle}>{item.carwash}</Text>
+                        </Row>
+                        <Text style={styles.receiptPrice}>{item.carwashPrice+' 만원'}</Text>
+                    </ReceiptItemView>
+                )
             }
+            {
+                item.inside != null && (
+                    <ReceiptItemView>
+                        <Row>
+                            <Text style={styles.receiptTitle}>{"[내부]"}</Text>
+                            <Text style={styles.receiptSubTitle}>{item.inside}</Text>
+                        </Row>
+                        <Text style={styles.receiptPrice}>{item.insidePrice+' 만원'}</Text>
+                    </ReceiptItemView>
+                )
+            }
+            {
+                item.outside != null && (
+                    <ReceiptItemView>
+                        <Row>
+                            <Text style={styles.receiptTitle}>{"[외부]"}</Text>
+                            <Text style={styles.receiptSubTitle}>{item.outside}</Text>
+                        </Row>
+                        <Text style={styles.receiptPrice}>{item.outsidePrice+' 만원'}</Text>
+                    </ReceiptItemView>
+                )
+            }
+            {
+                item.scratch != null && (
+                    <ReceiptItemView>
+                        <Row>
+                            <Text style={styles.receiptTitle}>{"[스크레치]"}</Text>
+                            <Text style={styles.receiptSubTitle}>{item.scratch}</Text>
+                        </Row>
+                        <Text style={styles.receiptPrice}>{item.scratchPrice+' 만원'}</Text>
+                    </ReceiptItemView>
+                )
+            }</> : 
+            <></>}
             <ReceiptMatrixLine/>
             <Row style={{width: '100%', height: 60, justifyContent: 'space-between', alignItems: 'center'}}>
                 <Text style={styles.receiptTitle}>{"최 종 가 격: "}</Text>

@@ -111,42 +111,6 @@ function BidShop(props, {navigation}) {
     const [activeSections, setActiveSections] = React.useState([]);
     const [isSending, setIsSending] = React.useState(false);
 
-    async function sendData(orderId, bidId){
-        try{
-            props.getSending(true);
-            setIsSending(true);
-            const auth = await checkJwt();
-            if(auth !== null){
-                const response = await axios({
-                    method: 'POST',
-                    url : `${server.url}/api/contract` ,
-                    data : {
-                        order_id: orderId,
-                        bidding_id: bidId,
-                    },
-                    headers : {Auth: auth},
-                })
-                .catch(e=>{
-                    checkErrorCode(e, props.navigation);
-                })
-                //console.log(response);
-                props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3});
-                props.getSending(false);
-                setIsSending(false);
-            }
-        }
-        catch{
-            Alert.alert(
-                '오류',
-                '다시 시도해주세요.',
-                [
-                    {text: '확인', onPress: () => {}},
-                ],
-                { cancelable: false }
-            );
-        }
-    }
-
     function finalCheck(orderId, bidId){
         Alert.alert(
             '최종 확인',
@@ -177,7 +141,7 @@ function BidShop(props, {navigation}) {
         return(
             <View style={{width: '100%', alignItems: 'center'}}>
                 <DetailView>
-                    <Receipt item={item}/>
+                    <Receipt item={item} kind={item.kind}/>
                     <Button mode={'contained'} disabled={isSending} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
                 </DetailView>
                 

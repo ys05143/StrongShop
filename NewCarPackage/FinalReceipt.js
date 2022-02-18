@@ -21,6 +21,7 @@ const RowCenter = styled.View`
 function FinalReceipt(props){
     const [isModal, setIsModal] = React.useState(props.isModal);
     const shopData = props.receipt;
+    const kind = props.kind;
     return(
         <View style={{alignItems: 'center'}}>
             <InfoView>
@@ -28,7 +29,7 @@ function FinalReceipt(props){
                     <Icon name={'ellipse'} style={{marginRight: 5}}/>
                     <Title>시공내역</Title>
                 </RowCenter>
-                <Receipt item={shopData}/>
+                <Receipt item={shopData} kind={kind}/>
             </InfoView>
             {isModal && 
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>

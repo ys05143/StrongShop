@@ -221,7 +221,7 @@ function FinalOrder(props){
         <>
         <Total>
             { receipt !== null && !isLoading && 
-            <><Order item={receipt}/>
+            <><Order item={receipt} kind={'NewCarPackage'}/>
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
                     <Text>이전</Text>

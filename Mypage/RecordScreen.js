@@ -101,6 +101,7 @@ function RecordScreen(props) {
                         receipt: item.details,
                         carName: JSON.parse(item.details).carName,
                         reviewStatus: item.reviewStatus === "NOT_WRITTEN" ? false : true,
+                        kind: item.kind,
                     })
                 })
                 //console.log(record);

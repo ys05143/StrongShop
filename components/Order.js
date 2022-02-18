@@ -13,13 +13,15 @@ const SearchView = styled.ScrollView`
 
 
 function Order(props){
+    const kind = props.kind;
     const receipt = props.item;
-    console.log(receipt);
     return(
         <SearchView>
             <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
                 <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
             </View>
+
+            {kind === 'NewCarPackage' ? 
             <View style={{width: '100%', marginBottom: 10}}>
                 {receipt.options.tinting === true &&
                 <View>
@@ -111,7 +113,63 @@ function Order(props){
                         <Chip style={{margin: 3}}>{'선택'}</Chip>
                     </ScrollView>
                 </View>}
-            </View>
+            </View> : 
+            kind === 'Care' ?
+            <View style={{width: '100%', marginBottom: 10}}>
+                {receipt.options.carWash === true &&
+                <View>
+                    <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                        <Icon name="chevron-forward-outline" size={20}></Icon>
+                        <Text style={{fontSize: 20}}>세차</Text>
+                    </View>
+                    <ScrollView horizontal={true}>
+                        {_.map(receipt.options['detailCarWash'], (key,item)=>{ if(key) return(translate('carwash',item,key) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('carwash',item,key)}</Chip>: null)})}
+                    </ScrollView>
+                </View>}
+                {receipt.options.inside === true &&
+                <View>
+                    <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                        <Icon name="chevron-forward-outline" size={20}></Icon>
+                        <Text style={{fontSize: 20}}>내부</Text>
+                    </View>
+                    <ScrollView horizontal={true}>
+                        {_.map(receipt.options['detailInside'], (key,item)=>{ if(key) return(translate('inside',item,key) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('inside',item,key)}</Chip>: null)})}
+                    </ScrollView>
+                </View>}
+                {receipt.options.outside === true &&
+                <View>
+                    <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                        <Icon name="chevron-forward-outline" size={20}></Icon>
+                        <Text style={{fontSize: 20}}>외부</Text>
+                    </View>
+                    <ScrollView horizontal={true}>
+                        {_.map(receipt.options['detailOutside'], (key,item)=>{ if(key) return(translate('outside',item,key) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('outside',item,key)}</Chip>: null)})}
+                    </ScrollView>
+                </View>}
+                {receipt.options.scratch === true &&
+                <View>
+                    <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                        <Icon name="chevron-forward-outline" size={20}></Icon>
+                        <Text style={{fontSize: 20}}>스크레치</Text>
+                    </View>
+                    <ScrollView horizontal={true}>
+                        {_.map(receipt.options['detailScratch'], (key,item)=>{ if(key) return(translate('scratch',item,key) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('scratch',item,key)}</Chip>: null)})}
+                    </ScrollView>
+                </View>}
+                {receipt.options.etc === true &&
+                <View>
+                    <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
+                        <Icon name="chevron-forward-outline" size={20}></Icon>
+                        <Text style={{fontSize: 20}}>기타</Text>
+                    </View>
+                    <View style={{padding: 10}}>
+                        <View style={{width: '100%', backgroundColor: '#e5e5e5', padding: 5, borderRadius: 5}}>
+                            <Text>{receipt.options.detailEtc}</Text>
+                        </View>
+                    </View>
+                </View>}
+            </View>: <></>}
+
             {receipt.region !== null &&
             <View style={{width: '100%', marginBottom: 10, alignItems: 'center', flexDirection: 'row'}}>
                 <Icon name="chevron-forward-outline" size={20}></Icon>
@@ -127,6 +185,7 @@ function Order(props){
                     </View>
                 </View>
             </View>}
+
         </SearchView>
     );
 }

@@ -40,6 +40,7 @@ const DetailOptions = styled.View`
 
 function JustShowReceipt(props){
     const [receipt, setReceipt] = React.useState(null);
+    const [kind, setKind] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
 
     async function getData(){
@@ -55,7 +56,7 @@ function JustShowReceipt(props){
                 })
                 const rawData = response.data.data;
                 setReceipt(JSON.parse(rawData.detail));
-                //console.log(JSON.parse(rawData.detail));
+                setKind(rawData.kind);
             }
             else{
                 console.log("no login");
@@ -88,7 +89,7 @@ function JustShowReceipt(props){
     return (
         <>
         <Total>
-            { receipt !== null && !isLoading ? <Order item={receipt}/> : 
+            { receipt !== null && !isLoading ? <Order item={receipt} kind={kind}/> : 
             <View style={{flex: 1, justifyContent: 'center', width: '100%'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
