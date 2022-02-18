@@ -13,6 +13,12 @@ import Row from "../components/Row";
 //constant
 import Color from "../constants/Color";
 import AppWindow from "../constants/AppWindow";
+//server
+import axios from 'axios';
+import server from '../server';
+import checkJwt from '../function/checkJwt';
+import checkErrorCode from '../function/checkErrorCode';
+import { userContext } from '../function/Context';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -54,6 +60,7 @@ const ImgView = styled.View`
 `;
 
 function CareScreen_3(props){
+    const context = React.useContext(userContext);
     const [carData,setCarData] = React.useState(props.route.params.carData);
     const [isLoading, setIsLoading] = React.useState(false);
     const [contents, setContents] = React.useState([{
@@ -72,13 +79,12 @@ function CareScreen_3(props){
             usedCameraButton: false,
         })
         .then(images => {
-            let formdata = new FormData();
+            // let formdata = new FormData();
             let name = images.fileName;
             let type = "multipart/form-data";
             let imgUri = Platform.OS === 'ios' ? images.path : images.path.startsWith('content') ? images.path : 'file://'+response.path;
-            formdata.append("files", { name: name , type: type, uri: imgUri });
-            changeImg(images, formdata, index)
-            //console.log(formdata);
+            // formdata.append("imagefiles", { name: name , type: type, uri: imgUri });
+            changeImg(images, { name: name , type: type, uri: imgUri }, index)
             setIsLoading(false);
         })
         .catch(error => {
@@ -89,7 +95,7 @@ function CareScreen_3(props){
     function changeImg(images, formdata, index){
         let newData = _.cloneDeep(contents);
         newData[index].displayImg = images;
-        newData[index].formdata = formdata
+        newData[index].formdata = formdata;
         setContents(newData);
     }
 
@@ -116,6 +122,7 @@ function CareScreen_3(props){
             [
                 {text: '취소', onPress: () => {}},
                 {text: '확인', onPress: () => {
+                    context.setCareSearch(null);
                     props.navigation.popToTop()
                 }},
             ],
@@ -124,19 +131,88 @@ function CareScreen_3(props){
     }
 
     function MoveToNext(){
-        let newData = _.cloneDeep(carData);
-        let formdataArray=[]
-        let textArray=[]
+        let textArray=[];
+        formArray = [];
+        let newData = new FormData();
         _.map(contents, (item)=>{
-            formdataArray.push(item.formdata);
+            newData.append("imagefiles", item.formdata);
             textArray.push(item.text);
         })
-        newData.require = {
-            formdata: formdataArray,
-            text: textArray
-        }
-        console.log(newData);
+        newData.append('details', JSON.stringify(carData));
+        newData.append('region', carData.region);
+        // newData['details'] = JSON.stringify(carData);
+        // newData['region'] = carData.region;
+        finishOrder(newData);
+        context.setCareSearch(null);
     }
+
+    async function finishOrder(newData){ // 서버에 오더 전송
+        try{
+            setIsLoading(true);
+            if(newData !== null){
+                const auth = await checkJwt();
+                if(auth !== null){
+                    console.log(newData);
+                    const response = await axios({
+                        method: 'POST',
+                        url : `${server.url}/api/orders/care` ,
+                        data : newData,
+                        headers : {'content-type': 'multipart/form-data' , Auth: auth},
+                        timeout: 5000,
+                    })
+                    .then(res=>{
+                        Alert.alert(
+                            '완료',
+                            '지금부터 입찰이 시작됩니다!',
+                            [
+                                {text: '확인', onPress: () => {
+                                        props.navigation.popToTop();
+                                    }
+                                },
+                            ],
+                            { cancelable: false }
+                        );
+                    })
+                    .catch(e=>{
+                        alert(e);
+                    })
+                    setIsLoading(false);
+                }
+                else{
+                    Alert.alert(
+                        '실패',
+                        '로그인이 필요합니다.',
+                        [
+                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), setIsLoading(false);}},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            }
+            else{
+                Alert.alert(
+                    '실패',
+                    '작성한 견적이 없습니다.',
+                    [
+                        {text: '확인', onPress: () => {setIsLoading(false)}},
+                    ],
+                    { cancelable: false }
+                );
+            }
+            setIsLoading(false); 
+        }
+        catch{
+            Alert.alert(
+                '견적 등록을 실패했습니다.',
+                '다시 시도해주세요.',
+                [
+                    {text: '확인', onPress: () => {setIsLoading(false)}},
+                ],
+                { cancelable: false }
+            );
+        } 
+    }
+
 
     return(
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>

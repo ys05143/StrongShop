@@ -194,9 +194,9 @@ function LoginScreen(props) {
     }
 
     //bottom sheet 에서 만들어지 정보를 서버에 전달
-    async function requestSignIn(name) {
+    async function requestSignIn(loginVer) {
         setIsSending(true);
-        //console.log(`${server.url}/api/login/user/${name}`);
+        console.log(`${server.url}/api/login/user/${loginVer}`);
         let fcmToken = '';
         await messaging().getToken()
         .then( res =>{
@@ -205,11 +205,11 @@ function LoginScreen(props) {
         // 서버에게 dtoData 전달
         axios({
             method: 'POST',
-            url : `${server.url}/api/login/user/${name}` ,
+            url : `${server.url}/api/login/user/${loginVer}` ,
             data : {
                 ...dtoData ,
                 phoneNumber: '01012341234' , //본인인증결과로 삽입
-                name: userName,
+                name: isGeneral ? userName : bossName,
                 fcmToken: fcmToken,
                 businessNumber: isGeneral ? null : businessNumber //딜러인경우 사업자등록번호 전달
             }
@@ -430,7 +430,8 @@ function LoginScreen(props) {
                                             focused={focusInput === 3}/>
                             <Row style={{alignItems: 'center', justifyContent: 'space-around', marginTop: 30}}>
                                 <Button mode={"contained"} onPress={() => {setStage(0)}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>이전</Button>
-                                <Button mode={"contained"} onPress={() => {verify()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>다음</Button>
+                                <Button mode={"contained"} onPress={() => {requestSignIn(loginVer)}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>테스트</Button>
+                                {/* <Button mode={"contained"} onPress={() => {verify()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>다음</Button> */}
                             </Row>
                         </View>
                     </> : 

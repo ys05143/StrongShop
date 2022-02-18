@@ -284,7 +284,7 @@ function ProgressScreen_Ver_2( props ) {
                 if(auth !== null){
                     const response = await axios({
                         method: 'PUT',
-                        url : `${server.url}/api/contract/7/${contractId}` ,
+                        url : `${server.url}/api/contract/ncp/7/${contractId}` ,
                         headers : {Auth: auth},
                     })
                     .catch(e=>{
@@ -310,7 +310,7 @@ function ProgressScreen_Ver_2( props ) {
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
-                    url : `${server.url}/api/contract/3/${orderId}`,
+                    url : `${server.url}/api/contract/ncp/3/${orderId}`,
                     headers : {Auth: auth},
                 })
                 .catch(e=>{
@@ -330,7 +330,7 @@ function ProgressScreen_Ver_2( props ) {
                     if(state >= 4){
                         const img_res = await axios({
                             method: 'GET',
-                            url : `${server.url}/api/contract/4/${rawData.contract_id}`,
+                            url : `${server.url}/api/contract/ncp/4/${rawData.contract_id}`,
                             headers : {Auth: auth},
                         })
                         .catch(
@@ -350,7 +350,7 @@ function ProgressScreen_Ver_2( props ) {
                     if(state >= 6){
                         const img_res = await axios({
                             method: 'GET',
-                            url : `${server.url}/api/contract/6/${rawData.contract_id}`,
+                            url : `${server.url}/api/contract/ncp/6/${rawData.contract_id}`,
                             headers : {Auth: auth},
                         })
                         .catch(
@@ -415,7 +415,7 @@ function ProgressScreen_Ver_2( props ) {
                         if(auth !== null){
                             const response = await axios({
                                 method: 'PUT',
-                                url : `${server.url}/api/contract/${state}/${orderId}` ,
+                                url : `${server.url}/api/contract/ncp/${state}/${orderId}` ,
                                 data : {
                                     orderId: orderId
                                 },

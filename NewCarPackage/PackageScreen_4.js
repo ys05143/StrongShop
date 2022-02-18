@@ -247,7 +247,7 @@ function PackageScreen_4(props){
                     <RegionView>
                         <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
                         <PickerView onPress={()=>{setRegionModal(true)}}>
-                            <Text>{displayRegion}</Text>
+                            <Text style={{fontWeight: 'bold'}}>{displayRegion}</Text>
                         </PickerView>
                     </RegionView>
                 </InputView> 

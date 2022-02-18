@@ -250,17 +250,18 @@ function MainScreen( props ) {
                     //console.log(res);
                     const curTime = Date.now();
                     let rawData = res.data.data;
-                    //console.log(rawData);
                     if(rawData !== null){
                         rawData.map(item => {
-                            item['details'] = JSON.parse(item.details) ;
+                            if(item.details !== null) item['details'] = JSON.parse(item.details) ;
+                            else item['details'] = null;
                         })
                         let newData = [];
                         let timeData = [];
                         rawData.map(item => { 
+                            //console.log(item);
                             newData.push({
                                 orderId: item.id, 
-                                carName: item.details.carName, 
+                                carName:  item.details.carName, 
                                 state: translateState(item.state), 
                                 time: item.created_time, 
                                 carImage: null,
@@ -270,7 +271,6 @@ function MainScreen( props ) {
                         });
                         setMyOrderList(newData.reverse());
                         setOrderTimeList(timeData.reverse());
-                        //console.log(newData);
                     }
                     else{
                         setMyOrderList([]);
@@ -279,9 +279,9 @@ function MainScreen( props ) {
                     checkNewAlarm();
                     setIsLoading(false);
                 })
-                .catch(e=>{
-                    checkErrorCode(e, props.navigation);
-                })
+            .catch(e=>{
+                checkErrorCode(e, props.navigation);
+            })
             }
             else{
                 console.log("no login");
@@ -531,7 +531,7 @@ function MainScreen( props ) {
                         <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                         <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                     </MenuButton>
-                    <MenuButton onPress={()=>{props.navigation.navigate("CareScreen_1")}}>
+                    <MenuButton onPress={()=>{props.navigation.navigate("CareScreen_1_2")}}>
                         <Text style={styles.text}>케어</Text>
                         <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
                         <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>

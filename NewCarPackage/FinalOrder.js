@@ -13,6 +13,7 @@ import checkJwt from '../function/checkJwt';
 import Icon  from "react-native-vector-icons/Ionicons";
 //server
 import server from '../server';
+import Order from '../components/Order';
 
 const Total = styled.View`
     width: 100%;
@@ -219,115 +220,8 @@ function FinalOrder(props){
     return (
         <>
         <Total>
-            { receipt !== null && !isLoading && <><SearchView>
-                <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
-                </View>
-                <View style={{width: '100%', marginBottom: 10}}>
-                    {receipt.options.tinting === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>틴팅</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailTinting'], (key,item)=>{ if(key) return(translate('tinting',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('tinting',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.ppf === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>PPF</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailPpf'], (key,item)=>{ if(key) return(translate('ppf',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('ppf',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.blackbox === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>블랙박스</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailBlackbox'], (key,item)=>{ if(key) return(translate('blackbox',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('blackbox',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.battery === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>보조배터리</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailBattery'], (key,item)=>{ if(key) return(translate('battery',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('battery',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.afterblow === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>애프터블로우</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailAfterblow'], (key,item)=>{ if(key) return(translate('afterblow',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('afterblow',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.soundproof === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>방음</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailSoundproof'], (key,item)=>{ if(key) return(translate('soundproof',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('soundproof',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.wrapping === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>랩핑</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailWrapping'], (key,item)=>{ if(key) return(translate('wrapping',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('wrapping',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.bottomcoating === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>하부코팅</Text>
-                        </View>
-                        <ScrollView horizontal={true}>
-                            {_.map(receipt.options['detailBottomcoating'], (key,item)=>{ if(key) return(translate('bottomcoating',item) !== "" ?<Chip key={item} style={{margin: 3}}>{translate('bottomcoating',item)}</Chip>: null)})}
-                        </ScrollView>
-                    </View>}
-                    {receipt.options.glasscoating === true &&
-                    <View>
-                        <View style={{marginBottom: 5, flexDirection: 'row',  alignItems: 'center'}}>
-                            <Icon name="chevron-forward-outline" size={20}></Icon>
-                            <Text style={{fontSize: 20}}>유리막코팅</Text>
-                        </View>
-                    </View>}
-                </View>
-                {receipt.region !== null &&
-                <View style={{width: '100%', marginBottom: 10, alignItems: 'center', flexDirection: 'row'}}>
-                    <Icon name="chevron-forward-outline" size={20}></Icon>
-                    <Text style={{fontSize: 20, marginRight: 10}}>시공 지역</Text>
-                    <Chip style={{margin: 3}}>{receipt === null ? '': receipt.region}</Chip>
-                </View>}
-                
-                {receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>
-                    <Text style={{fontSize: 20 }}>기타 요구사항</Text>
-                    <View style={{padding: 10}}>
-                        <View style={{width: '100%', backgroundColor: '#e5e5e5', padding: 5, borderRadius: 5}}>
-                            <Text>{receipt === null ? '': receipt.require}</Text>
-                        </View>
-                    </View>
-                </View>}
-            </SearchView>
+            { receipt !== null && !isLoading && 
+            <><Order item={receipt}/>
             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
                     <Text>이전</Text>

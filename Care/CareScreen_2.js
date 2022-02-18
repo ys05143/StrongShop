@@ -17,6 +17,7 @@ import ModalView from '../components/ModalView';
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
 import { KorRegion, CareList } from '../constants/LIST';
+import { userContext } from '../function/Context';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
@@ -93,7 +94,7 @@ const PickItem = styled.TouchableOpacity`
 `;
 
 function CareScreen_2(props) {
-    
+    const context = React.useContext(userContext);
     const [carData,setCarData] = React.useState(props.route.params.carData);
     const [isLoading, setIsLoading] = React.useState(false);
     const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -118,9 +119,9 @@ function CareScreen_2(props) {
             setCarWashChoose(true);
         }
     }
-    const [DetailCarWash, setDetailCarWash] = React.useState(false);
-    function getDetailCarWash(bool){
-        setDetailCarWash(bool);
+    const [DetailingCarWash, setDetailingCarWash] = React.useState(false);
+    function getDetailingCarWash(bool){
+        setDetailingCarWash(bool);
         if(bool === true){
             setCarWashChoose(true);
         }
@@ -202,7 +203,6 @@ function CareScreen_2(props) {
     }
     const [EtcChoose, setEtcChoose] = React.useState(false);
     ////////////////////////////////////////////////////////////////
-    const [selectedRegion, setSelectedRegion] = React.useState('seoul');
     const [displayRegion, setDisplayRegion] = React.useState('서울');
     const [regionModal, setRegionModal] = React.useState(false);
     
@@ -221,6 +221,7 @@ function CareScreen_2(props) {
             [
                 {text: '취소', onPress: () => {}},
                 {text: '확인', onPress: () => {
+                    context.setCareSearch(null);
                     props.navigation.popToTop()
                 }},
             ],
@@ -231,27 +232,32 @@ function CareScreen_2(props) {
     function MoveToNext(){
         let newData = _.cloneDeep(carData);
         newData.options = {
-            carWash: {
+            carWash: CarWashChoose,
+            detailCarWash: {
                 handCarWash: HandCarWash,
                 steamCarWash: SteamCarWash,
-                detailCarWash: DetailCarWash
+                detailingCarWash: DetailingCarWash
             },
-            inside:{
+            inside: InsideChoose,
+            detailInside:{
                 insideCleaning: InsideCleaning,
                 insideSoundProof: InsideSoundProof
             },
-            outside:{
+            outside: OutsideChoose,
+            detailOutside:{
                 painting: Painting,
                 dent: Dent,
                 Wrapping: Wrapping
             },
-            scratch:{
+            scratch: ScratchChoose,
+            detailScratch:{
                 polishing: Polishing,
                 glassCoating: GlassCoating,
             },
-            etc: Etc,
+            etc: EtcChoose,
+            detailEtc: Etc,
         };
-        newData.region = selectedRegion;
+        newData.region = displayRegion;
         if(CarWashChoose || InsideChoose || OutsideChoose || ScratchChoose || EtcChoose) props.navigation.navigate("CareScreen_3", {carData: newData});
         else{
             Alert.alert(
@@ -273,7 +279,7 @@ function CareScreen_2(props) {
                     <Icon name="close-outline" size={35} color={'black'}></Icon>
                 </TouchableOpacity>    
             </View>
-            <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>항목과 지역을 선택해주세요.</Text>  
+            <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>항목 및 지역을 선택해주세요.</Text>  
             <ContentView>
                 <View style={{width: '100%', height: 70}}>
                     <SectionList
@@ -311,8 +317,8 @@ function CareScreen_2(props) {
                                                 choose={SteamCarWash}
                                                 name={'스팀 세차'}
                                                 touchable={true}/>
-                            <SelectDetailOption getChoose={getDetailCarWash} 
-                                                choose={DetailCarWash}
+                            <SelectDetailOption getChoose={getDetailingCarWash} 
+                                                choose={DetailingCarWash}
                                                 name={'디테일링 세차'}
                                                 touchable={true}/>
                         </SelectInSwiper>
@@ -390,7 +396,7 @@ function CareScreen_2(props) {
                 <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 15, fontWeight: 'bold'}}>지역</Text>
                 <View style={{width: '100%', alignItems: 'center'}}>
                     <PickerView onPress={()=>{setRegionModal(true)}}>
-                        <Text>{displayRegion}</Text>
+                        <Text style={{fontWeight: 'bold'}}>{displayRegion}</Text>
                     </PickerView>
                 </View>
             </RegionView>

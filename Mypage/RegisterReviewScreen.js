@@ -4,22 +4,26 @@ import styled from 'styled-components/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Title, List, Divider, Badge } from 'react-native-paper';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import Accordion from 'react-native-collapsible/Accordion';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FastImage from 'react-native-fast-image';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//component
+import TopBar from '../components/TopBar';
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
 import AppWindow from '../constants/AppWindow';
+import Receipt from '../components/Receipt';
+//constants
 import Color from '../constants/Color';
-import Accordion from 'react-native-collapsible/Accordion';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import TopBar from '../components/TopBar';
 //for server
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import FastImage from 'react-native-fast-image';
 
 const WIDTH = AppWindow.width;
+const HEIGHT = AppWindow.height;
 
 const styles = {
     listAccordionStyle : {
@@ -64,7 +68,7 @@ const InfoView = styled.View`
 `;
 const DetailView = styled.View`
     width: 100%;
-    padding: 10px 15px;
+    padding: 10px 0px;
     background-color: 'rgb(246,246,246)';
     height: 200px;
 `;
@@ -114,7 +118,8 @@ const BtnView = styled.View`
     height: 80px;
 `;
 const TextView = styled.View`
-    flex: 1;
+    width: 100%;
+    height: ${HEIGHT-60-50-(WIDTH*0.8)-80}px;
     padding: 0px 10px;
 `;
 const Input = styled.TextInput`
@@ -250,81 +255,8 @@ function RegisterReviewScreen(props) {
             const item = section;
             return(
                 <DetailView>
-                    <ScrollView>
-                    {
-                        item.tinting != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='틴팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.tinting} right={ props => <Text style={styles.itemText}>{item.tintingPrice}{'만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.ppf != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='PPF' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.ppf} right={props => <Text style={styles.itemText}>{item.ppfPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.blackbox != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='블랙박스' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.blackbox} right={props => <Text style={styles.itemText}>{item.blackboxPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.battery != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='보조배터리' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.battery} right={props => <Text style={styles.itemText}>{item.batteryPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.afterblow != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='애프터블로우' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.afterblow} right={props => <Text style={styles.itemText}>{item.afterblowPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.soundproof != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='방음' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.soundproof} right={props => <Text style={styles.itemText}>{item.soundproofPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.wrapping != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='랩핑' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.wrapping} right={props => <Text style={styles.itemText}>{item.wrappingPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.bottomcoating != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='언더코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.bottomcoating} right={props => <Text style={styles.itemText}>{item.bottomcoatingPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    {
-                        item.glasscoating != null && (
-                            <View style={styles.total}>
-                                <List.Item style={styles.labelStyle}  titleStyle={styles.listStyle1} title ='유리막코팅' left={props => <List.Icon {...props} icon='clipboard-check-outline' style={{ margin: 0}} size={10} />} />
-                                <List.Item titleStyle={styles.listStyle} title ={item.glasscoating} right={props => <Text style={styles.itemText}>{item.glasscoatingPrice}{' 만원'}</Text>} />
-                            </View>
-                        )
-                    }
-                    
-                    <List.Item titleStyle={styles.totalprice} title ='최종가격: ' right={props => <Text style={styles.itemText}>{item.totalPrice}{' 만원'}</Text>}/>
+                    <ScrollView contentContainerStyle={{paddingHorizontal: 15}}>
+                        <Receipt item={item}/>
                     </ScrollView>
                 </DetailView>
             )
@@ -347,8 +279,9 @@ function RegisterReviewScreen(props) {
     }
 
     return(
-        <KeyboardAwareScrollView>
+        
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
+            <KeyboardAwareScrollView>
             {/* <View style={{width: '100%', height: AppWindow.TopBar, justifyContent: 'center', alignItems: 'center', borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
                 <Text style={{fontFamily: 'DoHyeon-Regular', fontSize: 25}}>{companyName}</Text>
             </View> */}
@@ -398,8 +331,9 @@ function RegisterReviewScreen(props) {
                 <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
                     <ActivityIndicator color= {Color.main} size={'large'}/>
                 </View>}
+                </KeyboardAwareScrollView>
         </TotalView>
-        </KeyboardAwareScrollView>
+        
     )
 }
 export default RegisterReviewScreen;

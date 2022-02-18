@@ -34,7 +34,7 @@ function Pay(props){
             if(auth !== null){
                 const response = await axios({
                     method: 'POST',
-                    url : `${server.url}/api/contract` ,
+                    url : `${server.url}/api/contract/ncp` ,
                     data : {
                         order_id: orderId,
                         bidding_id: bidId,
@@ -45,7 +45,7 @@ function Pay(props){
                     checkErrorCode(e, props.navigation);
                 })
                 //console.log(response);
-                props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3, bidId: bidId});
+                props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
                 setIsSending(false);
             }
         }

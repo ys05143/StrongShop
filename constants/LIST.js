@@ -34,14 +34,14 @@ const CarNames = [{
     company: 'KIA',
 }];
 
-function translate(option, item){
+function translate(option, item, value){
     const res_Tinting = {
         LUMA: '루마',
         SOLAR: '솔라가드',
         RAINBOW: '레인보우',
         RAYNO: '레이노',
         ANY: '상관없음',
-        ETC: receipt.options.detailTinting.ETC,
+        ETC: value,
     }
     const res_Ppf ={
         BONNET: '본넷',
@@ -55,24 +55,24 @@ function translate(option, item){
         BCFILTER: 'B/C 필터',
         DOOR: '도어',
         HOOD: '후드',
-        ETC: receipt.options.detailPpf.ETC,
+        ETC: value,
     }
     const res_Blackbox = {
         FINETECH: '파인테크',
         INAVI: '아이나비',
         MANDO: '만도',
         ANY: '상관없음',
-        ETC: receipt.options.detailBlackbox.ETC,
+        ETC: value,
     }
     const res_Battery = {
         V6: 'V6',
         V12: 'V12',
-        ANY: false,
-        ETC: receipt.options.detailBattery.ETC,
+        ANY: '상관없음',
+        ETC: value,
     }
     const res_Afterblow = {
         ANY: '상관없음',
-        ETC: receipt.options.detailAfterblow.ETC,
+        ETC: value,
     }
     const res_Soundproof = {
         DOORSOUND: '도어방음',
@@ -80,10 +80,10 @@ function translate(option, item){
         FENDER: '휀다방음',
         BONNETSOUND: '본넷방음',
         TRUNK: '트렁크방음',
-        ETC: receipt.options.detailSoundproof.ETC,
+        ETC: value,
     }
     const res_Wrapping = {
-        DESIGN: receipt.options.detailWrapping.DESIGN,
+        DESIGN: value,
     }
     const res_BottomCoating = {
         UNDER: '언더코팅',
@@ -205,4 +205,4 @@ const CareList= [
         id: 4,
         data: ['직접입력'],
     }];
-export {KorRegion, CarNames, NewCarPackageList, Pay, merchadiseListDetail, CareList};
+export {KorRegion, CarNames, NewCarPackageList, Pay, merchadiseListDetail, CareList, translate};

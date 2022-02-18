@@ -17,6 +17,7 @@ import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
 //function
 import storage from '../function/storage';
+import { userContext } from '../function/Context';
 
 const WIDTH = AppWindow.width;
 ///////////////////////////////
@@ -93,40 +94,47 @@ const BidOrderList = {
 function PackageScreen_2 (props, {navigation}) {
     const [search, setSearch] = React.useState(null); //modal로 부터 받은 차량 검색어
     const [searchModal, setSearchModal] = React.useState(false);
-    const [result, setResult] = React.useState(null); //서버에 요청하여 받은 이름/이미지 객체
     const [isLoading, setIsLoading] = React.useState(true); //로딩중...
+    const [carName, setCarName] = React.useState(null);
+    const context = React.useContext(userContext);
 
     const isFoucused = useIsFocused();
     React.useEffect(() => {
         if(isFoucused){
             setIsLoading(true);
-            storage.fetch('BidOrder')
-            .then(response => {
-                if(response != null){
-                    if(response.carName !== null){
-                        console.log('In page 2 useEffect: ', response);         
-                        getData(response.carName);
+            if(context.newCarPackageSearch === null){
+                storage.fetch('BidOrder')
+                .then(response => {
+                    if(response != null){
+                        if(response.carName !== null){
+                            console.log('In page 2 useEffect: ', response);  
+                            context.setNewCarPackageSearch(response.carName);
+                            setCarName(response.carName);
+                        }
+                        else{
+                            console.log('Async error: there is not carName');
+                            AsyncStorage.removeItem('BidOrder')
+                            .then(() => {
+                                console.log('remove bidOrder Async');
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            })
+                        }
+                        setIsLoading(false);
                     }
                     else{
-                        console.log('Async error: there is not carName');
-                        AsyncStorage.removeItem('BidOrder')
-                        .then(() => {
-                            console.log('remove bidOrder Async');
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
+                        setIsLoading(false);
                     }
-                }
-                else{
-                    setSearch(null);
-                    setResult(null);
-                    setIsLoading(false);
-                }
-            })
-            .catch(error=>{
-                console.log(error);
-            })
+                })
+                .catch(error=>{
+                    console.log(error);
+                })
+            }
+            else{
+                setCarName(context.newCarPackageSearch);
+                setIsLoading(false);
+            }
         }
     }, [isFoucused]);
 
@@ -134,51 +142,25 @@ function PackageScreen_2 (props, {navigation}) {
         setSearchModal(close);
     }
 
-    function getData(name){
-        setIsLoading(true);
-        setSearch(name);
-        if(name !== null){
-            //modal로 받은 검색어로 서버에 {이름/이미지} 요청
-            /*if(txt !== ''){
-                axios({
-                    method: 'GET',
-                    url: '~~~name',
-                })
-                .then(res => {
-                    setResult(res.data);
-                })
-                .catch(e => {
-                    console.log(e);
-                });
-            }*/
-            setResult({
-                name: name,
-                image: 'https://www.hyundai.com/contents/vr360/CN01/exterior/WAW/001.png',
-            });
-        }
-        else{
-            setResult(null);
-        }
-        setIsLoading(false);
-    }
-
     async function storeCarName(){
         try{
-            const response = await storage.fetch('BidOrder');
-            if(response !== null){
-                if(response.carName !== null) props.navigation.navigate("PackageScreen_3");
-                else {
-                    Alert.alert(
-                        '경고',
-                        '차량을 입력해주세요.',
-                        [
-                            {text: '확인', onPress: () => {}},
-                        ],
-                        { cancelable: false }
-                        );
+            if(carName !== null){
+                let newOrder = null;
+                const response = await storage.fetch('BidOrder');
+                if(response !== null){
+                    newOrder = {...response};
+                    if(newOrder.processPage <= 1) newOrder.processPage = 1;
                 }
+                else{
+                    newOrder = {...BidOrderList};
+                    newOrder.processPage = 1;
+                }
+                newOrder.carName = carName;
+                await storage.store('BidOrder', newOrder);
+                context.setNewCarPackageSearch(null);
+                props.navigation.navigate("PackageScreen_3");
             }
-            else{
+            else {
                 Alert.alert(
                     '경고',
                     '차량을 입력해주세요.',
@@ -188,9 +170,6 @@ function PackageScreen_2 (props, {navigation}) {
                     { cancelable: false }
                     );
             }
-            //just check
-            //const check = await storage.fetch('BidOrder');
-            //console.log('In page 2 check: ', check);
         }
         catch(error){
             console.log(error);
@@ -201,7 +180,8 @@ function PackageScreen_2 (props, {navigation}) {
     function cancelCarName(){
         //지금 까지의 입력 싹 다 취소
         setSearch(null);
-        setResult(null);
+        context.setNewCarPackageSearch(null);
+        setCarName(null);
         AsyncStorage.removeItem('BidOrder')
                     .then(() => {
                         console.log('remove bidOrder Async');
@@ -222,7 +202,8 @@ function PackageScreen_2 (props, {navigation}) {
                 {text: '확인', onPress: () => {
                     //지금 까지의 입력 싹 다 취소
                     setSearch(null);
-                    setResult(null);
+                    context.setNewCarPackageSearch(null);
+                    setCarName(null);
                     AsyncStorage.removeItem('BidOrder')
                         .then(() => {
                             console.log('remove bidOrder Async');
@@ -242,12 +223,12 @@ function PackageScreen_2 (props, {navigation}) {
             <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
                 <IntroView>
                     <Intro>
-                        <IntroText>{'시공을 원하시는\n차종을 입력해주세요.'}</IntroText>
+                        <IntroText>{'시공을 원하는\n차종을 입력해주세요.'}</IntroText>
                     </Intro>
                 </IntroView>
                 <ContentView>
-                    <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen")}}>
-                        <Text style={{marginLeft: 10, fontSize: 20}}>{result !== null ? result.name : ''}</Text>
+                    <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen", {topic: 'NewCarPackage'})}}>
+                        <Text style={{marginLeft: 10, fontSize: 20}}>{carName !== null ? carName : ''}</Text>
                         <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
                     </SearchBar>
                     <ResulView>

@@ -37,6 +37,7 @@ import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import RegisterMyCar from './Mypage/RegisterMyCar';
 
 import CareScreen_1 from './Care/CareScreen_1';
+import CareScreen_1_2 from './Care/CareScreen_1_2';
 import CareScreen_2 from './Care/CareScreen_2';
 import CareScreen_3 from './Care/CareScreen_3';
 
@@ -205,8 +206,10 @@ function App (props) {
         {/* 신차패키지 5 */}
         {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
 
-        {/* 케어페이지 1 */}
+        {/* 케어페이지 1 Card Version */}
         {<Stack.Screen name="CareScreen_1" component={CareScreen_1} options={{headerShown:false}}/>}
+        {/* 케어페이지 1 Search Version */}
+        {<Stack.Screen name="CareScreen_1_2" component={CareScreen_1_2} options={{headerShown:false}}/>}
         {/* 케어페이지 2 */}
         {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>}
         {/* 케어페이지 3 */}

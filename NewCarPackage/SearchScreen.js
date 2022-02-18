@@ -3,8 +3,9 @@ import { FlatList, Platform, View, Text, TouchableOpacity } from "react-native";
 import TotalView from "../components/TotalView";
 import SearchBar from "react-native-dynamic-search-bar";
 import Icon from "react-native-vector-icons/Ionicons";
-import CarNames from "./CarNames";
 import storage from "../function/storage";
+import { userContext } from '../function/Context';
+import { CarNames } from "../constants/LIST";
 
 const BidOrderList = {
     processPage: null,
@@ -15,6 +16,8 @@ const BidOrderList = {
 };
 
 function SearchScreen(props){
+    const context = React.useContext(userContext);
+    const [topic, setTopic] = React.useState(props.route.params.topic);
     const [search, setSearch] = React.useState('');
     const [searchSpinner, setSearchSpinner] = React.useState(false);
     const [filter, setFilter] = React.useState({
@@ -26,25 +29,22 @@ function SearchScreen(props){
         spinnerVisibility: false,
     });
 
-    async function SelectCar(carName){
-        let newOrder = null;
-        const response = await storage.fetch('BidOrder');
-        if(response !== null){
-            newOrder = {...response};
-            if(newOrder.processPage <= 1) newOrder.processPage = 1;
+    function finishSearch(result){
+        if(topic === 'Care') {
+            context.setCareSearch(result);
         }
-        else{
-            newOrder = {...BidOrderList};
-            newOrder.processPage = 1;
+        else if(topic === 'NewCarPackage'){
+            context.setNewCarPackageSearch(result);
         }
-        newOrder.carName = carName;
-        await storage.store('BidOrder', newOrder);
-        props.navigation.replace("PackageScreen_2");
+        else{ 
+
+        }
+        props.navigation.goBack();
     }
 
     const searchItem = (item) =>{
         return(
-            <TouchableOpacity style={{width: '100%', height: 60 ,paddingHorizontal:10, alignItems: 'center', flexDirection: 'row'}} onPress={()=>{setSearch(item.item.kor_name), SelectCar(item.item.kor_name)}}>
+            <TouchableOpacity style={{width: '100%', height: 60 ,paddingHorizontal:10, alignItems: 'center', flexDirection: 'row'}} onPress={()=>{setSearch(item.item.kor_name); finishSearch(item.item.kor_name)}}>
                 <View style={{width: 50, height: 50, backgroundColor: 'lightgray', borderRadius: 50, justifyContent: 'center', alignItems: 'center', marginRight: 20}}>
                     <Icon name={'search-outline'} size={23} color={'gray'}/>
                 </View>
@@ -87,7 +87,7 @@ function SearchScreen(props){
                 clearIconComponent={<Icon name="close-circle" size={20} color={'gray'}/>}
                 style={{...styles.shadowStyle, ...styles.searchBarStyle}}
                 onClearPress={()=>{SearchProcess(''); setSearchSpinner(false);}}
-                onSearchPress={()=>{SelectCar(search)}}
+                onSearchPress={()=>{finishSearch(search)}}
             />
             <View style={{flex: 1, marginTop: 10}}>
                 <FlatList
