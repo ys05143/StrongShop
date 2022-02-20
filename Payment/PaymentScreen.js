@@ -1,14 +1,17 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import TotalView from '../components/TotalView';
 import { Alert, Text, View, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Button, Title } from 'react-native-paper';
-import Color from '../constants/Color';
-import AppWindow from '../constants/AppWindow';
 import _ from 'lodash';
-import Row from '../components/Row';
 import Accordion from 'react-native-collapsible/Accordion';
 import Icon from "react-native-vector-icons/Ionicons";
+//component
+import Receipt from '../components/Receipt';
+import Row from '../components/Row';
+import TotalView from '../components/TotalView';
+//constant
+import Color from '../constants/Color';
+import AppWindow from '../constants/AppWindow';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -94,6 +97,7 @@ function PaymentScreen(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [bidId, setBidId] = React.useState(props.route.params.bidId);
     const [receipt, setReceipt] = React.useState(props.route.params.receipt);
+    const [kind, setKind] = React.useState(props.route.params.kind);
     const [payData, setPayData] = React.useState(DATA);
     const [baseData, setBaseData] = React.useState(null);
     const [payName, setPayName] = React.useState('');
@@ -147,20 +151,20 @@ function PaymentScreen(props){
                 });
                 setPayName('신용카드');
                 setPayIndex(0);
-                console.log({
-                    pg: 'uplus',
-                    pay_method: 'card',
-                    name: '아임포트 결제데이터 분석',
-                    merchant_uid: `mid_${new Date().getTime()}`,
-                    amount: JSON.parse(receipt[0].quote).totalPrice,
-                    buyer_name: rawData.nickname,
-                    buyer_tel: rawData.phonenumber,
-                    buyer_email: 'example@naver.com',
-                    buyer_addr: '서울시 강남구 신사동 661-16',
-                    buyer_postcode: '06018',
-                    app_scheme: 'example',
-                    // [Deprecated v1.0.3]: m_redirect_url
-                });
+                // console.log({
+                //     pg: 'uplus',
+                //     pay_method: 'card',
+                //     name: '아임포트 결제데이터 분석',
+                //     merchant_uid: `mid_${new Date().getTime()}`,
+                //     amount: JSON.parse(receipt[0].quote).totalPrice,
+                //     buyer_name: rawData.nickname,
+                //     buyer_tel: rawData.phonenumber,
+                //     buyer_email: 'example@naver.com',
+                //     buyer_addr: '서울시 강남구 신사동 661-16',
+                //     buyer_postcode: '06018',
+                //     app_scheme: 'example',
+                //     // [Deprecated v1.0.3]: m_redirect_url
+                // });
                 setIsLoading(false);
             }
             else{
@@ -198,7 +202,7 @@ function PaymentScreen(props){
                     checkErrorCode(e, props.navigation);
                 })
                 //console.log(response);
-                props.navigation.replace("ProgressScreen", {orderId: orderId, state: 3, bidId: bidId});
+                props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
                 setIsLoading(false);
             }
         }
@@ -240,7 +244,7 @@ function PaymentScreen(props){
             // if(payData.pg === 'kakaopay') props.navigation.navigate("KakaoPay", {payData: payData});
             // else if(payData.pg === 'html5_inicis') props.navigation.navigate("Inicis", {payData: payData});
             // else console.log('else');
-            props.navigation.replace("Pay", {payData: payData, orderId: orderId, bidId: bidId});
+            props.navigation.replace("Pay", {payData: payData, orderId: orderId, bidId: bidId, kind: kind});
         }
     }
 
@@ -271,115 +275,9 @@ function PaymentScreen(props){
         const item = JSON.parse(section.quote);
         return(
             <View style={{alignItems: 'center'}}>
-            <View style={{width: '95%'}}>
-                <Row style={{height: 30, justifyContent: 'space-between', alignItems: 'flex-end'}}>
-                    <Row>
-                        <Text style={{fontSize: 13}}>{"시 공"}</Text>
-                        <Text style={{fontSize: 13, marginLeft: 20}}>{'상 품 명'}</Text>
-                    </Row>
-                    <Text style={{fontSize: 13}}>{'금  액'}</Text>
-                </Row>
-                <ReceiptMatrixLine/>
-                {
-                    item.tinting != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[틴팅]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.tinting}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.tintingPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.ppf != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[PPF]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.ppf}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.ppfPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.blackbox != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[블랙박스]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.blackbox}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.blackboxPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.battery != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[보조배터리]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.battery}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.batteryPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.afterblow != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[애프터블로우]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.afterblow}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.afterblowPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.soundproof != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[방음]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.soundproof}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.soundproofPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.wrapping != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[랩핑]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.wrapping}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.wrappingPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.glasscoating != null && (
-                        <ReceiptItemView>
-                            <RowCenter>
-                                <Text style={styles.receiptTitle}>{"[유리막코팅]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.glasscoating}</Text>
-                            </RowCenter>
-                            <Text style={styles.receiptPrice}>{item.glasscoatingPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-                {
-                    item.undercoating != null && (
-                        <ReceiptItemView>
-                            <Row>
-                                <Text style={styles.receiptTitle}>{"[언더코팅]"}</Text>
-                                <Text style={styles.receiptSubTitle}>{item.undercoating}</Text>
-                            </Row>
-                            <Text style={styles.receiptPrice}>{item.undercoatingPrice+' 만원'}</Text>
-                        </ReceiptItemView>
-                    )
-                }
-            </View>
+                <View style={{width: '95%'}}>
+                    <Receipt item={item} kind={kind}/>
+                </View>
             </View>
         )
     }

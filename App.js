@@ -22,10 +22,12 @@ import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
 import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
 import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
 import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
+import SearchScreen from './NewCarPackage/SearchScreen';
+import ProgressScreen_2 from './NewCarPackage/ProgressScreen_2';
 
 import PaymentScreen from './Payment/PaymentScreen';
 import Pay from './Payment/Pay';
-import PayFinish from './Payment/PayFinish';
+import PayFail from './Payment/PayFail';
 
 import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
@@ -40,11 +42,11 @@ import CareScreen_1 from './Care/CareScreen_1';
 import CareScreen_1_2 from './Care/CareScreen_1_2';
 import CareScreen_2 from './Care/CareScreen_2';
 import CareScreen_3 from './Care/CareScreen_3';
+import CareProgressScreen from './Care/CareProgressScreen';
 
 import Temp from './Temp';
-import SearchScreen from './NewCarPackage/SearchScreen';
-import ProgressScreen_2 from './Main/ProgressScreen_2';
 import PackageScreen_3_testVer from './NewCarPackage/PackageScreen_3_testVer';
+
 import Context from './function/Context';
 
 const Stack = createStackNavigator();
@@ -214,13 +216,15 @@ function App (props) {
         {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>}
         {/* 케어페이지 3 */}
         {<Stack.Screen name="CareScreen_3" component={CareScreen_3} options={{headerShown:false}}/>}
+        {/* 케어 시공 중 화면 */}
+        {<Stack.Screen name="CareProgressScreen" component={CareProgressScreen} options={{headerShown:false}}/>}
 
         {/* 결제페이지 */}
         {<Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{headerShown:false}}/>}
         {/* 결제 화면 */}
         {<Stack.Screen name="Pay" component={Pay} options={{headerShown:false}}/>}
-        {/* 결제 완료 화면 */}
-        {<Stack.Screen name="PayFinish" component={PayFinish} options={{headerShown:false}}/>}
+        {/* 결제 실패 화면 */}
+        {<Stack.Screen name="PayFail" component={PayFail} options={{headerShown:false}}/>}
 
         {/* 업체페이지 */}
         {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
@@ -238,7 +242,7 @@ function App (props) {
         {<Stack.Screen name="RegisterMyCar" component={RegisterMyCar} options={{headerShown:false}}/>}
         {/* (구) 시공중 페이지 */}
         {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
-        {/* 시공중 페이지 */}
+        {/* 신차패키지 시공 중 페이지 */}
         {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
 
         {/* 신차패키지 3 ver 3.0*/}

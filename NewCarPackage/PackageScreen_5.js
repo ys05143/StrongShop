@@ -84,6 +84,7 @@ const PriceView = styled.View`
 
 function PackageScreen_5(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
+    const [kind, setkind] = React.useState(props.route.params.kind);
     const [bidList, setBidList] = React.useState([]);
     const [isSending, setIsSending] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -250,7 +251,7 @@ function PackageScreen_5(props){
                                         </View>
                                     </ShopView2>
                                     <View style={{width: '100%'}}>
-                                        <BidShops item={[item]} navigation={props.navigation} orderId={orderId} getSending={setIsSending}></BidShops>
+                                        <BidShops item={[item]} navigation={props.navigation} orderId={orderId} getSending={setIsSending} kind={kind}></BidShops>
                                     </View>
                                 </View>
                             )

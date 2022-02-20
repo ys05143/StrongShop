@@ -10,10 +10,7 @@ import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
 
-function PayFinish(props){
-    const [response, setResponse] = React.useState(props.route.params.response);
-    const [orderId, setOrderId] = React.useState(props.route.params.orderId);
-    const [bidId, setBidId] = React.useState(props.route.params.bidId);
+function PayFail(props){
     const [isSending, setIsSending] = React.useState(false);
 
     return(
@@ -30,4 +27,4 @@ function PayFinish(props){
     )
 }
 
-export default PayFinish;
+export default PayFail;

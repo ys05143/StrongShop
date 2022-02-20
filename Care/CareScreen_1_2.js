@@ -31,20 +31,14 @@ const SearchBar = styled.TouchableOpacity`
     justify-content: space-between;
 `;
 const IntroView = styled.View`
-    width: 100%;
-    height: 100px;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-`;
-const Intro = styled.View`
     width: 90%;
-    height: 100%;
-    justify-content: center;
+    height: 100px;
+    align-items: center;
+    flex-direction: row;
 `;
 const IntroText = styled.Text`
     font-size: 25px;
-    font-family: 'NotoSansKR-Bold';
+    font-weight: bold;
 `;
 
 function CareScreen_1_2(props){
@@ -73,6 +67,16 @@ function CareScreen_1_2(props){
             }
             props.navigation.navigate('CareScreen_2', { carData: newData });
         }
+        else{
+            Alert.alert(
+                '항목을 선택하셔야 됩니다.',
+                '',
+                [
+                    {text: '확인', onPress: () => {console.log('')}},
+                ],
+                { cancelable: false }
+            );
+        }
     }
 
 
@@ -83,11 +87,11 @@ function CareScreen_1_2(props){
                     <Icon name="close-outline" size={35} color={'black'}></Icon>
                 </TouchableOpacity>    
             </View>
-            <IntroView>
-                    <Intro>
-                        <IntroText>{'케어을 원하는\n차종을 입력해주세요.'}</IntroText>
-                    </Intro>
+            <View style={{alignItems: 'center'}}>
+                <IntroView>
+                    <IntroText>{'케어을 원하는\n차종을 입력해주세요.'}</IntroText>
                 </IntroView>
+            </View>
             {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{'케어을 원하시는\n차종을 입력해주세요.'}</Text>   */}
             <View style={{flex:1, alignItems: 'center'}}>
                 <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen", {topic: 'Care'})}} style={{marginTop: 20}}>

@@ -15,19 +15,28 @@ function Pay(props){
     const [payData, setPayData] = React.useState(props.route.params.payData);
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
     const [bidId, setBidId] = React.useState(props.route.params.bidId);
+    const [kind, setKind] = React.useState(props.route.params.kind);
     const [isSending, setIsSending] = React.useState(false);
 
     function callback(response) {
         console.log(response);
         if(response.imp_success === 'true'){
-            sendData();
+            if(kind === 'NewCarPackage') {
+                sendDataNcp();
+            }
+            else if(kind === 'Care'){
+                sendDataCare();
+            }
+            else{
+                props.navigation.replace("PayFail");
+            }
         }
         else{
-            props.navigation.replace("PayFinish", {response: response, orderId: orderId, bidId: bidId});
+            props.navigation.replace("PayFail");
         }
     }
 
-    async function sendData(){
+    async function sendDataNcp(){
         try{
             setIsSending(true);
             const auth = await checkJwt();
@@ -60,6 +69,41 @@ function Pay(props){
             );
         }
     }
+
+    async function sendDataCare(){
+        try{
+            setIsSending(true);
+            const auth = await checkJwt();
+            if(auth !== null){
+                const response = await axios({
+                    method: 'POST',
+                    url : `${server.url}/api/contract/care` ,
+                    data : {
+                        order_id: orderId,
+                        bidding_id: bidId,
+                    },
+                    headers : {Auth: auth},
+                })
+                .catch(e=>{
+                    checkErrorCode(e, props.navigation);
+                })
+                //console.log(response);
+                // props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
+                setIsSending(false);
+            }
+        }
+        catch{
+            Alert.alert(
+                '네트워크 오류',
+                '다시 시도해주세요.',
+                [
+                    {text: '확인', onPress: () => {props.navigation.replace("MainScreen")}},
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+    
     const LoadingScreen = () =>{
         return(
             <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>

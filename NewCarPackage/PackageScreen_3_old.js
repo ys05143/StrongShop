@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList, TouchableOpacity, Modal } from 'react-native';
+import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { Button } from 'react-native-paper';
 import Icon  from "react-native-vector-icons/Ionicons";
@@ -7,50 +7,68 @@ import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import _ from 'lodash';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 //pages
-import SelectDetailOption from '../NewCarPackage/SelectDetailOption';
-import SelectTitleOption from '../NewCarPackage/SelectTitleOption';
+import SelectDetailOption from './SelectDetailOption';
+import SelectTitleOption from './SelectTitleOption';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
-import ModalView from '../components/ModalView';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';
-import { KorRegion, NewCarPackageList } from '../constants/LIST';
-import { userContext } from '../function/Context';
 //function
 import storage from '../function/storage';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
 ///////////////////////////////
-const ContentView = styled.View`
-    flex: 1;
+const IntroView = styled.View`
+    flex: 2;
     justify-content: center;
-    align-items : center;
+    align-items: center;
+    padding: 5px;
 `;
-
+const Intro = styled.View`
+    width: 90%;
+    height: 100%;
+    justify-content: center;
+`;
+const ContentView = styled.View`
+    flex: 5;
+    align-items : center;
+    justify-content: space-between;
+`;
+const IntroText = styled.Text`
+    font-size: 35px;
+    font-family: 'NotoSansKR-Bold';
+    color: black;
+`;
 const BtnView = styled.View`
     width: 100%;
     height: 80px;
+`;
+const Btn = styled.TouchableOpacity`
+    border-radius: 50px;
+    background-color: #B2EBF4;
+    width: 120px;
+    height: 60px;
+    align-items : center;
+    justify-content: center;
 `;
 ///////////////////////////////////
 const AllSelectView = styled.View`
     background-color: #e5e5e5;
     width: 90%;
+    height: 70%;
     border-radius: 15px;
     justify-content: center;
     align-items: center;
     padding: 20px 20px;
-    height: 100%;
 `;
-const SelectInSwiper = styled.View`
+const SelectInSwiper = styled.ScrollView`
     width: ${WIDTH*0.9-40}px;
     background-color: white;
     height: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
+    padding: 0px 10px;
 `;
 
 const OptionName = styled.TouchableOpacity`
@@ -63,45 +81,11 @@ const OptionName = styled.TouchableOpacity`
     height: 40px;
 `;
 
-const Input = styled.TextInput`
-    width: 95%;
-    height: 90%;
-    border-radius: 10px;
-    border: 1px solid black;
-    color: #000000;
-    padding: 10px;
-`;
-
-const RegionView = styled.View`
-    width: 100%;
-    margin-top: 20px;
-`;
-const PickerView = styled.TouchableOpacity`
-    width: 95%;
+const InputView = styled.TextInput`
     border: 1px;
-    border-radius: 5px;
-    margin-top: 5px;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
-`;
-const PickItem = styled.TouchableOpacity`
-    border-bottom-width: 1px;
-    width: 95%;
-    height: 60px;
-    justify-content: center;
-    align-items: center;
-    border-color: gray;
-`;
-const IntroView = styled.View`
-    width: 95%;
-    align-items: center;
-    padding-bottom: 5px;
-    flex-direction: row;
-`;
-const IntroText = styled.Text`
-    font-size: 20px;
-    font-weight: bold;
+    margin-left: 5px; 
+    width: '65%';
+    font-size: 12px;
 `;
 const InitialOptions = {
     tinting: false,
@@ -236,8 +220,39 @@ const compareOptions = {
     },
     glasscoating: false,
 }
-function CareScreen_2(props) {
-      
+
+const merchadiseList= [
+    {
+        id: 0,
+        data: ['틴팅'],
+    },{
+        id: 1,
+        data: ['PPF'],
+    },{
+        id: 2,
+        data: ['블랙박스'],
+    },{
+        id: 3,
+        data: ['보조배터리'],
+    },{
+        id: 4,
+        data: ['애프터블로우'],
+    },{
+        id: 5,
+        data: ['방음'],
+    },{
+        id: 6,
+        data: ['랩핑'],
+    },{
+        id: 7,
+        data: ['하부코팅'],
+    },{
+        id: 8,
+        data: ['유리막코팅'],
+    }];
+
+function PackageScreen_3_old(props) {
+    
     //const [result, setResult] = React.useState({...InitialOptions});
     const [isLoading, setIsLoading] = React.useState(false);
     const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -845,27 +860,22 @@ function CareScreen_2(props) {
             </View>
         )
     }
+
     return(
-        <>
-        <KeyboardAwareScrollView>
+        <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-            <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                <TouchableOpacity onPress={()=>{askCancelOptions();}}>
-                    <Icon name="close-outline" size={35} color={'black'}></Icon>
-                </TouchableOpacity>    
-            </View>
-            <View style={{alignItems: 'center'}}>
-                <IntroView>
-                    <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
-                    <IntroText>항목을 선택해주세요.</IntroText>
-                </IntroView>
-            </View>
+            <IntroView>
+                <Intro>
+                    <IntroText>{'원하시는 시공을\n선택해주세요.'}</IntroText>
+                </Intro>
+            </IntroView>
             <ContentView>
                 <View style={{width: '100%', height: 50}}>
                     <SectionList
+                        contentContainerStyle={{alignItems: 'center', width: '100%'}}
                         ref={scrollX}
                         horizontal={true}
-                        sections={NewCarPackageList}
+                        sections={merchadiseList}
                         keyExtractor={(item, index) => item + index}
                         renderItem={({item, section} ) => {
                             return(
@@ -876,9 +886,8 @@ function CareScreen_2(props) {
                         }}
                     />
                 </View>
-                <View style={{flex: 1}}>
-                {!isLoading ? 
                 <AllSelectView>
+                    {!isLoading ? 
                     <SwiperFlatList 
                     index={0}
                     ref={swiper}
@@ -1080,7 +1089,7 @@ function CareScreen_2(props) {
                             <Row style={{ paddingLeft: 10}}>
                                 <Text style={{fontSize: 18, color: 'black'}}>디자인</Text>
                                 <View style={{width: '100%', height: '80%'}}>
-                                    <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, paddingVertical: 7, paddingHorizontal: 5, borderRadius: 5, textAlignVertical:'top'}}
+                                    <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, paddingVertical: 15, paddingHorizontal: 5, borderRadius: 5, textAlignVertical:'top'}}
                                             value={WrappingETC}
                                             maxLength={100}
                                             editable={true}
@@ -1107,25 +1116,23 @@ function CareScreen_2(props) {
                                                 choose={GlassCoatingChoose} 
                                                 name={'유리막코팅'}/>         
                         </SelectInSwiper>
-                    </SwiperFlatList>
-                </AllSelectView> : 
-                <AllSelectView>
-                    <SelectInSwiper style={{justifyContent: 'center'}}>
-                        <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
-                    </SelectInSwiper>
-                </AllSelectView>}
-                </View>
+                    </SwiperFlatList>  : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
+                </AllSelectView>
+                <BtnView>
+                    <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {storeCarOptions();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>선택완료</Button>
+                    </Row>
+                </BtnView>
             </ContentView>
-            <BtnView>
-                <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
-                    <Button mode={"contained"} onPress={() => {storeCarOptions();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>선택완료</Button>
-                </Row>
-            </BtnView>
+            <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                <TouchableOpacity onPress={()=>{askCancelOptions();}}>
+                    <Icon name="close-outline" size={35} color={'black'}></Icon>
+                </TouchableOpacity>    
+            </View>
         </TotalView>
         </KeyboardAwareScrollView>
-        </>
     );
 }
 
-export default CareScreen_2;
+export default PackageScreen_3_old;

@@ -21,50 +21,31 @@ import storage from '../function/storage';
 
 const WIDTH = AppWindow.width;
 const HEIGHT = AppWindow.height;
-const sendingColor = 'rgba(0, 0, 0, 0.5)';
+const sendingColor = 'rgba(0, 0, 0, 0.3)';
 ///////////////////////////////
 const IntroView = styled.View`
-    flex: 2;
-    justify-content: center;
+    width: 95%;
     align-items: center;
-    padding: 5px;
-`;
-const Intro = styled.View`
-    width: 90%;
-    height: 100%;
-    justify-content: center;
-`;
-const ContentView = styled.View`
-    flex: 5;
-    align-items : center;
-    justify-content: space-between;
+    padding-bottom: 5px;
+    flex-direction: row;
 `;
 const IntroText = styled.Text`
-    font-size: 35px;
-    font-family: 'NotoSansKR-Bold';
+    font-size: 20px;
+    font-weight: bold;
+`;
+const ContentView = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items : center;
 `;
 const BtnView = styled.View`
     width: 100%;
     height: 80px;
 `;
-const Btn = styled.TouchableOpacity`
-    border-radius: 50px;
-    background-color: #B2EBF4;
-    width: 120px;
-    height: 60px;
-    align-items : center;
-    justify-content: center;
-`;
 ///////////////////////////////////
-const InputView = styled.View`
-    flex: 1;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-`;
 const Input = styled.TextInput`
     width: 95%;
-    flex: 2;
+    flex: 1;
     background-color: #e5e5e5;
     border-radius: 10px;
     color: #000000;
@@ -72,7 +53,6 @@ const Input = styled.TextInput`
 `;
 const RegionView = styled.View`
     width: 95%;
-    flex: 1;
     margin-top: 20px;
 `;
 const PickerView = styled.TouchableOpacity`
@@ -226,14 +206,20 @@ function PackageScreen_4(props){
         <>
         <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-            <IntroView>
-                <Intro>
-                    <IntroText>{'업체에게 전달할\n별도의 요구사항을\n입력해주세요.'}</IntroText>
-                </Intro>
-            </IntroView>
+            <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                <TouchableOpacity onPress={()=>{askCancelRequire();}}>
+                    <Icon name="close-outline" size={35} color={'black'}></Icon>
+                </TouchableOpacity>    
+            </View>
+            <View style={{alignItems: 'center'}}>
+                <IntroView>
+                    <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                    <IntroText>{'추가적인 요구사항을 입력해주세요.'}</IntroText>
+                </IntroView>
+            </View>
             <ContentView>
                 {!isLoading ? 
-                <InputView>
+                <>
                     <View style={{width: '95%', alignItems: 'flex-end'}}>
                        {text !==null && <Text style={{marginBottom: 5}}>{text.length+'/400'}</Text>}
                     </View>
@@ -245,25 +231,25 @@ function PackageScreen_4(props){
                             placeholderTextColor="gray"
                             maxLength={400}/>
                     <RegionView>
-                        <Text style={{fontSize: 15, fontWeight: 'bold'}}>원하시는 지역을 골라주세요.</Text>
+                        <View style={{alignItems: 'center'}}>
+                            <IntroView>
+                                <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                                <IntroText>{'지역을 선택해주세요.'}</IntroText>
+                            </IntroView>
+                        </View>
                         <PickerView onPress={()=>{setRegionModal(true)}}>
                             <Text style={{fontWeight: 'bold'}}>{displayRegion}</Text>
                         </PickerView>
                     </RegionView>
-                </InputView> 
+                </> 
                 : <ActivityIndicator size = 'large' color= {Color.main}/>}
-                <BtnView>
-                    <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                        <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
-                        <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>완료</Button>
-                    </Row>
-                </BtnView>
             </ContentView>
-            <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                <TouchableOpacity onPress={()=>{askCancelRequire();}}>
-                    <Icon name="close-outline" size={35} color={'black'}></Icon>
-                </TouchableOpacity>    
-            </View>
+            <BtnView>
+                <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                    <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>완료</Button>
+                </Row>
+            </BtnView>
         </TotalView>
         
         </KeyboardAwareScrollView>

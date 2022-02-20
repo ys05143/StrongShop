@@ -229,10 +229,18 @@ function MainScreen( props ) {
         }
     }
 
-    function StateMove(orderId, state, carName, time){
-        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time});
+    function StateMove(orderId, state, carName, time, kind){
+        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
         //else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
-        else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+        // else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+        else{
+            if(kind === 'NewCarPackage'){
+                if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+            }
+            else{
+                props.navigation.navigate('CareProgressScreen', { orderId: orderId, state: state })
+            }
+        }
     }
 
     async function getData(){
@@ -266,6 +274,7 @@ function MainScreen( props ) {
                                 time: item.created_time, 
                                 carImage: null,
                                 bidNum: item.bidcount,
+                                kind: item.kind
                             });
                             timeData.push(moment.duration(moment(item.created_time).add(24, 'hours').diff(moment(curTime))).asSeconds());
                         });
@@ -562,7 +571,7 @@ function MainScreen( props ) {
                                     {myOrderList.map((item, index) =>{
                                         return(
                                             <View key={item.orderId}>
-                                                <Card style={{width: 140, height: 130, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 25, elevation: 2}} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <Card style={{width: 140, height: 130, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 25, elevation: 2}} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time, item.kind)}}>
                                                     {/* <View style={styles.cover}>
                                                         <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                                     </View> */}
@@ -597,7 +606,7 @@ function MainScreen( props ) {
                                     {myOrderList.map((item, index)=>{
                                         return(
                                             <View key={item.orderId}>
-                                                <Card style={{height: 130, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 0, elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time)}}>
+                                                <Card style={{height: 130, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 0, elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time, item.kind)}}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
                                                         subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
                                                     <Card.Content style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end'}}>

@@ -111,7 +111,7 @@ function BidShop(props, {navigation}) {
     const [activeSections, setActiveSections] = React.useState([]);
     const [isSending, setIsSending] = React.useState(false);
 
-    function finalCheck(orderId, bidId){
+    function finalCheck(orderId, bidId, kind){
         Alert.alert(
             '최종 확인',
             '이 업체로 선택하시겠습니까?',
@@ -121,7 +121,7 @@ function BidShop(props, {navigation}) {
                 }},
                 {text: '확인', onPress: async () => {
                     //sendData(orderId, bidId);
-                    props.navigation.replace("PaymentScreen", {orderId: orderId, bidId: bidId, receipt: props.item});
+                    props.navigation.replace("PaymentScreen", {orderId: orderId, bidId: bidId, receipt: props.item, kind: kind});
                 }}
             ],
             { cancelable: false }
@@ -141,8 +141,8 @@ function BidShop(props, {navigation}) {
         return(
             <View style={{width: '100%', alignItems: 'center'}}>
                 <DetailView>
-                    <Receipt item={item} kind={item.kind}/>
-                    <Button mode={'contained'} disabled={isSending} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
+                    <Receipt item={item} kind={props.kind}/>
+                    <Button mode={'contained'} disabled={isSending} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId, props.kind)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
                 </DetailView>
                 
             </View>

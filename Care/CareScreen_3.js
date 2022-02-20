@@ -58,6 +58,16 @@ const ImgView = styled.View`
     height: ${WIDTH*0.8}px;
     background-color: lightgray;
 `;
+const IntroView = styled.View`
+    width: 95%;
+    align-items: center;
+    padding-bottom: 5px;
+    flex-direction: row;
+`;
+const IntroText = styled.Text`
+    font-size: 20px;
+    font-weight: bold;
+`;
 
 function CareScreen_3(props){
     const context = React.useContext(userContext);
@@ -223,7 +233,12 @@ function CareScreen_3(props){
             </View>
             <KeyboardAwareScrollView extraScrollHeight={30}>
             <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{carData.carName}</Text>
-            <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 20, fontWeight: 'bold'}}>시공할 부분의 사진을 찍어주세요.</Text>
+            {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 20, fontWeight: 'bold'}}>시공할 부분의 사진을 찍어주세요.</Text> */}
+            <View style={{alignItems: 'center'}}>
+                <IntroView>
+                    <IntroText>시공할 부분의 사진을 찍어주세요.</IntroText>
+                </IntroView>
+            </View>
                 {_.map(contents, (item, index)=>{
                     return(
                         <View key={index}>

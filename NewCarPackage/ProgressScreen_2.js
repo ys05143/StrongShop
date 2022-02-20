@@ -14,9 +14,9 @@ import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
 import TopBar from '../components/TopBar';
 import Color from '../constants/Color';
-import JustShowOrder from '../NewCarPackage/JustShowOrder';
+import JustShowOrder from './JustShowOrder';
 import ModalView from '../components/ModalView';
-import FinalReceipt from '../NewCarPackage/FinalReceipt';
+import FinalReceipt from './FinalReceipt';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -197,7 +197,7 @@ const DATA=[
 ]
 
 
-function ProgressScreen_Ver_2( props ) {
+function ProgressScreen_2( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
     const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
@@ -650,4 +650,4 @@ function ProgressScreen_Ver_2( props ) {
     );
 }
 
-export default ProgressScreen_Ver_2;
+export default ProgressScreen_2;

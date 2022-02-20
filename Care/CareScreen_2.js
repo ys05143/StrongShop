@@ -92,7 +92,16 @@ const PickItem = styled.TouchableOpacity`
     align-items: center;
     border-color: gray;
 `;
-
+const IntroView = styled.View`
+    width: 95%;
+    align-items: center;
+    padding-bottom: 5px;
+    flex-direction: row;
+`;
+const IntroText = styled.Text`
+    font-size: 20px;
+    font-weight: bold;
+`;
 function CareScreen_2(props) {
     const context = React.useContext(userContext);
     const [carData,setCarData] = React.useState(props.route.params.carData);
@@ -258,12 +267,15 @@ function CareScreen_2(props) {
             detailEtc: Etc,
         };
         newData.region = displayRegion;
-        if(CarWashChoose || InsideChoose || OutsideChoose || ScratchChoose || EtcChoose) props.navigation.navigate("CareScreen_3", {carData: newData});
+        if(CarWashChoose || InsideChoose || OutsideChoose || ScratchChoose || EtcChoose){
+            props.navigation.navigate("CareScreen_3", {carData: newData});
+        }
         else{
             Alert.alert(
                 '항목을 선택하셔야 됩니다.',
+                '',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {console.log('')}},
                 ],
                 { cancelable: false }
             );
@@ -279,9 +291,14 @@ function CareScreen_2(props) {
                     <Icon name="close-outline" size={35} color={'black'}></Icon>
                 </TouchableOpacity>    
             </View>
-            <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>항목 및 지역을 선택해주세요.</Text>  
+            <View style={{alignItems: 'center'}}>
+                <IntroView>
+                    <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                    <IntroText>항목을 선택해주세요.</IntroText>
+                </IntroView>
+            </View>
             <ContentView>
-                <View style={{width: '100%', height: 70}}>
+                <View style={{width: '100%', height: 50}}>
                     <SectionList
                         contentContainerStyle={{alignItems: 'center', width: '100%'}}
                         ref={scrollX}
@@ -393,14 +410,20 @@ function CareScreen_2(props) {
                 </View>
             </ContentView>
             <RegionView>
-                <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 15, fontWeight: 'bold'}}>지역</Text>
+                {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 15, fontWeight: 'bold'}}>지역</Text> */}
+                <View style={{alignItems: 'center'}}>
+                    <IntroView>
+                        <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                        <IntroText>지역을 선택해주세요.</IntroText>
+                    </IntroView>
+                </View>
                 <View style={{width: '100%', alignItems: 'center'}}>
                     <PickerView onPress={()=>{setRegionModal(true)}}>
                         <Text style={{fontWeight: 'bold'}}>{displayRegion}</Text>
                     </PickerView>
                 </View>
             </RegionView>
-        <BtnView>
+            <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                     <Button mode={"contained"} onPress={() => {props.navigation.goBack();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
                     <Button mode={"contained"} onPress={() => {MoveToNext();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>선택완료</Button>
