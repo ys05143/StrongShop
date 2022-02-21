@@ -50,9 +50,6 @@ function Pay(props){
                     },
                     headers : {Auth: auth},
                 })
-                .catch(e=>{
-                    checkErrorCode(e, props.navigation);
-                })
                 //console.log(response);
                 props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
                 setIsSending(false);
@@ -84,11 +81,8 @@ function Pay(props){
                     },
                     headers : {Auth: auth},
                 })
-                .catch(e=>{
-                    checkErrorCode(e, props.navigation);
-                })
                 //console.log(response);
-                // props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
+                props.navigation.replace("CareProgressScreen", {orderId: orderId, state: 3, bidId: bidId});
                 setIsSending(false);
             }
         }

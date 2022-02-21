@@ -132,6 +132,9 @@ function PackageScreen_2 (props, {navigation}) {
                 setIsLoading(false);
             }
         }
+        else{
+            context.setNewCarPackageSearch(null);
+        }
     }, [isFoucused]);
 
     function getSearchModal(close){

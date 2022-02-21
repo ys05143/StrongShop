@@ -122,12 +122,16 @@ function App (props) {
           title = '리뷰';
           content = '리뷰를 작성해보세요.';
       }
+      else if(index === '215'){
+        title = remoteMessage.data.name;
+        content = '업체에서 케어 시공을 시작했습니다.';
+      }
       else if(index === '002'){
           title = remoteMessage.notification.title;
           content = remoteMessage.notification.body;
       }
       
-      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214' || index === '215'){
         const alarmList = await storage.fetch("Alarm");
         let newAlarm = alarmList !== null ? [...alarmList] : [];
         const length = newAlarm.length;
@@ -141,7 +145,7 @@ function App (props) {
         });
         await storage.store("Alarm", newAlarm);
       }
-      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+      if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214' || index === '215'){
         setAlarmContent({title: title, content: content});
         inAppMessage.current?.show();
       }

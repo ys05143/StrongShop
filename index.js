@@ -42,12 +42,16 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => { //backbground
         title = '리뷰';
         content = '리뷰를 작성해보세요.';
     }
+    else if(index === '215'){
+        title = remoteMessage.data.name;
+        content = '업체에서 케어 시공을 시작했습니다.';
+    }
     else if(index === '002'){
         title = remoteMessage.notification.title;
         content = remoteMessage.notification.body;
     }
     
-    if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214'){
+    if(index === '200' || index === '201' || index === '210' || index === '211' || index === '212' || index === '213' || index === '214' || index === '215'){
     const alarmList = await storage.fetch("Alarm");
     //console.log('main Async',alarmList);
     let newAlarm = alarmList !== null ? [...alarmList] : [];

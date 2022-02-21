@@ -16,13 +16,13 @@ import TopBar from '../components/TopBar';
 import Color from '../constants/Color';
 import JustShowOrder from './JustShowOrder';
 import ModalView from '../components/ModalView';
+import TotalView from '../components/TotalView';
 import FinalReceipt from './FinalReceipt';
 //for server
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
-import TotalView from '../components/TotalView';
 import AppWindow from '../constants/AppWindow';
 
 const WIDTH = AppWindow.width;
@@ -40,85 +40,13 @@ const SwiperView = styled.View`
     width: 100%;
     flex: 1;
 `;
-const InfoView = styled.View`
-    width: 95%;
-    border-radius: 10px;
-    padding: 5px 10px;
-    border: 3px solid gray;
-`;
-const ReceiptMatrixLine = styled.View`
-    height: 1px;
-    width: 100%;
-    border-bottom-width: 1px;
-    border-color: gray;
-`;
-const ReceiptItemView = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    height: 60px;
-    align-items: center;
-`;
 
 const styles = {
-    listAccordionStyle : {
-        backgroundColor: 'white' ,
-        borderTopWidth: 1 ,
-        borderTopColor: 'lightgray'        
-    } ,
-    listStyle1 : {
-        fontSize: 15 , 
-        fontWeight: 'bold',
-    } ,
-    listStyle : {
-        fontWeight: 'bold',
-        fontSize: 13 , 
-    } ,
-    itemText: {
-        fontSize: 13 ,
-        fontWeight: 'bold' ,
-        alignSelf: 'center'
-    } ,
-    labelStyle : {
-    },
-    total : {
-        borderBottomWidth: 1 , 
-        borderColor: 'lightgray',
-    },
-    totalprice : {
-        fontWeight: 'bold',
-        fontSize: 15 , 
-    } ,
     title : {
         fontFamily : 'DoHyeon-Regular' ,
         fontSize: 30 ,
         padding: 20
     },
-    progress : {
-      height: 5
-    },
-    icon : {
-        backgroundColor: 'transparent'
-
-    } ,
-    text : {
-        fontSize: 17 ,
-        fontWeight: 'bold'
-    },
-    subTitle : {
-
-    },
-    receiptTitle:{
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    receiptSubTitle:{
-        fontSize: 15,
-        marginLeft: 5,
-    },
-    receiptPrice:{
-        fontSize: 18,
-        fontWeight: 'bold'
-    }
 }
 
 
@@ -464,7 +392,7 @@ function ProgressScreen_2( props ) {
             if(position === 0) swiper.current.scrollTo(0);
             else if(position === 1 || position === 2) swiper.current.scrollTo(1);
             else if(position === 3) swiper.current.scrollTo(2);
-            else if(position === 4 || postion === 5) swiper.current.scrollTo(3);
+            else if(position === 4 || position === 5) swiper.current.scrollTo(3);
             else swiper.current.scrollTo(state-3);
         }
 

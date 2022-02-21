@@ -230,16 +230,14 @@ function MainScreen( props ) {
     }
 
     function StateMove(orderId, state, carName, time, kind){
-        if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
-        //else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen", {orderId: orderId, state: state });
-        // else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+        if(kind === 'NewCarPackage'){
+            if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
+            else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+        }
         else{
-            if(kind === 'NewCarPackage'){
-                if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
-            }
-            else{
-                props.navigation.navigate('CareProgressScreen', { orderId: orderId, state: state })
-            }
+            console.log(orderId, state, carName, time, kind);
+            if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
+            else if(state === 3 || state === 4 || state === 5) props.navigation.navigate('CareProgressScreen', { orderId: orderId, state: state })
         }
     }
 
@@ -266,11 +264,11 @@ function MainScreen( props ) {
                         let newData = [];
                         let timeData = [];
                         rawData.map(item => { 
-                            //console.log(item);
+                            console.log(item);
                             newData.push({
                                 orderId: item.id, 
                                 carName:  item.details.carName, 
-                                state: translateState(item.state), 
+                                state: item.kind === 'NewCarPackage' ? translateNcpState(item.state) : translateCareState(item.state), 
                                 time: item.created_time, 
                                 carImage: null,
                                 bidNum: item.bidcount,
@@ -366,10 +364,11 @@ function MainScreen( props ) {
         }
     }
     
-    function translateState(state){
+    function translateNcpState(state){
         const item = {
             'BIDDING' : 1,
             'BIDDING_COMPLETE' : 2,
+
             'DESIGNATING_SHIPMENT_LOCATION' : 3,
             'CAR_EXAMINATION' : 4,
             'CAR_EXAMINATION_FIN' : 5,
@@ -377,6 +376,36 @@ function MainScreen( props ) {
             'CONSTRUCTION_COMPLETED' : 7,
         }
         return item[state];
+    }
+    function translateCareState(state){
+        const item = {
+            'BIDDING' : 1,
+            'BIDDING_COMPLETE' : 2,
+
+            'PRE_CONSTRUCTING' : 3,
+            'CONSTRUCTING' : 4,
+            'CONSTRUCTION_COMPLETED' : 5,
+        }
+        return item[state];
+    }
+    function translateState(kind, state){
+        if(kind === 'NewCarPackage'){
+            if(state === 1) return '입찰 중';
+            else if(state === 2) return '입찰 시간 만료';
+            else if(state === 3) return '출고지 지정';
+            else if(state === 4) return '신차검수';
+            else if(state === 5) return '신차검수 완료';
+            else if(state === 6) return '시공 중';
+            else if(state === 7) return '시공 완료 / 출고대기';
+            else return '';
+        }
+        else if(kind === 'Care'){
+            if(state === 1) return '입찰 중';
+            else if(state === 2) return '입찰 시간 만료';
+            else if(state === 3) return '차량 전달';
+            else if(state === 4) return '시공 중';
+            else if(state === 5) return '케어완료 / 출고 대기';
+        }
     }
     
     async function MoveMypage(){
@@ -393,55 +422,6 @@ function MainScreen( props ) {
                 ],
                 { cancelable: false }
             );
-        }
-    }
-
-    async function SendTestData(){
-        const receipt = {
-            processPage: 3,
-            carName: 'AVANTE HYBRID',
-            options: 
-            { tinting: true,
-                detailTinting: 
-                { LUMA: true,
-                    SOLAR: true,
-                    RAINBOW: false,
-                    RAYNO: false,
-                    ANY: false,
-                    ETC: '' },
-                ppf: false,
-                detailPpf: { ETC: '' },
-                blackbox: true,
-                detailBlackbox: { FINETECH: false, INAVI: false, ANY: true, ETC: '' },
-                battery: false,
-                detailBattery: false,
-                afterblow: false,
-                detailAfterblow: { ANY: false, ETC: '' },
-                soundproof: false,
-                detailSoundproof: { ANY: false, ETC: '' },
-                wrapping: true,
-                detailWrapping: { DESIGN: '호랑이' },
-                glasscoating: false,
-                undercoating: false },
-            require: '하하하하하하하',
-            region: 'seoul' 
-        }
-        const region = 'seoul';
-        let i;
-        const auth = await checkJwt();
-        for(i=0; i<100; i++){
-            if(auth !== null){
-                const response = await axios({
-                    method: 'POST',
-                    url : `${server.url}/api/orders` ,
-                    data : {
-                        details: JSON.stringify(receipt),
-                        region: region,
-                    },
-                    headers : {Auth: auth},
-                });
-            }
-            console.log('POST',i);
         }
     }
 
@@ -576,7 +556,7 @@ function MainScreen( props ) {
                                                         <FastImage  source={item.carImage === null ? require('../LOGO_2.png'):{uri: item.carImage}} style={{width: '100%', height: '100%'}}/>
                                                     </View> */}
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
+                                                        subtitle={translateState(item.kind, item.state)} />
                                                     <Card.Content style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end'}}>
                                                         {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold', marginBottom: 10}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                                     </Card.Content>
@@ -608,7 +588,7 @@ function MainScreen( props ) {
                                             <View key={item.orderId}>
                                                 <Card style={{height: 130, marginTop: 10, marginLeft: 10, marginRight: 10, marginBottom: 0, elevation: 2 }} onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time, item.kind)}}>
                                                     <Card.Title title={item.carName} titleStyle={{ fontWeight: 'bold' }}
-                                                        subtitle={item.state == 3 ? '출고지 지정' : item.state == 4 ? '신차검수' : item.state == 5 ? '신차검수 완료' : item.state == 6 ? '시공 중' : item.state == 7 ? '시공 완료' : item.state == 1 ? '입찰 중' :item.state == 2 ? '입찰 시간 만료' : ''} />
+                                                        subtitle={translateState(item.kind, item.state)} />
                                                     <Card.Content style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end'}}>
                                                         {item.state <= 2 && <Text style={{fontSize: 17, fontWeight: 'bold', marginBottom: 10}}>{`${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>}
                                                     </Card.Content>
