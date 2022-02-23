@@ -245,7 +245,8 @@ function ShopScreen_1(props){
           {!isLoading ? <Tab.Navigator backBehavior={'none'} screenOptions={{ swipeEnabled: true, 
                                                                               tabBarIndicatorStyle: {backgroundColor: Color.main},
                                                                               tabBarActiveTintColor: Color.main,
-                                                                              tabBarContentContainerStyle: {height: TAB_HEIGHT} }}>
+                                                                              tabBarContentContainerStyle: {height: TAB_HEIGHT}, 
+                                                                              tabBarLabelStyle: {fontWeight: 'bold'}}}>
                                                                                  
             <Tab.Screen name="소개" children={({navigation})=><IntroduceShop name={'소개'} navigation={navigation} companyId={companyId}/>}/>
             <Tab.Screen name="작업갤러리" children={({navigation})=><Gallery name={'작업 갤러리'} navigation={navigation} companyId={companyId}/>}/>

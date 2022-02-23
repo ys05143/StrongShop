@@ -780,8 +780,8 @@ function CareScreen_2(props) {
             let finalOptions = await makeTotal()
             if(_.isEqual(finalOptions, compareOptions)){
                 Alert.alert(
-                    '경고',
-                    '시공을 입력해주세요.',
+                    '시공을 선택해주세요.',
+                    '',
                     [
                       {text: '확인', onPress: () => {}},
                     ],

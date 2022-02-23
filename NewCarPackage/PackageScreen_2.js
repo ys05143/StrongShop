@@ -161,8 +161,8 @@ function PackageScreen_2 (props, {navigation}) {
             }
             else {
                 Alert.alert(
-                    '경고',
                     '차량을 입력해주세요.',
+                    '',
                     [
                         {text: '확인', onPress: () => {}},
                     ],

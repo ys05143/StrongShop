@@ -69,7 +69,7 @@ function CareScreen_1_2(props){
         }
         else{
             Alert.alert(
-                '항목을 선택하셔야 됩니다.',
+                '차량을 입력하셔야 됩니다.',
                 '',
                 [
                     {text: '확인', onPress: () => {console.log('')}},

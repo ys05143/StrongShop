@@ -1,11 +1,14 @@
 import React from "react";
-import { FlatList, Platform, View, Text, TouchableOpacity } from "react-native";
+import { FlatList, Platform, View, Text, TouchableOpacity, Button } from "react-native";
 import TotalView from "../components/TotalView";
 import SearchBar from "react-native-dynamic-search-bar";
 import Icon from "react-native-vector-icons/Ionicons";
 import storage from "../function/storage";
 import { userContext } from '../function/Context';
+//constant
 import { CarNames } from "../constants/LIST";
+//component
+import Row from '../components/Row';
 
 const BidOrderList = {
     processPage: null,
@@ -14,6 +17,7 @@ const BidOrderList = {
     require: null,
     region: null,
 };
+
 
 function SearchScreen(props){
     const context = React.useContext(userContext);
@@ -75,6 +79,7 @@ function SearchScreen(props){
 
     return(
        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={"white"}>
+           <Row style={{paddingHorizontal: 10, alignItems: 'center'}}>
            <SearchBar 
                 value={search}
                 fontSize={15}
@@ -89,6 +94,8 @@ function SearchScreen(props){
                 onClearPress={()=>{SearchProcess(''); setSearchSpinner(false);}}
                 onSearchPress={()=>{finishSearch(search)}}
             />
+            <Button title="확인" onPress={()=>{finishSearch(search)}}/>
+            </Row>
             <View style={{flex: 1, marginTop: 10}}>
                 <FlatList
                     data={filter.dataSource}

@@ -123,74 +123,7 @@ function FinalOrder(props){
             { cancelable: false }
         );
     }
-    
 
-    function translate(option,item){
-        const res_Tinting = {
-            LUMA: '루마',
-            SOLAR: '솔라가드',
-            RAINBOW: '레인보우',
-            RAYNO: '레이노',
-            ANY: '상관없음',
-            ETC: receipt.options.detailTinting.ETC,
-        }
-        const res_Ppf ={
-            BONNET: '본넷',
-            SIDEMIRROR: '사이드미러',
-            FRONTBUMPER: '앞 범퍼',
-            FRONTBUMPERSIDE:'앞 범퍼사이드',
-            BACKBUMPER: '뒷 범퍼',
-            BACKBUMPERSIDE: '뒷 범퍼사이드',
-            HEADLIGHT: '헤드라이트',
-            TAILLAMP: '테일램프',
-            BCFILTER: 'B/C 필터',
-            DOOR: '도어',
-            HOOD: '후드',
-            ETC: receipt.options.detailPpf.ETC,
-        }
-        const res_Blackbox = {
-            FINETECH: '파인테크',
-            INAVI: '아이나비',
-            MANDO: '만도',
-            ANY: '상관없음',
-            ETC: receipt.options.detailBlackbox.ETC,
-        }
-        const res_Battery = {
-            V6: 'V6',
-            V12: 'V12',
-            ANY: false,
-            ETC: receipt.options.detailBattery.ETC,
-        }
-        const res_Afterblow = {
-            ANY: '상관없음',
-            ETC: receipt.options.detailAfterblow.ETC,
-        }
-        const res_Soundproof = {
-            DOORSOUND: '도어방음',
-            INSIDEFLOOR: '실내바닥방음',
-            FENDER: '휀다방음',
-            BONNETSOUND: '본넷방음',
-            TRUNK: '트렁크방음',
-            ETC: receipt.options.detailSoundproof.ETC,
-        }
-        const res_Wrapping = {
-            DESIGN: receipt.options.detailWrapping.DESIGN,
-        }
-        const res_BottomCoating = {
-            UNDER: '언더코팅',
-            POLYMER: '폴리머코팅',
-        }
-        const res_GlassCoating = '유리막코팅'
-        if(option === 'tinting') return res_Tinting[item];
-        else if(option === 'ppf') return res_Ppf[item];
-        else if(option === 'blackbox') return res_Blackbox[item];
-        else if(option === 'battery') return res_Battery[item];
-        else if(option === 'afterblow') return res_Afterblow[item];
-        else if(option === 'soundproof') return res_Soundproof[item];
-        else if(option === 'wrapping') return res_Wrapping[item];
-        else if(option === 'bottomcoating') return res_BottomCoating[item];
-        else if(option === 'glasscoating') return res_GlassCoating;
-    }
 
     const isFocused = useIsFocused();
     React.useEffect( ()=>{
@@ -204,7 +137,7 @@ function FinalOrder(props){
                 setIsLoading(false);
             })
             .catch(e => {
-                console.log(e);
+                //console.log(e);
                 Alert.alert(
                     '주문 불러오기 실패',
                     '다시 시도해주세요.',

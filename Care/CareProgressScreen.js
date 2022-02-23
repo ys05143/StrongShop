@@ -16,6 +16,7 @@ import TotalView from '../components/TotalView';
 import TopBar from '../components/TopBar';
 import ModalView from '../components/ModalView';
 import FinalReceipt from '../NewCarPackage/FinalReceipt';
+import Row from '../components/Row';
 //constant
 import Color from '../constants/Color';
 import AppWindow from '../constants/AppWindow';
@@ -71,10 +72,6 @@ const customStyles = {
 const SwiperView = styled.View`
   width: 100%;
   flex: 1;
-`;
-const Row = styled.View`
-  flex-direction: row ;
-  align-items: center;
 `;
 const ImageView = styled.TouchableOpacity`
   width: ${(WIDTH-6)/3}px;
@@ -167,7 +164,6 @@ function CareProgressScreen(props){
                         headers : {Auth: auth},
                     })
                     let rawImg = img_res.data.data.responseDtos;
-                    console.log(rawImg);
                     imageList=[];
                     images=[];
                     rawImg.map(item => {

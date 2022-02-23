@@ -103,8 +103,10 @@ function RecordScreen(props) {
                         reviewStatus: item.reviewStatus === "NOT_WRITTEN" ? false : true,
                         kind: item.kind,
                     })
-                })
-                //console.log(record);
+                });
+                record.sort((a,b)=>{
+                    return moment(b.date) - moment(a.date);
+                });
                 setRecordData(record);
             }
             else{
@@ -167,11 +169,11 @@ function RecordScreen(props) {
                         </Card.Content>
                     </View>
                 </Row>
-                <Card.Actions>
+                {item.reviewStatus === false && <Card.Actions>
                     <Button mode={'outlined'} style={{flex: 1}} color={'black'} onPress={()=>gotoRegisterReview(item.completedContractId, item.companyName, item.receipt)}>
                         리뷰쓰기
                     </Button>
-                </Card.Actions>
+                </Card.Actions>}
             </Card>
         )
     }

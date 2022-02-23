@@ -19,6 +19,7 @@ import Color from '../constants/Color';
 import JustShowOrder from '../NewCarPackage/JustShowOrder';
 import ModalView from '../components/ModalView';
 import FinalReceipt from '../NewCarPackage/FinalReceipt';
+import Row from '../components/Row';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -28,10 +29,7 @@ import TotalView from '../components/TotalView';
 import AppWindow from '../constants/AppWindow';
 
 const WIDTH = AppWindow.width;
-const Row = styled.View`
-    flex-direction: row ;
-    align-items: center;
-`;
+
 const ImageView = styled.TouchableOpacity`
     width: ${(WIDTH-6)/3}px;
     height: ${(WIDTH-6)/3}px;
@@ -531,7 +529,7 @@ function ProgressScreen( props ) {
                     </SwiperView>}
                     
                     {state >= 4 && <SwiperView>
-                        <Row>
+                        <Row style={{alignItems: 'center'}}>
                             <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : (state === 4 || state ===5) ? 'red' : 'black', fontWeight: 'bold'}}>
                                 {progress[2].title}
                             </Title>

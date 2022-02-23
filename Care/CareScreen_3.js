@@ -74,7 +74,7 @@ function CareScreen_3(props){
     const [carData,setCarData] = React.useState(props.route.params.carData);
     const [isLoading, setIsLoading] = React.useState(false);
     const [contents, setContents] = React.useState([{
-        text: '',
+        text: null,
         displayImg: null,
         formdata: null,
     }])
@@ -183,9 +183,6 @@ function CareScreen_3(props){
                             { cancelable: false }
                         );
                     })
-                    .catch(e=>{
-                        alert(e);
-                    })
                     setIsLoading(false);
                 }
                 else{
@@ -221,6 +218,37 @@ function CareScreen_3(props){
                 { cancelable: false }
             );
         } 
+    }
+
+    function finalCheck(){
+        console.log(contents);
+        if((contents[0].text === '' || contents[0].text === null) && contents[0].displayImg === null){
+            Alert.alert(
+                '사진이 입력되지 않았습니다.',
+                '이대로 진행하시겠습니까?',
+                [
+                    {text: '취소', onPress: () => {}},
+                    {text: '확인', onPress: () => {
+                        MoveToNext();
+                    }}
+                ],
+                { cancelable: false }
+            );
+        }
+        else{
+            Alert.alert(
+                '최종 확인',
+                '입찰을 시작하시겠습니까',
+                [
+                    {text: '취소', onPress: () => {}},
+                    {text: '확인', onPress: () => {
+                        MoveToNext();
+                    }}
+                ],
+                { cancelable: false }
+            );
+        }
+        
     }
 
 
@@ -283,7 +311,7 @@ function CareScreen_3(props){
             <BtnView>
                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                     <Button mode={"contained"} onPress={() => {props.navigation.goBack()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
-                    <Button mode={"contained"} onPress={() => {MoveToNext()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>입력완료</Button>
+                    <Button mode={"contained"} onPress={() => {finalCheck()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>입력완료</Button>
                 </Row>
             </BtnView>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>

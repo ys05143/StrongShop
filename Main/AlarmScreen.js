@@ -52,7 +52,7 @@ function AlarmScreen(props){
             response.sort((a,b)=>{
                 return moment(b.date) - moment(a.date);
             })
-            setAlarmList(response !== null ? response: null);
+            setAlarmList(response);
             newLength = response.length;
         }
         await storage.store("NumAlarm", newLength);
@@ -62,15 +62,17 @@ function AlarmScreen(props){
 
     async function ClearAlarmList(){
         await AsyncStorage.removeItem('Alarm', ()=>{
-            setAlarmList([]);
-            Alert.alert(
-                '완료',
-                '알람을 모두 삭제했습니다',
-                [
-                    {text: '확인', onPress: () => {}},
-                ],
-                { cancelable: false }
-            );
+            AsyncStorage.removeItem('NumAlarm', ()=>{
+                setAlarmList([]);
+                Alert.alert(
+                    '완료',
+                    '알람을 모두 삭제했습니다',
+                    [
+                        {text: '확인', onPress: () => {}},
+                    ],
+                    { cancelable: false }
+                );
+            });
         });
     }
 

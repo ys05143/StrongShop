@@ -235,7 +235,6 @@ function MainScreen( props ) {
             else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
         }
         else{
-            console.log(orderId, state, carName, time, kind);
             if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
             else if(state === 3 || state === 4 || state === 5) props.navigation.navigate('CareProgressScreen', { orderId: orderId, state: state })
         }
@@ -264,7 +263,6 @@ function MainScreen( props ) {
                         let newData = [];
                         let timeData = [];
                         rawData.map(item => { 
-                            console.log(item);
                             newData.push({
                                 orderId: item.id, 
                                 carName:  item.details.carName, 

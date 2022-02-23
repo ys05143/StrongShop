@@ -158,10 +158,10 @@ function Receipt(props){
             <>{
                 item.carwash != null && (
                     <ReceiptItemView>
-                        <Row>
+                        <RowCenter>
                             <Text style={styles.receiptTitle}>{"[세차]"}</Text>
                             <Text style={styles.receiptSubTitle}>{item.carwash}</Text>
-                        </Row>
+                        </RowCenter>
                         <Text style={styles.receiptPrice}>{item.carwashPrice+' 만원'}</Text>
                     </ReceiptItemView>
                 )
@@ -169,10 +169,10 @@ function Receipt(props){
             {
                 item.inside != null && (
                     <ReceiptItemView>
-                        <Row>
+                        <RowCenter>
                             <Text style={styles.receiptTitle}>{"[내부]"}</Text>
                             <Text style={styles.receiptSubTitle}>{item.inside}</Text>
-                        </Row>
+                        </RowCenter>
                         <Text style={styles.receiptPrice}>{item.insidePrice+' 만원'}</Text>
                     </ReceiptItemView>
                 )
@@ -180,10 +180,10 @@ function Receipt(props){
             {
                 item.outside != null && (
                     <ReceiptItemView>
-                        <Row>
+                        <RowCenter>
                             <Text style={styles.receiptTitle}>{"[외부]"}</Text>
                             <Text style={styles.receiptSubTitle}>{item.outside}</Text>
-                        </Row>
+                        </RowCenter>
                         <Text style={styles.receiptPrice}>{item.outsidePrice+' 만원'}</Text>
                     </ReceiptItemView>
                 )
@@ -191,11 +191,22 @@ function Receipt(props){
             {
                 item.scratch != null && (
                     <ReceiptItemView>
-                        <Row>
+                        <RowCenter>
                             <Text style={styles.receiptTitle}>{"[스크레치]"}</Text>
                             <Text style={styles.receiptSubTitle}>{item.scratch}</Text>
-                        </Row>
+                        </RowCenter>
                         <Text style={styles.receiptPrice}>{item.scratchPrice+' 만원'}</Text>
+                    </ReceiptItemView>
+                )
+            }
+            {
+                item.etc != null && (
+                    <ReceiptItemView>
+                        <RowCenter>
+                            <Text style={styles.receiptTitle}>{"[기타]"}</Text>
+                            <Text style={styles.receiptSubTitle}>{item.etc}</Text>
+                        </RowCenter>
+                        <Text style={styles.receiptPrice}>{item.etcPrice+' 만원'}</Text>
                     </ReceiptItemView>
                 )
             }</> : 

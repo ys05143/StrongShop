@@ -142,6 +142,7 @@ function RegisterReviewScreen(props) {
     const [flag, setFlag] = React.useState(props.route.params.flag);
 
     function ImgPick(){
+        setIsSending(true);
         MultipleImagePicker.openPicker({
             mediaType: 'image', 
             selectedAssets: selectedImg,
@@ -165,10 +166,10 @@ function RegisterReviewScreen(props) {
             let imgUri = Platform.OS === 'ios' ? images.path : images.path.startsWith('content') ? images.path : 'file://'+response.path;
             formdata.append("files", { name: name , type: type, uri: imgUri });
             setImgFormData(formdata);
-            //console.log(formdata);
+            setIsSending(false);
         })
         .catch(error => {
-            //console.log(error);
+            setIsSending(false);
         });
     }
 
@@ -328,10 +329,10 @@ function RegisterReviewScreen(props) {
                 </Row>
             </BtnView>
             {isSending && 
-                <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent', position: 'absolute'}}>
-                    <ActivityIndicator color= {Color.main} size={'large'}/>
-                </View>}
-                </KeyboardAwareScrollView>
+            <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
+                <ActivityIndicator size = 'large' color= {Color.main}/>
+            </View>}
+            </KeyboardAwareScrollView>
         </TotalView>
         
     )

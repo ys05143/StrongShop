@@ -121,12 +121,13 @@ function PaymentScreen(props){
                     headers : {Auth: auth},
                 });
                 const rawData = response.data.data;
+                console.log(rawData);
                 setBaseData({
                     pg: null,
                     pay_method: null,
                     name: '아임포트 결제데이터 분석',
                     merchant_uid: `mid_${new Date().getTime()}`,
-                    amount: JSON.parse(receipt[0].quote).totalPrice,
+                    amount: rawData.role === 'DEALER' ? (JSON.parse(receipt[0].quote).totalPrice * 10000) *0.05 : (JSON.parse(receipt[0].quote).totalPrice * 10000) *0.1,
                     buyer_name: rawData.nickname,
                     buyer_tel: rawData.phonenumber,
                     buyer_email: 'example@naver.com',
@@ -140,7 +141,7 @@ function PaymentScreen(props){
                     pay_method: 'card',
                     name: '아임포트 결제데이터 분석',
                     merchant_uid: `mid_${new Date().getTime()}`,
-                    amount: JSON.parse(receipt[0].quote).totalPrice,
+                    amount: rawData.role === 'Dealer' ? (JSON.parse(receipt[0].quote).totalPrice * 10000) *0.05 : (JSON.parse(receipt[0].quote).totalPrice * 10000) *0.1,
                     buyer_name: rawData.nickname,
                     buyer_tel: rawData.phonenumber,
                     buyer_email: 'example@naver.com',
@@ -265,7 +266,7 @@ function PaymentScreen(props){
     function _renderHeader (section, index, isActive) {
         return (
             <Row style={{width: '100%', alignItems: 'center'}}>
-                <Title style={{paddingHorizontal: 10, fontWeight: 'bold'}}>결제 항목</Title>
+                <Title style={{paddingHorizontal: 10, fontWeight: 'bold'}}>시공 항목</Title>
                 <Icon name={isActive ? "chevron-up-outline" : "chevron-down-outline"} size={25}/>
             </Row>
         )
@@ -302,12 +303,17 @@ function PaymentScreen(props){
                     touchableComponent={TouchableOpacity}
                     />
                 </View>
-                <Row style={{height: 50, justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', marginBottom: 10, paddingHorizontal: 10}}>
-                    <Text style={styles.receiptTitle}>{"총 결제 예상 금액: "}</Text>
-                    <Text style={styles.receiptPrice}>{JSON.parse(receipt[0].quote).totalPrice+' 만원'}</Text>
-                </Row>
+                <View style={{marginBottom: 10, backgroundColor: 'white'}}>
+                    <Row style={{height: 50, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                        <Text style={styles.receiptTitle}>{"수수료 금액: "}</Text>
+                        <Text style={styles.receiptPrice}>{Platform.OS ==='ios' ? payData.amount.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' }) : parseInt(payData.amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원'}</Text>
+                    </Row>
+                    <View style={{alignItems: 'flex-end', justifyContent: 'center', marginBottom: 10, paddingRight: 5}}>
+                        <Text style={{color: 'red'}}>시공가격은 현장결재 하시면 됩니다.</Text>
+                    </View>
+                </View>
                 <View style={{backgroundColor: 'white', paddingHorizontal: 10, marginBottom: 15}}>
-                    <Title style={{fontWeight: 'bold', marginTop: 15, marginBottom: 10}}>결제 방법</Title>
+                    <Title style={{fontWeight: 'bold', marginTop: 15, marginBottom: 10}}>수수료 결제 방법</Title>
                     <Row style={{width: '100%', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20}}>
                         {_.map(Pay , (item, index)=>{
                             return( 
