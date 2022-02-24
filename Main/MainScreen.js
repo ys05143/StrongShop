@@ -285,6 +285,7 @@ function MainScreen( props ) {
                     setIsLoading(false);
                 })
                 .catch(e=>{
+                    // console.log(e);
                     checkErrorCode(e, props.navigation);
                 });
             }

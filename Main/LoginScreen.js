@@ -447,7 +447,7 @@ function LoginScreen(props) {
                         </TouchableOpacity>
                     </RowCenter>
                     <Row style={{alignItems: 'center', justifyContent: 'space-around', marginTop: 30}}>
-                        <Button mode={"contained"} onPress={() => {handleDismissModalPress()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>이전</Button>
+                        <Button mode={"contained"} onPress={() => {handleDismissModalPress()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>취소</Button>
                         <Button mode={"contained"} onPress={() => {isGeneral ? setStage(2) : setStage(1)}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} color={Color.main}>다음</Button>
                     </Row>
                     </> :
