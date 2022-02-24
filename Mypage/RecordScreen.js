@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native';
-import { Text, View, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { Card, Provider as PaperProvider, Button } from 'react-native-paper';
 import _ from 'lodash';
@@ -165,7 +165,7 @@ function RecordScreen(props) {
                             subtitle={`${item.companyName}\n${moment(item.date).format('YYYY-MM-DD')}`}
                             subtitleNumberOfLines={2}/>
                         <Card.Content style={{flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-                            <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' })}</Text>
+                            <Text style={{fontSize: 17, fontWeight: 'bold'}}>{Platform.OS ==='ios' ? item.price.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' }) : parseInt(item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원'}</Text>
                         </Card.Content>
                     </View>
                 </Row>

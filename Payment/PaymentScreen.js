@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Alert, Text, View, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { Alert, Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Platform } from 'react-native';
 import { Button, Title } from 'react-native-paper';
 import _ from 'lodash';
 import Accordion from 'react-native-collapsible/Accordion';

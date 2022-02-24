@@ -141,24 +141,28 @@ function LoginScreen(props) {
             // 이미 가입된 회원 => jwt token을 발급받음.
             else if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
-                // jwt token cache
-                await storage.store('auth',{ auth : auth });
-                // cache 성공 시 -> 메인화면
-                await storage.fetch('auth')
-                .then( res => {
-                    if ( res != null ) ;
-                    //로그인 화면 지우기
-                    props.navigation.goBack(); 
-                })
-                .catch ( e => { 
+                if(auth === null || auth === undefined){
                     Alert.alert('앱을 재시작하세요.');
-                })
+                }
+                else{
+                    // jwt token cache
+                    await storage.store('auth',{ auth : auth });
+                    // cache 성공 시 -> 메인화면
+                    await storage.fetch('auth')
+                    .then( res => {
+                        if ( res != null ) ;
+                        //로그인 화면 지우기
+                        props.navigation.goBack(); 
+                    })
+                    .catch ( e => { 
+                        Alert.alert('앱을 재시작하세요.');
+                    });
+                }
             }
             setIsSending(false);
         })
         .catch( e =>  {
             // 서버 통신에러
-            console.log(e);
             if(e.response.status === 406){
                 Alert.alert(
                     '로그인 실패',
@@ -194,9 +198,8 @@ function LoginScreen(props) {
     }
 
     //bottom sheet 에서 만들어지 정보를 서버에 전달
-    async function requestSignIn(loginVer) {
+    async function requestSignIn(loginVer) { // 회원가입
         setIsSending(true);
-        console.log(`${server.url}/api/login/user/${loginVer}`);
         let fcmToken = '';
         await messaging().getToken()
         .then( res =>{
@@ -211,19 +214,24 @@ function LoginScreen(props) {
                 phoneNumber: '01012341234' , //본인인증결과로 삽입
                 name: isGeneral ? userName : bossName,
                 fcmToken: fcmToken,
-                businessNumber: isGeneral ? null : businessNumber //딜러인경우 사업자등록번호 전달
+                businessNumber: isGeneral ? null : businessNumber, //딜러인경우 사업자등록번호 전달
+                role: isGeneral ? 'user' : 'dealer' 
             }
         })
         .then(async(res) =>{
-            //console.log(res);
             // 가입성공
             if ( res.data.statusCode == 200 ) {
                 const auth = res.headers.auth;
                 // jwt token cache
                 try {
-                    await storage.store('auth',{auth : auth});
-                    // 로그인 화면 제거
-                    props.navigation.goBack();
+                    if(auth === null || auth === undefined){
+                        Alert.alert('앱을 재시작하세요.');
+                    }
+                    else{
+                        await storage.store('auth',{auth : auth});
+                        // 로그인 화면 제거
+                        props.navigation.goBack();
+                    }
                 }
                 // cache 성공 시 -> 메인화면
                 catch {
@@ -235,7 +243,7 @@ function LoginScreen(props) {
 
         })
         .catch(e => {
-            //
+            console.log(e);
             if(e.response.status === 406){
                 Alert.alert(
                     '실패',
@@ -271,13 +279,11 @@ function LoginScreen(props) {
     }
 
 
-    const handleKakaoLogin = async() =>  {
+    const kakaoLogin = async() =>  {
         setStage(0);
-        // 카카오 인증요청
         setIsSending(true);
         setLoginVer('kakao');
         const token = await login().catch(e=>{console.log(e)});
-        //console.log(token);
         // 카카오 인증취소 / 인증실패 
         if ( token == null ) {
             Alert.alert('카카오톡 로그인을 진행할 수 없습니다.');
@@ -316,7 +322,48 @@ function LoginScreen(props) {
             resolve(token);
           });
         });
-      };
+    };
+
+    async function testLogin(){
+        setStage(0);
+        setIsSending(true);
+        let fcmToken = '';
+        await messaging().getToken()
+        .then( res =>{
+            fcmToken = res;
+            axios({
+                method : 'POST' ,
+                url : `${server.url}/api/login/test/user` ,
+                headers : {
+                    FCM : fcmToken,
+                },
+            })
+            .then(res=>{
+                if ( res.data.statusCode == 201 ) {
+                    const auth = res.headers.auth;
+                    try {
+                        if(auth === null || auth === undefined){
+                            alert('a 오류');
+                        }
+                        else{
+                            storage.store('auth',{auth : auth})
+                            .then(res=>{
+                                props.navigation.goBack();
+                            });
+                        }
+                    }
+                    catch {
+                        alert('T 오류');
+                    }
+                }
+                else{
+                    alert('code 오류')
+                }
+            })
+            .catch(e=>alert('L 오류'));
+            setIsSending(false);
+        });
+    }
 
     // 휴대폰인증
     function phoneAuth(response) {
@@ -369,11 +416,14 @@ function LoginScreen(props) {
                 {/* <ImageBackground source={{ uri: 'https://picsum.photos/1' }} resizeMode='cover' style={{ justifyContent:'center' , alignItems: 'center' , flex: 1   }}> */}
                     <Title style={styles.mainTitle}>최강샵</Title>
                     <Text style={{ color: 'white'}}>나만의 샵을 관리해요.</Text>
-                    <Button style={styles.loginButton} color='white' icon='chat' onPress={handleKakaoLogin}>
+                    <Button style={styles.loginButton} color='white' icon='chat' onPress={kakaoLogin}>
                         카카오로 시작하기
                     </Button>
                     <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>{naverLogin(initials)}}>
                         네이버로 시작하기
+                    </Button>
+                    <Button style={styles.loginButton} color='white' icon='alpha-t-box' onPress={()=>{testLogin()}}>
+                        테스트 로그인
                     </Button>
                 {/* </ImageBackground> */}
 
@@ -449,8 +499,7 @@ function LoginScreen(props) {
                             name: userName,
                             phone: '',
                             min_age: '',
-                        }
-                        }
+                        }}
                         loading={<View style={{flex: 1}}><ActivityIndicator /></View>} // 로딩 컴포넌트
                         callback={phoneAuth}   // 본인인증 종료 후 콜백
                         />   */}

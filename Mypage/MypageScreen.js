@@ -220,47 +220,58 @@ function MyPageScreen(props){
 
     async function deleteUser(){
         setIsLoading(true);
-        const auth = await checkJwt();
-        if(auth !== null){
-            axios({
-                method : 'DELETE' ,
-                url : `${server.url}/api/user` ,
-                headers : {Auth: auth},
-            })
-            .then(res => {
-                //console.log(res);
-                AsyncStorage.removeItem('auth', ()=>{
-                    Alert.alert(
-                        '회원 탈퇴',
-                        '회원탈퇴를 완료하였습니다.',
-                        [
-                            {text: '확인', onPress: async () => {
-                                    const allKey = await AsyncStorage.getAllKeys();
-                                    console.log(allKey);
-                                    props.navigation.popToTop();
-                                    setIsLoading(false);
-                                }
-                            },
-                        ],
-                        { cancelable: false }
-                    );
-                });
-            })
-            .catch(e=>{
-                checkErrorCode(e, props.navigation);
-                setIsLoading(false);
-            })
-        }
-        else {
-            Alert.alert(
-                '오류',
-                '로그인상태가 아닙니다.',
-                [
-                    {text: '확인', onPress: () => {setIsLoading(false)} },
-                ],
-                { cancelable: false }
-            );
-        }
+        Alert.alert(
+            '회원 탈퇴',
+            '정말로 탈퇴하시겠습니까?',
+            [
+                {text: '취소', onPress: async () => {setIsLoading(false);}},
+                {text: '확인', onPress: async () => { 
+                    const auth = await checkJwt();
+                    if(auth !== null){
+                        axios({
+                            method : 'DELETE' ,
+                            url : `${server.url}/api/user` ,
+                            headers : {Auth: auth},
+                        })
+                        .then(res => {
+                            //console.log(res);
+                            AsyncStorage.removeItem('auth', ()=>{
+                                Alert.alert(
+                                    '회원 탈퇴',
+                                    '회원탈퇴를 완료하였습니다.',
+                                    [
+                                        {text: '확인', onPress: async () => {
+                                                const allKey = await AsyncStorage.getAllKeys();
+                                                console.log(allKey);
+                                                props.navigation.popToTop();
+                                                setIsLoading(false);
+                                            }
+                                        },
+                                    ],
+                                    { cancelable: false }
+                                );
+                            });
+                        })
+                        .catch(e=>{
+                            checkErrorCode(e, props.navigation);
+                            setIsLoading(false);
+                        })
+                    }
+                    else {
+                        Alert.alert(
+                            '오류',
+                            '로그인상태가 아닙니다.',
+                            [
+                                {text: '확인', onPress: () => {setIsLoading(false)} },
+                            ],
+                            { cancelable: false }
+                        );
+                    }
+                }},
+            ],
+            { cancelable: false }
+        );
+        
     }
     
     return(

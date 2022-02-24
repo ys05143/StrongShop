@@ -49,6 +49,7 @@ const PolicyText = styled.Text`
 const RowCenter = styled.View`
     flex-direction: row;
     align-items: center;
+    justify-content: center;
 `;
 
 const TopBar = styled.View`
@@ -80,7 +81,6 @@ const styles = {
     } ,
     text : {
         fontSize: 25 ,
-        padding: 10 ,
         fontFamily: 'DoHyeon-Regular',
     } ,
     subText : {
@@ -284,9 +284,9 @@ function MainScreen( props ) {
                     checkNewAlarm();
                     setIsLoading(false);
                 })
-            .catch(e=>{
-                checkErrorCode(e, props.navigation);
-            })
+                .catch(e=>{
+                    checkErrorCode(e, props.navigation);
+                });
             }
             else{
                 console.log("no login");
@@ -509,17 +509,18 @@ function MainScreen( props ) {
             scrollEventThrottle={16}>
                 <Row style={{backgroundColor: 'white', marginBottom: 10, alignItems: 'center', paddingVertical: 20}}>
                     <MenuButton onPress={()=>{CheckAsync();}}>
-                        <RowCenter>
-                            <Text style={{...styles.text, paddingRight:0 }}>신차패키지</Text>
-                            <IconButton icon='help-circle' style={{margin:0}} color='lightgray' size={25}
-                                        // onPress={ () => { alert('신차패키지 설명') } }
-                                    />
-                        </RowCenter>
+                        <Row style={{alignItems: 'center', height: 50, paddingHorizontal: 5}}>
+                            <Text style={{...styles.text, marginRight: 5}}>신차패키지</Text>
+                            <Icon name='help-circle' color='lightgray' size={25}/>
+                        </Row>
                         <Text style={styles.subText}>{'새차를\n멋지게 만들어요'}</Text>
                         <Avatar.Icon icon='car-key' style={styles.icon} color='black'/>
                     </MenuButton>
                     <MenuButton onPress={()=>{props.navigation.navigate("CareScreen_1_2")}}>
-                        <Text style={styles.text}>케어</Text>
+                        <Row style={{alignItems: 'center', height: 50, paddingHorizontal: 5}}>
+                            <Text style={{...styles.text, marginRight: 5}}>케어</Text>
+                            <Icon name='help-circle' color='lightgray' size={25}/>
+                        </Row>
                         <Text style={styles.subText}>{'내 차를\n관리해요'}</Text>
                         <Avatar.Icon icon='car-cog' style={styles.icon} color='black'/>
                         {/* <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)', width: '100%', height: '100%', borderRadius: 10, justifyContent: 'flex-end', padding: 10}}>
@@ -569,6 +570,7 @@ function MainScreen( props ) {
                                 </ScrollView> : 
                                 <View style={{height: 165, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text style={{color: 'gray'}}>{isLogin ? '진행중인 입찰 및 시공이 없습니다.' : '로그인을 하셔야 합니다.'}</Text>
+                                    {!isLogin && <Button mode={'outlined'} style={{marginTop: 10}} color={Color.main} onPress={()=>{props.navigation.navigate("LoginScreen")}}>로그인</Button>}
                                 </View>                
                             ) : 
                             (
