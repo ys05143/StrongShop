@@ -89,7 +89,7 @@ function CareScreen_1_2(props){
             </View>
             <View style={{alignItems: 'center'}}>
                 <IntroView>
-                    <IntroText>{'케어을 원하는\n차종을 입력해주세요.'}</IntroText>
+                    <IntroText>{'케어를 원하는\n차종을 입력해주세요.'}</IntroText>
                 </IntroView>
             </View>
             {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{'케어을 원하시는\n차종을 입력해주세요.'}</Text>   */}

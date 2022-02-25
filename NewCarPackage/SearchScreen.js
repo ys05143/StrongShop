@@ -7,9 +7,12 @@ import storage from "../function/storage";
 import { userContext } from '../function/Context';
 //constant
 import { CarNames } from "../constants/LIST";
+import AppWindow from "../constants/AppWindow";
 //component
 import Row from '../components/Row';
+import Color from "../constants/Color";
 
+const WIDTH = AppWindow.width;
 const BidOrderList = {
     processPage: null,
     carName: null,
@@ -79,22 +82,24 @@ function SearchScreen(props){
 
     return(
        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={"white"}>
-           <Row style={{paddingHorizontal: 10, alignItems: 'center'}}>
-           <SearchBar 
-                value={search}
-                fontSize={15}
-                spinnerVisibility={searchSpinner}
-                placeholder="차량명을 입력해주세요."
-                placeholderTextColor={"gray"}
-                onChangeText={(text)=>SearchProcess(text)}
-                onBlur={()=>setSearchSpinner(false)}
-                onPress={()=>{}}
-                clearIconComponent={<Icon name="close-circle" size={20} color={'gray'}/>}
-                style={{...styles.shadowStyle, ...styles.searchBarStyle}}
-                onClearPress={()=>{SearchProcess(''); setSearchSpinner(false);}}
-                onSearchPress={()=>{finishSearch(search)}}
-            />
-            <Button title="확인" onPress={()=>{finishSearch(search)}}/>
+           <Row style={{paddingHorizontal: 5, paddingBottom: 10, alignItems: 'center'}}>
+                <SearchBar 
+                    value={search}
+                    fontSize={15}
+                    spinnerVisibility={searchSpinner}
+                    placeholder="차량명을 입력해주세요."
+                    placeholderTextColor={"gray"}
+                    onChangeText={(text)=>SearchProcess(text)}
+                    onBlur={()=>setSearchSpinner(false)}
+                    onPress={()=>{}}
+                    clearIconComponent={<Icon name="close-circle" size={20} color={'gray'}/>}
+                    style={{...styles.shadowStyle, ...styles.searchBarStyle}}
+                    onClearPress={()=>{SearchProcess(''); setSearchSpinner(false);}}
+                    onSearchPress={()=>{finishSearch(search)}}
+                />
+                <TouchableOpacity style={{marginLeft: 5, ...styles.searchCheckStyle, justifyContent: 'center', alignItems: 'center', width: 48}} onPress={()=>{finishSearch(search)}}>
+                    <Text style={{color: Color.main}}>확인</Text>
+                </TouchableOpacity>
             </Row>
             <View style={{flex: 1, marginTop: 10}}>
                 <FlatList
@@ -124,6 +129,7 @@ const styles = {
         }),
     },
     searchBarStyle: {
+        flex : 1,
         height: 45,
         backgroundColor: '#e5e5e5',
         ...Platform.select({
@@ -131,7 +137,18 @@ const styles = {
                 marginTop: 10,
             }
         })
-    }
+    },
+    searchCheckStyle:{
+        height: 40,
+        ...Platform.select({
+            android: {
+                marginTop: 10,
+            }
+        }),
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'lightgray'
+    },
 }
 
 export default SearchScreen;

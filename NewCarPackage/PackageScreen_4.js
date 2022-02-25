@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, ActivityIndicator, Alert, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ActivityIndicator, Alert, Modal, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import Icon  from "react-native-vector-icons/Ionicons";
@@ -204,6 +204,55 @@ function PackageScreen_4(props){
 
     return(
         <>
+        {Platform.OS === 'ios' ? 
+        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
+            <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
+                <TouchableOpacity onPress={()=>{askCancelRequire();}}>
+                    <Icon name="close-outline" size={35} color={'black'}></Icon>
+                </TouchableOpacity>    
+            </View>
+            <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
+            <View style={{alignItems: 'center'}}>
+                <IntroView>
+                    <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                    <IntroText>{'추가적인 요구사항을 입력해주세요.'}</IntroText>
+                </IntroView>
+            </View>
+            <ContentView>
+                {!isLoading ? 
+                <>
+                    <View style={{width: '95%', alignItems: 'flex-end'}}>
+                    {text !==null && <Text style={{marginBottom: 5}}>{text.length+'/400'}</Text>}
+                    </View>
+                    <Input multiline={true}
+                            style={{textAlignVertical:'top'}}//only for android
+                            value={text}
+                            onChangeText={value=>{setText(value);}}
+                            placeholder={"예) 반드시 0월 0일에 시공을 시작했으면 좋겠습니다."}
+                            placeholderTextColor="gray"
+                            maxLength={400}/>
+                    <RegionView>
+                        <View style={{alignItems: 'center'}}>
+                            <IntroView>
+                                <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                                <IntroText>{'지역을 선택해주세요.'}</IntroText>
+                            </IntroView>
+                        </View>
+                        <PickerView onPress={()=>{setRegionModal(true)}}>
+                            <Text style={{fontWeight: 'bold'}}>{displayRegion}</Text>
+                        </PickerView>
+                    </RegionView>
+                </> 
+                : <ActivityIndicator size = 'large' color= {Color.main}/>}
+            </ContentView>
+            </KeyboardAwareScrollView>
+            <BtnView>
+                <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_3");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
+                    <Button mode={"contained"} onPress={() => {storeRequire();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>완료</Button>
+                </Row>
+            </BtnView>
+        </TotalView>:
         <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
@@ -251,8 +300,8 @@ function PackageScreen_4(props){
                 </Row>
             </BtnView>
         </TotalView>
-        
         </KeyboardAwareScrollView>
+        }
 
         <Modal
             animationType="slide"
