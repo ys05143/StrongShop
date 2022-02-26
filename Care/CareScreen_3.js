@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert, ActivityIndicator, Platform, Modal } from 'react-native'
 import styled from "styled-components/native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from "react-native-vector-icons/Ionicons";
@@ -7,9 +7,11 @@ import _ from 'lodash';
 import { Button, Badge } from "react-native-paper";
 import FastImage from 'react-native-fast-image';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import FinalCareOrder from "./FinalCareOrder";
 //component
 import TotalView from "../components/TotalView";
 import Row from "../components/Row";
+import ModalView from '../components/ModalView';
 //constant
 import Color from "../constants/Color";
 import AppWindow from "../constants/AppWindow";
@@ -73,6 +75,10 @@ function CareScreen_3(props){
     const context = React.useContext(userContext);
     const [carData,setCarData] = React.useState(props.route.params.carData);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [ReceiptModal, setReceiptModal] = React.useState(false);
+    function getReceiptModal(close){
+        setReceiptModal(close);
+    }
     const [contents, setContents] = React.useState([{
         text: null,
         displayImg: null,
@@ -140,86 +146,6 @@ function CareScreen_3(props){
         );
     }
 
-    function MoveToNext(){
-        let textArray=[];
-        formArray = [];
-        let newData = new FormData();
-        _.map(contents, (item)=>{
-            newData.append("imagefiles", item.formdata);
-            textArray.push(item.text);
-        })
-        newData.append('details', JSON.stringify(carData));
-        newData.append('region', carData.region);
-        // newData['details'] = JSON.stringify(carData);
-        // newData['region'] = carData.region;
-        finishOrder(newData);
-        context.setCareSearch(null);
-    }
-
-    async function finishOrder(newData){ // 서버에 오더 전송
-        try{
-            setIsLoading(true);
-            if(newData !== null){
-                const auth = await checkJwt();
-                if(auth !== null){
-                    console.log(newData);
-                    const response = await axios({
-                        method: 'POST',
-                        url : `${server.url}/api/orders/care` ,
-                        data : newData,
-                        headers : {'content-type': 'multipart/form-data' , Auth: auth},
-                        timeout: 5000,
-                    })
-                    .then(res=>{
-                        Alert.alert(
-                            '완료',
-                            '지금부터 입찰이 시작됩니다!',
-                            [
-                                {text: '확인', onPress: () => {
-                                        props.navigation.popToTop();
-                                    }
-                                },
-                            ],
-                            { cancelable: false }
-                        );
-                    })
-                    setIsLoading(false);
-                }
-                else{
-                    Alert.alert(
-                        '실패',
-                        '로그인이 필요합니다.',
-                        [
-                            {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen"), setIsLoading(false);}},
-                        ],
-                        { cancelable: false }
-                    );
-                }
-            }
-            else{
-                Alert.alert(
-                    '실패',
-                    '작성한 견적이 없습니다.',
-                    [
-                        {text: '확인', onPress: () => {setIsLoading(false)}},
-                    ],
-                    { cancelable: false }
-                );
-            }
-            setIsLoading(false); 
-        }
-        catch{
-            Alert.alert(
-                '견적 등록을 실패했습니다.',
-                '다시 시도해주세요.',
-                [
-                    {text: '확인', onPress: () => {setIsLoading(false)}},
-                ],
-                { cancelable: false }
-            );
-        } 
-    }
-
     function finalCheck(){
         console.log(contents);
         if((contents[0].text === '' || contents[0].text === null) && contents[0].displayImg === null){
@@ -229,24 +155,15 @@ function CareScreen_3(props){
                 [
                     {text: '취소', onPress: () => {}},
                     {text: '확인', onPress: () => {
-                        MoveToNext();
+                        // MoveToNext();
+                        setReceiptModal(true);
                     }}
                 ],
                 { cancelable: false }
             );
         }
         else{
-            Alert.alert(
-                '최종 확인',
-                '입찰을 시작하시겠습니까',
-                [
-                    {text: '취소', onPress: () => {}},
-                    {text: '확인', onPress: () => {
-                        MoveToNext();
-                    }}
-                ],
-                { cancelable: false }
-            );
+            setReceiptModal(true);
         }
         
     }
@@ -263,7 +180,6 @@ function CareScreen_3(props){
             </View>
             <KeyboardAwareScrollView extraScrollHeight={30}>
             <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{carData.carName}</Text>
-            {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 20, fontWeight: 'bold'}}>시공할 부분의 사진을 찍어주세요.</Text> */}
             <View style={{alignItems: 'center'}}>
                 <IntroView>
                     <IntroText>시공할 부분의 사진을 찍어주세요.</IntroText>
@@ -385,6 +301,20 @@ function CareScreen_3(props){
         </View>}
     </TotalView>
     </KeyboardAwareScrollView>}
+
+    <Modal
+        animationType="slide"
+        transparent={true}
+        visible={ReceiptModal}
+        onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
+    >
+        <ModalView>
+            <View style={{width: '90%'}}>
+                <FinalCareOrder getModal={getReceiptModal} navigation={props.navigation} contents={contents} carData={carData}/>
+            </View>
+        </ModalView>
+    </Modal>
+
     </>
     );
 }

@@ -6,7 +6,7 @@ import Icon  from "react-native-vector-icons/Ionicons";
 import _ from 'lodash';
 import { Chip } from 'react-native-paper';
 
-const SearchView = styled.ScrollView`
+const OrderView = styled.ScrollView`
     width: 100%;
     margin-bottom: 5px;
 `;
@@ -16,7 +16,7 @@ function Order(props){
     const kind = props.kind;
     const receipt = props.item;
     return(
-        <SearchView>
+        <OrderView>
             <View style={{width: '100%', marginBottom: 10, justifyContent: 'space-between', alignItems: 'flex-end', flexDirection: 'row'}}> 
                 <Text style={{fontSize: 30, fontWeight: 'bold'}}>{receipt === null ? '': receipt.carName}</Text>
             </View>
@@ -177,7 +177,7 @@ function Order(props){
                 <Chip style={{margin: 3}}>{receipt === null ? '': receipt.region}</Chip>
             </View>}
             
-            {receipt.require !== null && <View style={{width: '100%', marginBottom: 10}}>
+            {(kind === 'NewCarPackage' && receipt.require !== null) && <View style={{width: '100%', marginBottom: 10}}>
                 <Text style={{fontSize: 20 }}>기타 요구사항</Text>
                 <View style={{padding: 10}}>
                     <View style={{width: '100%', backgroundColor: '#e5e5e5', padding: 5, borderRadius: 5}}>
@@ -186,7 +186,7 @@ function Order(props){
                 </View>
             </View>}
 
-        </SearchView>
+        </OrderView>
     );
 }
 

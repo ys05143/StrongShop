@@ -102,7 +102,7 @@ function translate(option, item, value){
     }
     const res_Outside = {
         Wrapping: '랩핑',
-        dent: '뎉트',
+        dent: '덴트',
         painting: '도색',
     }
     const res_Scratch = {

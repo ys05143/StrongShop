@@ -343,7 +343,7 @@ function LoginScreen(props) {
                     const auth = res.headers.auth;
                     try {
                         if(auth === null || auth === undefined){
-                            alert('a 오류');
+                            alert('토큰을 받아오지못했습니다.');
                         }
                         else{
                             storage.store('auth',{auth : auth})
@@ -353,14 +353,14 @@ function LoginScreen(props) {
                         }
                     }
                     catch {
-                        alert('T 오류');
+                        alert('토큰을 받아오는과정에서 오류가 생겼습니다.');
                     }
                 }
                 else{
-                    alert('code 오류')
+                    alert('네트워크 오류')
                 }
             })
-            .catch(e=>alert('L 오류'));
+            .catch(e=>alert('로그인 오류'));
             setIsSending(false);
         });
     }
@@ -414,8 +414,8 @@ function LoginScreen(props) {
         <TotalView color={Color.main} notchColor={Color.main} homeIndicatorColor={Color.main}>
             <View style={{ flex: 1 , justifyContent: 'center' , alignItems: 'center' }}>
                 {/* <ImageBackground source={{ uri: 'https://picsum.photos/1' }} resizeMode='cover' style={{ justifyContent:'center' , alignItems: 'center' , flex: 1   }}> */}
-                    <Title style={styles.mainTitle}>최강샵</Title>
-                    <Text style={{ color: 'white'}}>나만의 샵을 관리해요.</Text>
+                    <Title style={styles.mainTitle}>카#</Title>
+                    <Text style={{ color: 'white'}}>로그인 방법을 선택해주세요.</Text>
                     <Button style={styles.loginButton} color='white' icon='chat' onPress={kakaoLogin}>
                         카카오로 시작하기
                     </Button>
@@ -513,7 +513,6 @@ function LoginScreen(props) {
             {isSending && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'large' color= {'white'}/>
             </View>}
-
         </TotalView>
         </BottomSheetModalProvider>
     );
