@@ -243,6 +243,7 @@ function CareScreen_3(props){
                 <Icon name="close-outline" size={35} color={'black'}></Icon>
             </TouchableOpacity>    
         </View>
+        <ScrollView>
         <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{carData.carName}</Text>
         {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 20, fontWeight: 'bold'}}>시공할 부분의 사진을 찍어주세요.</Text> */}
         <View style={{alignItems: 'center'}}>
@@ -250,46 +251,47 @@ function CareScreen_3(props){
                 <IntroText>시공할 부분의 사진을 찍어주세요.</IntroText>
             </IntroView>
         </View>
-            {_.map(contents, (item, index)=>{
-                return(
-                    <View key={index}>
-                        <Text style={{marginLeft: 10, fontSize: 20, fontWeight: 'bold'}}>{index+1+'.'}</Text>
-                        <View style={{alignItems: 'center'}}>
-                            <AddImgView>
-                                {item.displayImg !== null ? 
-                                <>
-                                <ImgView>
-                                    <FastImage style={{height:'100%',width:'100%', backgroundColor: '#e5e5e5'}} source={{uri:item.displayImg}}/>
-                                </ImgView>
-                                <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'gray', position: 'absolute', top: 0}} size={27} onPress={()=>{ImgPick(index)}}>
-                                    <Icon name="pencil-sharp" color={'gray'}></Icon>
-                                </Badge> 
-                                </>: 
-                                <BlankImgView onPress={()=>{ImgPick(index)}} >
-                                    <Icon name={'camera'} size={50} color={'gray'}/> 
-                                </BlankImgView>
-                                }
-                            </AddImgView>
-                            <Input multiline={true}
-                                style={{textAlignVertical:'top', marginBottom: 10}}//only for android
-                                value={item.text}
-                                onChangeText={value=>{changeText(value, index);}}
-                                placeholder={"특이사항이 있으면 입력해주세요."}
-                                placeholderTextColor="gray"
-                                maxLength={400}
-                                />
-                        </View>
+        {_.map(contents, (item, index)=>{
+            return(
+                <View key={index}>
+                    <Text style={{marginLeft: 10, fontSize: 20, fontWeight: 'bold'}}>{index+1+'.'}</Text>
+                    <View style={{alignItems: 'center'}}>
+                        <AddImgView>
+                            {item.displayImg !== null ? 
+                            <>
+                            <ImgView>
+                                <FastImage style={{height:'100%',width:'100%', backgroundColor: '#e5e5e5'}} source={{uri:item.displayImg}}/>
+                            </ImgView>
+                            <Badge style={{backgroundColor: 'white', borderWidth: 1, borderColor: 'gray', position: 'absolute', top: 0}} size={27} onPress={()=>{ImgPick(index)}}>
+                                <Icon name="pencil-sharp" color={'gray'}></Icon>
+                            </Badge> 
+                            </>: 
+                            <BlankImgView onPress={()=>{ImgPick(index)}} >
+                                <Icon name={'camera'} size={50} color={'gray'}/> 
+                            </BlankImgView>
+                            }
+                        </AddImgView>
+                        <Input multiline={true}
+                            style={{textAlignVertical:'top', marginBottom: 10}}//only for android
+                            value={item.text}
+                            onChangeText={value=>{changeText(value, index);}}
+                            placeholder={"특이사항이 있으면 입력해주세요."}
+                            placeholderTextColor="gray"
+                            maxLength={400}
+                            />
                     </View>
-                    )}
-                )
-            }
-            <View>
-                <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity onPress={()=>{setTextArray()}}>
-                        <Icon name={'add-circle-outline'} size={50} color={'black'}/>
-                    </TouchableOpacity>
                 </View>
+                )}
+            )
+        }
+        <View>
+            <View style={{alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=>{setTextArray()}}>
+                    <Icon name={'add-circle-outline'} size={50} color={'black'}/>
+                </TouchableOpacity>
             </View>
+        </View>
+        </ScrollView>
         <BtnView>
             <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 <Button mode={"contained"} onPress={() => {props.navigation.goBack()}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
