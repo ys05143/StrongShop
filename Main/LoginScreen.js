@@ -1,7 +1,7 @@
 import React from 'react' ;
 import styled from 'styled-components/native';
 import { Title , Button , Text, } from 'react-native-paper';
-import { ActivityIndicator, Alert, ScrollView, TextInput, Platform, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, TextInput, Platform, TouchableOpacity, View, Image } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -61,7 +61,8 @@ const styles = {
         borderColor: 'white'
     } ,
     loginButton : {
-        width: '70%' ,
+        width: 300 ,
+        height: 50,
         borderWidth: 1 ,
         margin: 20 ,
         padding: 5,
@@ -416,12 +417,18 @@ function LoginScreen(props) {
                 {/* <ImageBackground source={{ uri: 'https://picsum.photos/1' }} resizeMode='cover' style={{ justifyContent:'center' , alignItems: 'center' , flex: 1   }}> */}
                     <Title style={styles.mainTitle}>카#</Title>
                     <Text style={{ color: 'white'}}>로그인 방법을 선택해주세요.</Text>
-                    <Button style={styles.loginButton} color='white' icon='chat' onPress={kakaoLogin}>
+                    {/* <Button style={styles.loginButton} color='white' icon='chat' onPress={kakaoLogin}>
                         카카오로 시작하기
-                    </Button>
-                    <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>{naverLogin(initials)}}>
+                    </Button> */}
+                    <TouchableOpacity style={{borderRadius: 5, overflow: 'hidden', marginTop: 20}} onPress={kakaoLogin}>
+                        <Image source={require('../resource/kakao_login_large_wide.png')} style={{width: 300, height: 50}} resizeMode={'stretch'}></Image>
+                    </TouchableOpacity>
+                    {/* <Button style={styles.loginButton} color='white' icon='alpha-n-box' onPress={()=>{naverLogin(initials)}}>
                         네이버로 시작하기
-                    </Button>
+                    </Button> */}
+                    <TouchableOpacity style={{borderRadius: 5, overflow: 'hidden', marginTop: 20}} onPress={()=>{naverLogin(initials)}}>
+                        <Image source={require('../resource/btnG_완성형.png')} style={{width: 300, height: 50}} resizeMode={'stretch'}></Image>
+                    </TouchableOpacity>
                     <Button style={styles.loginButton} color='white' icon='alpha-t-box' onPress={()=>{testLogin()}}>
                         테스트 로그인
                     </Button>

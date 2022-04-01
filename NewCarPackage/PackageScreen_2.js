@@ -218,48 +218,6 @@ function PackageScreen_2 (props, {navigation}) {
     }
 
     return(
-        // <PaperProvider>
-        //     <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-                
-        //         <View style={{flex:1, alignItems: 'center'}}>
-        //             <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen", {topic: 'NewCarPackage'})}} style={{marginTop: 20}}>
-        //             <Text style={{marginLeft: 10, fontSize: 20}}>{carName !== null ? carName : ''}</Text>
-        //                 <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
-        //             </SearchBar>
-        //         </View>
-        //         <View style={{alignItems: 'center'}}>
-        //             <IntroView>
-        //                 <IntroText>{'시공을 원하는\n차종을 입력해주세요.'}</IntroText>
-        //             </IntroView>
-        //         </View>
-        //         {/* <ContentView>
-        //             <SearchBar onPress={()=>{props.navigation.navigate("SearchScreen", {topic: 'NewCarPackage'})}}>
-        //                 <Text style={{marginLeft: 10, fontSize: 20}}>{carName !== null ? carName : ''}</Text>
-        //                 <Icon name="search-outline" size={30} style={{marginRight: 10}} ></Icon>
-        //             </SearchBar>
-        //             <ResulView>
-        //                 {!isLoading ? <Result/> : <ActivityIndicator size = 'large' color= {Color.main} style={{marginTop: 10}}/>}
-        //             </ResulView>
-        //             <BtnView>
-        //                 <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-        //                     <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>취소</Button>
-        //                     <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>입력완료</Button>
-        //                 </Row>
-        //             </BtnView>
-        //         </ContentView> */}
-        //         <BtnView>
-        //             <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-        //                 <Button mode={"contained"} onPress={() => {askCancelCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>취소</Button>
-        //                 <Button mode={"contained"} onPress={() => {storeCarName();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>입력완료</Button>
-        //             </Row>
-        //         </BtnView>
-        //         <View style={{position: 'absolute', width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-        //             <TouchableOpacity onPress={()=>{askCancelCarName();}}>
-        //                 <Icon name="close-outline" size={35} color={'black'}></Icon>
-        //             </TouchableOpacity>    
-        //         </View>
-        //     </TotalView>
-        // </PaperProvider>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
                 <TouchableOpacity onPress={()=>{askCancelCarName();}}>

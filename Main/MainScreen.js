@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Appbar , Title , Text , Card, Divider , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider, Badge } from 'react-native-paper';
+import {Title , Text , Card , Avatar , IconButton, Button, Dialog, Portal, Paragraph, Provider as PaperProvider, Badge } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Alert, ActivityIndicator, TouchableOpacity, Animated, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { useIsFocused } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
-import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 //component
 import Row from '../components/Row';
@@ -612,6 +611,7 @@ function MainScreen( props ) {
                         </View>}
                     </View>
                 </View>
+
                 <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
                     <Row style={{alignItems: 'center'}}>
                         <View style={{paddingHorizontal: 10}}>

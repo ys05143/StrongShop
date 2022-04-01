@@ -204,7 +204,7 @@ function PackageScreen_4(props){
 
     return(
         <>
-        <KeyboardAwareScrollView style={{backgroundColor: 'white'}}>
+        <KeyboardAwareScrollView style={{backgroundColor: 'white'}} extraScrollHeight={-100}>
         <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
             <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
                 <TouchableOpacity onPress={()=>{askCancelRequire();}}>

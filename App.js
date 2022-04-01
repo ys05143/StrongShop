@@ -45,7 +45,10 @@ import CareScreen_3 from './Care/CareScreen_3';
 import CareProgressScreen from './Care/CareProgressScreen';
 
 import Temp from './Temp';
-import PackageScreen_3_testVer from './NewCarPackage/PackageScreen_3_testVer';
+
+/////////////////////////////////////////////////////////
+
+import MainPage from './Main/MainPage';
 
 import Context from './function/Context';
 
@@ -162,7 +165,7 @@ function App (props) {
 
   React.useEffect(()=>{ // background message open by touching
       const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
-        RootNavigation.navigate("MainScreen");
+        RootNavigation.navigate("New_MainPage");
       });
       return unsubscribe;
   },[])
@@ -193,7 +196,8 @@ function App (props) {
         { /* 개발시 보는 임시 첫화면 */}
         {/* {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>} */}
         {/* 메인화면 */}
-        {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="MainPage" component={MainPage} options={{headerShown:false}}/>}
         {/* 로그인 화면 */}
         {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
         {/* 알림 화면 */}
@@ -251,9 +255,13 @@ function App (props) {
 
         {/* 신차패키지 3 ver 3.0*/}
         {/* {<Stack.Screen name="PackageScreen_3_testVer" component={PackageScreen_3_testVer} options={{headerShown:false}}/>} */}
+        
+        {/* new 메인페이지 */}
+        {/* {<Stack.Screen name="New_MainPage" component={New_MainPage} options={{headerShown:false}}/>} */}
+
       </Stack.Navigator>
     </NavigationContainer>
-    <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainScreen'), inAppMessage.current?.hide()}} />
+    <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('New_MainPage'), inAppMessage.current?.hide()}} />
     </React.Fragment>
     </Context>
     </>
