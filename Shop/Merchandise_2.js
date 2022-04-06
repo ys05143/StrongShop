@@ -270,7 +270,6 @@ function Merchandise_2(props){
             showsHorizontalScrollIndicator ={false}
             style={{width: '100%'}}
             ref={scrollX}
-            horizontal={true}
             sections={merchadiseList}
             keyExtractor={(item, index) => item + index}
             renderItem={({item, section} ) => {

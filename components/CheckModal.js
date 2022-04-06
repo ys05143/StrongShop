@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { View } from "react-native";
+import { Image } from "react-native";
 import { Button } from "react-native-paper";
 //component
 import ModalView from "./ModalView";
@@ -53,6 +53,7 @@ function CheckModal(props){
                </TitleView>
                <ContentView>
                    <TextContentView>
+                        <Image source={require('../resource/img_character_icon_S_1.png')} style={{width: 60, height: 60, marginBottom: 10}} resizeMode={'contain'}/>
                         {/* <NotoSansText style={{fontSize: 20}}>{'이전에 중단된 요청서가 있습니다.'}</NotoSansText>
                         <NotoSansText style={{fontSize: 20}}>{'이어서 하시겠습니까?'}</NotoSansText> */}
                         {props.TextContentView}

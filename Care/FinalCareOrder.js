@@ -25,24 +25,11 @@ const Total = styled.View`
     align-items: center;
     justify-content: space-between;
 `;
-const SearchView = styled.ScrollView`
-    width: 100%;
-    margin-bottom: 5px;
-`;
-const DetailOptions = styled.View`
-    height: 40px;
-    padding: 0px 5px;
-    margin-right: 5px;;
-    border-radius: 20px;
-    background-color: lightgray;
-    justify-content: center;
-`;
 
 function FinalCareOrder(props){
     const context = React.useContext(userContext);
     const [carData, setCarData] = React.useState(props.carData);
     const [contents, setContents] = React.useState(props.contents);
-    const [region, setRegion] = React.useState(null);
     const [isSending, setIsSending] = React.useState(false);
 
     function finalCheck(){
@@ -93,7 +80,8 @@ function FinalCareOrder(props){
                             '완료',
                             '지금부터 입찰이 시작됩니다!',
                             [
-                                {text: '확인', onPress: () => {
+                                {text: '확인', onPress: async () => {
+                                        await AsyncStorage.removeItem('CareOrder');
                                         props.getModal(false);
                                         props.navigation.popToTop();
                                     }

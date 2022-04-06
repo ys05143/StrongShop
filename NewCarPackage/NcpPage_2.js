@@ -1,108 +1,27 @@
-import React from 'react';
+import React from "react";
+import styled from "styled-components/native";
 import { Text, ActivityIndicator, View, ScrollView, TextInput, Alert, SectionList, TouchableOpacity, Modal } from 'react-native';
-import styled from 'styled-components/native';
-import { Button } from 'react-native-paper';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import _ from 'lodash';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-//pages
-import SelectDetailOption from '../NewCarPackage/SelectDetailOption';
-import SelectTitleOption from '../NewCarPackage/SelectTitleOption';
-//components
-import TotalView from '../components/TotalView';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//component
+import Background from "../components/Background";
+import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from "../components/TextStyle";
 import Row from '../components/Row';
-import ModalView from '../components/ModalView';
-//constants
+import TopBox from "../components/TopBox";
+//constant
+import Color from "../constants/Color";
 import AppWindow from '../constants/AppWindow';
-import Color from '../constants/Color';
-import { KorRegion, NewCarPackageList } from '../constants/LIST';
-import { userContext } from '../function/Context';
+import { NewCarPackageList } from '../constants/LIST';
+//pages
+import NcpOptionDetails from "./NcpOptionDetails";
+import NcpOptionTitle from "./NcpOptionTitle";
 //function
 import storage from '../function/storage';
+import BtnView from "../components/BtnView";
+import CustButton from "../components/CustButton";
 
-const WIDTH = AppWindow.width;
-const HEIGHT = AppWindow.height;
-///////////////////////////////
-const ContentView = styled.View`
-    flex: 1;
-    justify-content: center;
-    align-items : center;
-`;
-
-const BtnView = styled.View`
-    width: 100%;
-    height: 80px;
-`;
-///////////////////////////////////
-const AllSelectView = styled.View`
-    background-color: #e5e5e5;
-    width: 90%;
-    border-radius: 15px;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 20px;
-    height: 100%;
-`;
-const SelectInSwiper = styled.View`
-    width: ${WIDTH*0.9-40}px;
-    background-color: white;
-    height: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-`;
-
-const OptionName = styled.TouchableOpacity`
-    margin-left: 5px;
-    margin-right: 5px;
-    border-radius: 50px;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    height: 40px;
-`;
-
-const Input = styled.TextInput`
-    width: 95%;
-    height: 90%;
-    border-radius: 10px;
-    border: 1px solid black;
-    color: #000000;
-    padding: 10px;
-`;
-
-const RegionView = styled.View`
-    width: 100%;
-    margin-top: 20px;
-`;
-const PickerView = styled.TouchableOpacity`
-    width: 95%;
-    border: 1px;
-    border-radius: 5px;
-    margin-top: 5px;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
-`;
-const PickItem = styled.TouchableOpacity`
-    border-bottom-width: 1px;
-    width: 95%;
-    height: 60px;
-    justify-content: center;
-    align-items: center;
-    border-color: gray;
-`;
-const IntroView = styled.View`
-    width: 95%;
-    align-items: center;
-    padding-bottom: 5px;
-    flex-direction: row;
-`;
-const IntroText = styled.Text`
-    font-size: 20px;
-    font-weight: bold;
-`;
 const InitialOptions = {
     tinting: false,
     detailTinting: {
@@ -236,9 +155,53 @@ const compareOptions = {
     },
     glasscoating: false,
 }
-function CareScreen_2(props) {
-      
-    //const [result, setResult] = React.useState({...InitialOptions});
+
+const WIDTH = AppWindow.width;
+
+const AllSelectView = styled.View`
+    background-color: ${Color.menuBackgrund};
+    width: 95%;
+    border: 2px solid ${Color.menuBorder};
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+`;
+const SelectInSwiper = styled.View`
+    width: ${(WIDTH*0.95)-4}px;
+    padding-bottom: 5px;
+    /* border: 1px solid red; */
+`;
+
+const OptionName = styled.TouchableOpacity`
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px;
+    height: 40px;
+    background-color: white;
+    border: 2px;
+`;
+const SelectName = styled.Text`
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 18px;
+    font-family: NotoSansKR-Medium;
+`;
+const EtcText = styled.TextInput`
+    width: 100%;
+    border: 2px solid ${Color.menuBorder};
+    margin-left: 5px;
+    padding: 5px;
+    height: 100%;
+    border-radius: 5px;
+    background-color: white;
+    font-family: NotoSansKR-Medium;
+`;
+
+function NcpPage_2(props){
+
     const [isLoading, setIsLoading] = React.useState(false);
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const scrollX = React.useRef();
@@ -797,7 +760,7 @@ function CareScreen_2(props) {
                     if(newOrder.processPage <= 2) newOrder.processPage = 2;
                     newOrder.options = finalOptions;
                     await storage.store('BidOrder', newOrder);
-                    props.navigation.navigate("PackageScreen_4");
+                    props.navigation.navigate("NcpPage_3");
                 }
                 else{ //async에 저장된 것이 없을 때 === 차량등록을 안하고 왔을 때 === 오류인 상황
                     Alert.alert(
@@ -811,7 +774,7 @@ function CareScreen_2(props) {
                 }
             }
             //just check
-            const check = await storage.fetch('BidOrder');
+            // const check = await storage.fetch('BidOrder');
             //console.log('In page 3 check: ', check);
         }
         catch{
@@ -821,7 +784,7 @@ function CareScreen_2(props) {
 
     function cancelOptions(){
         //나머지 모든 체크도 false 시켜야함
-        props.navigation.navigate("MainScreen");
+        props.navigation.navigate("MainPage");
     }
     function askCancelOptions(){
         Alert.alert(
@@ -830,7 +793,7 @@ function CareScreen_2(props) {
             [
                 {text: '취소', onPress: () => {}},
                 {text: '확인', onPress: () => {
-                    props.navigation.navigate("MainScreen");
+                    props.navigation.navigate("MainPage");
                 }},
               
             ],
@@ -838,295 +801,319 @@ function CareScreen_2(props) {
         );
     
     }
-    
-    function SwiperButton(props){
+
+    const Top = ()=>{
         return(
-            <View style={{backgroundColor: 'lightgray', width: 50, height: 25, justifyContent: 'center', alignItems: 'center', borderRadius: 25}}>
-                <Icon name={props.name} color={Color.main}></Icon>
+            <TopBox topbar={<TopBar/>}>
+                <MainText>시공을 원하는</MainText>
+                <Row>
+                    <MainText style={{color: 'white'}}> 항목을</MainText>
+                    <MainText> 선택해 주세요.</MainText>
+                </Row>
+            </TopBox>
+        )
+    }
+
+    const TopBar = () => {
+        return(
+            <View style={{width: '100%', height: '100%', paddingRight: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                <TouchableOpacity style={{padding: 5, marginLeft: 15}} onPress={()=>{askCancelOptions();}}>
+                    <Icon name="close" size={23} color={Color.mainText}></Icon>
+                </TouchableOpacity>
             </View>
         )
     }
+
     return(
-        <>
-        <KeyboardAwareScrollView>
-        <TotalView color={'white'} notchColor={'white'} homeIndicatorColor={'white'}>
-            <View style={{width: '100%', alignItems: 'flex-end', paddingTop: 5, paddingRight: 5}}>
-                <TouchableOpacity onPress={()=>{askCancelOptions();}}>
-                    <Icon name="close-outline" size={35} color={'black'}></Icon>
-                </TouchableOpacity>    
-            </View>
-            <View style={{alignItems: 'center'}}>
-                <IntroView>
-                    <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
-                    <IntroText>항목을 선택해주세요.</IntroText>
-                </IntroView>
-            </View>
-            <ContentView>
-                <View style={{width: '100%', height: 50}}>
+        <Background topbox={<Top/>}>
+            <View style={{width: '100%', alignItems: 'center', flex: 1}}>
+                <View style={{width: '100%', paddingVertical: 20}}>
                     <SectionList
                         ref={scrollX}
                         horizontal={true}
+                        showsHorizontalScrollIndicator={false}
                         sections={NewCarPackageList}
                         keyExtractor={(item, index) => item + index}
                         renderItem={({item, section} ) => {
                             return(
-                            <OptionName style={{backgroundColor: section.id === currentIndex ? Color.main : 'white'}} onPress={()=>{swiper.current.scrollToIndex({"index": section.id, "prevIndex": section.id-1}, true); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
-                                <Text style={{color: section.id === currentIndex? 'white' : 'black'}}>{item}</Text>
+                            <OptionName style={{borderColor: section.id === currentIndex ? 'red' : 'white'}} onPress={()=>{swiper.current.scrollToIndex({"index": section.id, "prevIndex": section.id-1}, true); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: section.id, viewPosition: 0.5})}}>
+                                <NotoSansText style={{color: section.id === currentIndex? 'black' : '#13489D', fontSize: section.id === currentIndex? 18 : 16}}>{'#'+item}</NotoSansText>
                             </OptionName>
                             )
                         }}
                     />
                 </View>
-                <View style={{flex: 1}}>
-                {!isLoading ? 
-                <AllSelectView>
-                    <SwiperFlatList 
-                    index={0}
-                    ref={swiper}
-                    onChangeIndex={(index)=>{setCurrentIndex(index.index); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: index.index, viewPosition: 0.5})}}>
-                        <SelectInSwiper>    
-                            <SelectTitleOption getChoose={getTintingChoose} 
-                                                choose={TintingChoose} 
-                                                name={'틴팅'}/>
-                            <SelectDetailOption getChoose={getLUMA} 
-                                                choose={LUMA}
-                                                name={'루마'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getSOLAR} 
-                                                choose={SOLAR}
-                                                name={'솔라'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getRAINBOW} 
-                                                choose={RAINBOW}
-                                                name={'레인보우'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getRAYNO} 
-                                                choose={RAYNO}
-                                                name={'레이노'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getTintingANY} 
-                                                choose={TintingANY}
-                                                name={'상관없음'}
-                                                touchable={true}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={TintingETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getTintingETC(value);}}/>
-                            </Row>
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getPPFChoose} 
-                                                choose={PPFChoose} 
-                                                name={'PPF'}/>
-                            <SelectDetailOption getChoose={getBONNET} 
-                                                choose={BONNET}
-                                                name={'본넷'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getSIDEMIRROR} 
-                                                choose={SIDEMIRROR}
-                                                name={'사이드미러'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getFRONTBUMPER} 
-                                                choose={FRONTBUMPER}
-                                                name={'앞 범퍼'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getFRONTBUMPERSIDE} 
-                                                choose={FRONTBUMPERSIDE}
-                                                name={'앞 범퍼사이드'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBACKBUMPER} 
-                                                choose={BACKBUMPER}
-                                                name={'뒷 범퍼'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBACKBUMPERSIDE} 
-                                                choose={BACKBUMPERSIDE}
-                                                name={'뒷 범퍼사이드'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getHEADLIGHT} 
-                                                choose={HEADLIGHT}
-                                                name={'헤드라이트'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getTAILLAMP} 
-                                                choose={TAILLAMP}
-                                                name={'테일램프'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBCFILTER} 
-                                                choose={BCFILTER}
-                                                name={'B/C 필터'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getDOOR} 
-                                                choose={DOOR}
-                                                name={'도어'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getHOOD} 
-                                                choose={HOOD}
-                                                name={'후드'}
-                                                touchable={true}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={PPFETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getPPFETC(value);}}/>
-                            </Row>
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getBlackboxChoose} 
-                                                choose={BlackboxChoose} 
-                                                name={'블랙박스'}/>
-                            <SelectDetailOption getChoose={getFINETECH} 
-                                                choose={FINETECH}
-                                                name={'파인테크'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getINAVI} 
-                                                choose={INAVI}
-                                                name={'아이나비'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getMANDO} 
-                                                choose={MANDO}
-                                                name={'만도'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBlackboxANY} 
-                                                choose={BlackboxANY}
-                                                name={'상관없음'}
-                                                touchable={true}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={BlackboxETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getBlackboxETC(value);}}/>
-                            </Row>
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getBatteryChoose} 
-                                                choose={BatteryChoose} 
-                                                name={'보조배터리'}/>
-                            <SelectDetailOption getChoose={getV6} 
-                                                choose={V6}
-                                                name={'V6'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getV12} 
-                                                choose={V12}
-                                                name={'V12'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBatteryANY} 
-                                                choose={BatteryANY}
-                                                name={'상관없음'}
-                                                touchable={true}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={BatteryETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getBatteryETC(value);}}/>
-                            </Row>
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getAfterblowChoose} 
-                                                choose={AfterblowChoose} 
-                                                name={'애프터블로우'}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={AfterblowETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getAfterblowETC(value);}}/>
-                            </Row>                  
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getSoundproofChoose} 
-                                                choose={SoundproofChoose} 
-                                                name={'방음'}/>
-                            <SelectDetailOption getChoose={getINSIDEFLOOR} 
-                                                choose={INSIDEFLOOR}
-                                                name={'실내 바닥 방음'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getFENDER} 
-                                                choose={FENDER}
-                                                name={'휀다 방음'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getDOORSOUND} 
-                                                choose={DOORSOUND}
-                                                name={'도어 방음'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getBONNETSOUND} 
-                                                choose={BONNETSOUND}
-                                                name={'본넷 방음'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getTRUNK} 
-                                                choose={TRUNK}
-                                                name={'트렁크 방음'}
-                                                touchable={true}/>
-                            <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center'}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
-                                <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, padding: 5, height: '90%', borderRadius: 5}}
-                                        value={SoundproofETC}
-                                        maxLength={100}
-                                        editable={true}
-                                        onChangeText={(value)=>{getSoundproofETC(value);}}/>
-                            </Row>                   
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getWrappingChoose} 
-                                                choose={WrappingChoose} 
-                                                name={'랩핑'}/>
-                            <Row style={{ paddingLeft: 10}}>
-                                <Text style={{fontSize: 18, color: 'black'}}>디자인</Text>
-                                <View style={{width: '100%', height: '80%'}}>
-                                    <TextInput style={{width: '65%', borderWidth: 1, marginLeft: 5, paddingVertical: 7, paddingHorizontal: 5, borderRadius: 5, textAlignVertical:'top'}}
-                                            value={WrappingETC}
-                                            maxLength={100}
-                                            editable={true}
-                                            multiline={true}
-                                            onChangeText={(value)=>{getWrappingETC(value);}}/>
-                                </View>
-                            </Row>
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={getBottomCoatingChoose} 
-                                                choose={BottomCoatingChoose} 
-                                                name={'하부코팅'}/>
-                            <SelectDetailOption getChoose={getUNDER} 
-                                                choose={UNDER}
-                                                name={'언더코팅'}
-                                                touchable={true}/>
-                            <SelectDetailOption getChoose={getPOLYMER} 
-                                                choose={POLYMER}
-                                                name={'폴리머코팅'}
-                                                touchable={true}/>         
-                        </SelectInSwiper>
-                        <SelectInSwiper>
-                            <SelectTitleOption getChoose={setGlassCoatingChoose} 
-                                                choose={GlassCoatingChoose} 
-                                                name={'유리막코팅'}/>         
-                        </SelectInSwiper>
-                    </SwiperFlatList>
-                </AllSelectView> : 
-                <AllSelectView>
-                    <SelectInSwiper style={{justifyContent: 'center'}}>
-                        <ActivityIndicator size = 'small' color= {Color.main} style={{marginTop: 10}}/>
-                    </SelectInSwiper>
-                </AllSelectView>}
+                <View style={{flex: 1, alignItems: 'center'}}>
+                    <KeyboardAwareScrollView style={{width: WIDTH}} contentContainerStyle={{alignItems: 'center'}} extraHeight={350} showsVerticalScrollIndicator={false}>
+                        <AllSelectView>
+                            <SwiperFlatList 
+                            index={0}
+                            ref={swiper}
+                            onChangeIndex={(index)=>{setCurrentIndex(index.index); scrollX.current.scrollToLocation({animated: true, itemIndex: 0, sectionIndex: index.index, viewPosition: 0.5})}}>
+                                <SelectInSwiper>    
+                                    <NcpOptionTitle getChoose={getTintingChoose} 
+                                                        choose={TintingChoose} 
+                                                        name={'틴팅'}/>
+                                    <NcpOptionDetails getChoose={getLUMA} 
+                                                        choose={LUMA}
+                                                        name={'루마'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getSOLAR} 
+                                                        choose={SOLAR}
+                                                        name={'솔라'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getRAINBOW} 
+                                                        choose={RAINBOW}
+                                                        name={'레인보우'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getRAYNO} 
+                                                        choose={RAYNO}
+                                                        name={'레이노'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getTintingANY} 
+                                                        choose={TintingANY}
+                                                        name={'상관없음'}
+                                                        touchable={true}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(TintingETC === null || TintingETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={TintingETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getTintingETC(value);}}/>
+                                    </View>
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getPPFChoose} 
+                                                        choose={PPFChoose} 
+                                                    name={'PPF'}/>
+                                    <NcpOptionDetails getChoose={getBONNET} 
+                                                        choose={BONNET}
+                                                        name={'본넷'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getSIDEMIRROR} 
+                                                        choose={SIDEMIRROR}
+                                                        name={'사이드미러'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getFRONTBUMPER} 
+                                                        choose={FRONTBUMPER}
+                                                        name={'앞 범퍼'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getFRONTBUMPERSIDE} 
+                                                        choose={FRONTBUMPERSIDE}
+                                                        name={'앞 범퍼사이드'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBACKBUMPER} 
+                                                        choose={BACKBUMPER}
+                                                        name={'뒷 범퍼'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBACKBUMPERSIDE} 
+                                                        choose={BACKBUMPERSIDE}
+                                                        name={'뒷 범퍼사이드'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getHEADLIGHT} 
+                                                        choose={HEADLIGHT}
+                                                        name={'헤드라이트'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getTAILLAMP} 
+                                                        choose={TAILLAMP}
+                                                        name={'테일램프'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBCFILTER} 
+                                                        choose={BCFILTER}
+                                                        name={'B/C 필터'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getDOOR} 
+                                                        choose={DOOR}
+                                                        name={'도어'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getHOOD} 
+                                                        choose={HOOD}
+                                                        name={'후드'}
+                                                        touchable={true}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(PPFETC === null || PPFETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={PPFETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getPPFETC(value);}}/>
+                                    </View>
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getBlackboxChoose} 
+                                                    choose={BlackboxChoose} 
+                                                    name={'블랙박스'}/>
+                                    <NcpOptionDetails getChoose={getFINETECH} 
+                                                        choose={FINETECH}
+                                                        name={'파인테크'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getINAVI} 
+                                                        choose={INAVI}
+                                                        name={'아이나비'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getMANDO} 
+                                                        choose={MANDO}
+                                                        name={'만도'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBlackboxANY} 
+                                                        choose={BlackboxANY}
+                                                        name={'상관없음'}
+                                                        touchable={true}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(BlackboxETC === null || BlackboxETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={BlackboxETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getBlackboxETC(value);}}/>
+                                    </View>
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getBatteryChoose} 
+                                                    choose={BatteryChoose} 
+                                                    name={'보조배터리'}/>                  
+                                    <NcpOptionDetails getChoose={getV6} 
+                                                        choose={V6}
+                                                        name={'V6'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getV12} 
+                                                        choose={V12}
+                                                        name={'V12'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBatteryANY} 
+                                                        choose={BatteryANY}
+                                                        name={'상관없음'}
+                                                        touchable={true}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(BatteryETC === null || BatteryETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={BatteryETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getBatteryETC(value);}}/>
+                                    </View>                 
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getAfterblowChoose} 
+                                                        choose={AfterblowChoose} 
+                                                        name={'애프터블로우'}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(AfterblowETC === null || AfterblowETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={AfterblowETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getAfterblowETC(value);}}/>
+                                    </View>               
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getSoundproofChoose} 
+                                                        choose={SoundproofChoose} 
+                                                        name={'방음'}/>                   
+                                    <NcpOptionDetails getChoose={getINSIDEFLOOR} 
+                                                        choose={INSIDEFLOOR}
+                                                        name={'실내 바닥 방음'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getFENDER} 
+                                                        choose={FENDER}
+                                                        name={'휀다 방음'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getDOORSOUND} 
+                                                        choose={DOORSOUND}
+                                                        name={'도어 방음'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getBONNETSOUND} 
+                                                        choose={BONNETSOUND}
+                                                        name={'본넷 방음'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getTRUNK} 
+                                                        choose={TRUNK}
+                                                        name={'트렁크 방음'}
+                                                        touchable={true}/>
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(SoundproofETC === null || SoundproofETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={SoundproofETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getSoundproofETC(value);}}/>
+                                    </View>                  
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getWrappingChoose} 
+                                                        choose={WrappingChoose} 
+                                                        name={'랩핑'}/>                  
+                                    <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
+                                        <Icon name={(WrappingETC === null || WrappingETC === '') ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
+                                        <SelectName>기타</SelectName>
+                                    </Row>
+                                    <View style={{ marginHorizontal: 25, height: 35, justifyContent: 'center'}}>
+                                        <EtcText
+                                                value={WrappingETC}
+                                                maxLength={100}
+                                                editable={true}
+                                                onChangeText={(value)=>{getWrappingETC(value);}}/>
+                                    </View>
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={getBottomCoatingChoose} 
+                                                        choose={BottomCoatingChoose} 
+                                                        name={'하부코팅'}/>                  
+                                    <NcpOptionDetails getChoose={getUNDER} 
+                                                        choose={UNDER}
+                                                        name={'언더코팅'}
+                                                        touchable={true}/>
+                                    <NcpOptionDetails getChoose={getPOLYMER} 
+                                                        choose={POLYMER}
+                                                        name={'폴리머코팅'}
+                                                        touchable={true}/>
+                                </SelectInSwiper>
+
+                                <SelectInSwiper>
+                                    <NcpOptionTitle getChoose={setGlassCoatingChoose} 
+                                                        choose={GlassCoatingChoose} 
+                                                        name={'유리막코팅'}/>         
+                                </SelectInSwiper>
+
+                            </SwiperFlatList>
+                        </AllSelectView>
+                    </KeyboardAwareScrollView>
                 </View>
-            </ContentView>
+                
+            </View>
             <BtnView>
-                <Row style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-                    <Button mode={"contained"} onPress={() => {props.navigation.navigate("PackageScreen_2");}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>이전</Button>
-                    <Button mode={"contained"} onPress={() => {storeCarOptions();}} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main}>선택완료</Button>
-                </Row>
+                <CustButton onPress={()=>{props.navigation.navigate("NcpPage_1");}}>이전</CustButton>
+                <CustButton onPress={()=>{storeCarOptions();}}>선택</CustButton>
             </BtnView>
-        </TotalView>
-        </KeyboardAwareScrollView>
-        </>
-    );
+        </Background>
+    )
+
 }
 
-export default CareScreen_2;
+export default NcpPage_2;

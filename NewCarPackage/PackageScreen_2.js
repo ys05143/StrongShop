@@ -1,17 +1,13 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, Image, StyleSheet, Modal, View, ActivityIndicator, Alert, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { Button, Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
-//pages
-import SearchModal from './SearchModal';
 //components
 import TotalView from '../components/TotalView';
 import Row from '../components/Row';
-import ModalView from '../components/ModalView';
 //constants
 import AppWindow from '../constants/AppWindow';
 import Color from '../constants/Color';

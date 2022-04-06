@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components/native";
-import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Modal, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from "react-native-swiper";
 import { useIsFocused } from '@react-navigation/native';
 import moment from "moment";
-import { Card, Badge, IconButton } from 'react-native-paper';
+import { Badge, IconButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //component
 import Background from "../components/Background";
@@ -13,6 +13,7 @@ import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from 
 import TopBox from "../components/TopBox";
 import Row from "../components/Row";
 import CustButton from "../components/CustButton";
+import TotalIndicator from '../components/TotalIndicator';
 //constant
 import Color from "../constants/Color";
 //function
@@ -49,18 +50,21 @@ const Bar = styled.View`
 const PolicySeperator = styled.View`
     width: 1px;
     height: 13px;
-    border-right-width: 1px;
+    border-right-width: 2px;
     border-color: gray;
     margin-right: 5px;
     margin-left: 5px;
 `;
 const PolicyText = styled.Text`
-    color: gray;
+    color: #7D7DC5;
+    font-family: NotoSansKR-Medium;
+    font-size: 10px;
 `;
 
 const MenuBox = styled.View`
     width: 90%;
-    border: 2px solid ${Color.menuBoder};
+    border: 2px solid ${Color.menuBorder};
+    background-color: ${Color.menuBackgrund};
     border-radius: 5px;
     margin-top: 20px;
 `;
@@ -76,23 +80,22 @@ const MenuTitle = styled.View`
 `;
 const MenuContent = styled.View`
     width: 100%;
-    background-color: ${Color.menuBackgrund};
     align-items: center;
     justify-content: center;
 `;
 
 const GoButton = styled.TouchableOpacity`
-    width: 60px;
     height: 25px;
     align-items: center;
     justify-content: center;
-    border: 1px solid red;
+    border: 1px solid #FF0024;
     border-radius: 20px;
     flex-direction: row;
+    padding: 0px 10px;
 `;
-const ListBox = styled.View`
+const ListBox = styled.TouchableOpacity`
     width: 95%;
-    border: 2px solid ${Color.menuBoder};
+    border: 2px solid ${Color.menuBorder};
     border-radius: 5px;
     margin-top: 20px;
 `;
@@ -107,7 +110,8 @@ const ListContent = styled.View`
 
 
 function MainPage(props){
-    const [existingDialog, setExistingDialog] = React.useState(false);
+    const [CareAsyncCheck, setCareAsyncCheck] = React.useState(false);
+    const [NcpAsyncCheck, setNcpAsyncCheck] = React.useState(false);
     const [currentOrder, setCurrentOrder] = React.useState(null);
     const [myOrderList, setMyOrderList] = React.useState([]);
     const [orderTimeList, setOrderTimeList] = React.useState([]);
@@ -123,18 +127,18 @@ function MainPage(props){
         }
     },[isFocused]);
 
-    async function CheckAsync(){
+    async function NcpCheckAsync(){
         try{
             const response = await storage.fetch('BidOrder');
             if(response !== null){
                 console.log('async has orderData: ', response);
                 setCurrentOrder(response);
-                setExistingDialog(true);
+                setNcpAsyncCheck(true);
             }
             else{
                 console.log('async has null')
-                props.navigation.navigate("PackageScreen_2");
-                setExistingDialog(false);
+                props.navigation.navigate("NcpPage_1");
+                setNcpAsyncCheck(false);
             }
         }
         catch (error){
@@ -142,12 +146,12 @@ function MainPage(props){
         }
     }
 
-    async function CancelExisting(){
+    async function NcpCancelAsync(){
         try{
             console.log("cancel BidOrder")
             await AsyncStorage.removeItem('BidOrder', ()=>{
-                props.navigation.navigate("PackageScreen_2");
-                setExistingDialog(false);
+                props.navigation.navigate("NcpPage_1");
+                setNcpAsyncCheck(false);
             });
         }
         catch(error){
@@ -155,29 +159,76 @@ function MainPage(props){
         }
     }
     
-    async function OKExisting(){
+    async function NcpOkAsync(){
         if(currentOrder.processPage === 1){
-            props.navigation.navigate("PackageScreen_2");
-            setExistingDialog(false);
+            props.navigation.navigate("NcpPage_1");
+            setNcpAsyncCheck(false);
         }
         else if(currentOrder.processPage === 2){
-            props.navigation.navigate("PackageScreen_3");
-            setExistingDialog(false);
+            props.navigation.navigate("NcpPage_2");
+            setNcpAsyncCheck(false);
         }
         else if(currentOrder.processPage === 3){
-            props.navigation.navigate("PackageScreen_4");
-            setExistingDialog(false);
+            props.navigation.navigate("NcpPage_3");
+            setNcpAsyncCheck(false);
+        }
+    }
+
+    async function CareCheckAsync(){
+        try{
+            const response = await storage.fetch('CareOrder');
+            if(response !== null){
+                console.log('async has orderData: ', response);
+                setCurrentOrder(response);
+                setCareAsyncCheck(true);
+            }
+            else{
+                console.log('async has null')
+                props.navigation.navigate("CarePage_1");
+                setCareAsyncCheck(false);
+            }
+        }
+        catch (error){
+            console.log(error);
+        }
+    }
+
+    async function CareCancelAsync(){
+        try{
+            console.log("cancel CareOrder")
+            await AsyncStorage.removeItem('CareOrder', ()=>{
+                props.navigation.navigate("CarePage_1");
+                setCareAsyncCheck(false);
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    
+    async function CareOkAsync(){
+        if(currentOrder.processPage === 1){
+            props.navigation.navigate("CarePage_1");
+            setCareAsyncCheck(false);
+        }
+        else if(currentOrder.processPage === 2){
+            props.navigation.navigate("CarePage_2");
+            setCareAsyncCheck(false);
+        }
+        else if(currentOrder.processPage === 3){
+            props.navigation.navigate("CarePage_3");
+            setCareAsyncCheck(false);
         }
     }
 
     function StateMove(orderId, state, carName, time, kind){
         if(kind === 'NewCarPackage'){
-            if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
-            else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("ProgressScreen_2", {orderId: orderId, state: state });
+            if(state === 1 || state === 2) props.navigation.navigate("SelectBiddingPage",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
+            else if(state === 3 || state === 4 || state === 5 || state === 6 || state === 7) props.navigation.navigate("NcpProgressPage", {orderId: orderId, state: state });
         }
         else{
-            if(state === 1 || state === 2) props.navigation.navigate("PackageScreen_5",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
-            else if(state === 3 || state === 4 || state === 5) props.navigation.navigate('CareProgressScreen', { orderId: orderId, state: state })
+            if(state === 1 || state === 2) props.navigation.navigate("SelectBiddingPage",{carName: carName, orderId: orderId, createdTime: time, kind: kind});
+            else if(state === 3 || state === 4 || state === 5) props.navigation.navigate('CareProgressPage', { orderId: orderId, state: state })
         }
     }
 
@@ -355,7 +406,7 @@ function MainPage(props){
                 '요청',
                 '로그인을 하셔야 합니다.',
                 [
-                    {text: '확인', onPress: () => {props.navigation.navigate("LoginScreen")}},
+                    {text: '확인', onPress: () => {props.navigation.navigate("LoginPage")}},
                 ],
                 { cancelable: false }
             );
@@ -424,7 +475,10 @@ function MainPage(props){
     const Top = ()=>{
         return(
             <TopBox topbar={<TopBar/>}>
-                <MainText>안녕하세요.</MainText>
+                <Row style={{alignItems: 'center'}}>
+                    <Image source={require('../resource/img_character_face.png')} style={{width: 45, height: 45, marginRight: 5}} resizeMode={'contain'}/>
+                    <MainText>안녕하세요.</MainText>
+                </Row>
                 <Row>
                     <MainText style={{color: 'white'}}> 무엇을</MainText>
                     <MainText> 도와드릴까요?</MainText>
@@ -436,7 +490,7 @@ function MainPage(props){
     const TopBar = () => {
         return(
             <Bar>
-                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.navigate("AlarmScreen")}}>
+                <TouchableOpacity style={{padding: 5}} onPress={()=>{props.navigation.navigate("AlarmPage")}}>
                     <Icon name="notifications" size={23} color={Color.mainText}></Icon>
                     <Badge style={{position: 'absolute', elevation: 1}} visible={context.isNewAlarm} size={8}/>
                 </TouchableOpacity>
@@ -461,9 +515,9 @@ function MainPage(props){
                     <MenuContent style={{height: 65}}>
                         <MenuContentText style={{marginVertical: 20}}>새차를 멋지게 만들어요</MenuContentText>
                         <View style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', padding: 5}}>
-                            <GoButton onPress={()=>{CheckAsync();}}>
-                                <MenuTitleText style={{color: 'red'}}>GO</MenuTitleText>
-                                <Icon name={'arrow-forward'} size={15} color={'red'}/>
+                            <GoButton onPress={()=>{NcpCheckAsync();}}>
+                                <MenuTitleText style={{color: '#FF0024'}}>GO</MenuTitleText>
+                                <Icon name={'arrow-forward'} size={15} color={'#FF0024'}/>
                             </GoButton>
                         </View>
                     </MenuContent>
@@ -478,9 +532,9 @@ function MainPage(props){
                     <MenuContent style={{height: 65}}>
                         <MenuContentText style={{marginVertical: 20}}>내 차를 관리해요</MenuContentText>
                         <View style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', padding: 5}}>
-                            <GoButton onPress={()=>{props.navigation.navigate("CareScreen_1_2")}}>
-                                <MenuTitleText style={{color: 'red'}}>GO</MenuTitleText>
-                                <Icon name={'arrow-forward'} size={15} color={'red'}/>
+                            <GoButton onPress={()=>{CareCheckAsync();}}>
+                                <MenuTitleText style={{color: '#FF0024'}}>GO</MenuTitleText>
+                                <Icon name={'arrow-forward'} size={15} color={'#FF0024'}/>
                             </GoButton>
                         </View>
                     </MenuContent>
@@ -495,12 +549,22 @@ function MainPage(props){
                     <MenuContent style={{height: 250}} scrollEnabled={true}>
                         {!isLoading ? <>
                         {myOrderList.length === 0 ? 
+                        <>
                         <MenuContentText>{ isLogin ? '진행중인 입찰 및 시공이 없습니다' : '로그인을 하셔야 합니다' }</MenuContentText>
+                        <View style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', padding: 5}}>
+                            <GoButton onPress={()=>{props.navigation.navigate("LoginPage")}}>
+                                <MenuTitleText style={{color: '#FF0024'}}>로그인</MenuTitleText>
+                                <Icon name={'arrow-forward'} size={15} color={'#FF0024'}/>
+                            </GoButton>
+                        </View>
+                        </>
                         :
                         <Swiper
                         autoplay={false}
                         loop={false}>
                             {myOrderList.map((item, index)=>{
+                                if(index%2 === 0){
+                                    let item2 = myOrderList[index+1] === null || myOrderList[index+1] === undefined ? null : myOrderList[index+1];
                                     return(
                                         <View key={item.orderId} style={{width: '100%', alignItems: 'center'}}>
                                             <ListBox onPress={()=>{StateMove(item.orderId, item.state, item.carName, item.time, item.kind)}}>
@@ -512,59 +576,75 @@ function MainPage(props){
                                                 </MenuTitle>
                                                 <ListContent>
                                                     {item.state <= 2 ? 
-                                                        <Text>{'입찰중 / '+ `${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</Text>
+                                                        <NotoSansText style={{color: '#FF0024'}}>{'입찰중 / '+ `${convertTime(orderTimeList[index]).hour}:${convertTime(orderTimeList[index]).minute}`}</NotoSansText>
                                                     :
-                                                        <Text>{translateState(item.kind, item.state)}</Text>}
-                                                    {item.state <= 2 && <Text>{'입찰업체 / ' + item.bidNum}</Text>}
+                                                        <NotoSansText style={{color: '#FF0024'}}>{translateState(item.kind, item.state)}</NotoSansText>}
+                                                    {item.state <= 2 && <NotoSansText style={{color: '#FF0024'}}>{'입찰업체 / ' + item.bidNum}</NotoSansText>}
                                                 </ListContent>
                                             </ListBox>
+
+                                            {item2 !== null  && 
+                                            <ListBox onPress={()=>{StateMove(item2.orderId, item2.state, item2.carName, item2.time, item2.kind)}}>
+                                                <MenuTitle>
+                                                    <Text style={{fontFamily: 'Jua-Regular'}}>{item2.carName}</Text>
+                                                    {item2.state <= 2 &&<View style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end'}}>
+                                                        <IconButton icon='close' size={18}  color={Color.mainText} onPress={()=>{askCancelOptions(item2.orderId)}}/>
+                                                    </View>}
+                                                </MenuTitle>
+                                                <ListContent>
+                                                    {item2.state <= 2 ? 
+                                                        <NotoSansText style={{color: '#FF0024'}}>{'입찰중 / '+ `${convertTime(orderTimeList[index+1]).hour}:${convertTime(orderTimeList[index+1]).minute}`}</NotoSansText>
+                                                    :
+                                                        <NotoSansText style={{color: '#FF0024'}}>{translateState(item2.kind, item2.state)}</NotoSansText>}
+                                                    {item2.state <= 2 && <NotoSansText style={{color: '#FF0024'}}>{'입찰업체 / ' + item2.bidNum}</NotoSansText>}
+                                                </ListContent>
+                                            </ListBox>}
                                         </View>
                                     )
+                                }
                                 })}
                         </Swiper>}
                         </>
                         :
-                        <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)'}}>
-                            <ActivityIndicator/>
-                        </View>}
+                        <TotalIndicator/>}
                     </MenuContent>
                 </MenuBox>
                 <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
                     <Row style={{alignItems: 'center'}}>
                         <View style={{paddingHorizontal: 10}}>
-                            <Text>이용약관</Text>
+                            <NotoSansText style={{color: '#74B7E1'}}>이용약관</NotoSansText>
                         </View>
-                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <PolicySeperator style={{borderColor: '#74B7E1'}}/>
                         <View style={{paddingHorizontal: 10}}>
-                            <Text>개인정보처리방침</Text>
+                            <NotoSansText style={{color: '#74B7E1'}}>개인정보처리방침</NotoSansText>
                         </View>
-                        <PolicySeperator style={{borderColor: 'black'}}/>
+                        <PolicySeperator style={{borderColor: '#74B7E1'}}/>
                         <View style={{paddingHorizontal: 10}}>
-                            <Text>청소년보호정책</Text>
+                            <NotoSansText style={{color: '#74B7E1'}}>청소년보호정책</NotoSansText>
                         </View>
                     </Row>
-                    <Text style={{marginTop: 10}}>어메이킹스튜디오</Text>
+                    <NotoSansText style={{color: '#74B7E1', margin: 10}}>어메이킹스튜디오</NotoSansText>
                     <View style={{marginTop: 10, alignItems: 'center'}}>
                         <Row style={{alignItems: 'center'}}>
-                            <PolicyText>주소</PolicyText>
-                            <PolicySeperator/>
+                            {/* <PolicyText>주소</PolicyText>
+                            <PolicySeperator/> */}
                             <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, stay S921호'}</PolicyText>
                         </Row>
                         <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
                     </View>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>대표</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>대표</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>김용희</PolicyText>
                     </Row>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>사업자등록번호</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>사업자등록번호</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>437-07-02325</PolicyText>
                     </Row>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>제공자</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>제공자</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>어메이킹스튜디오</PolicyText>
                     </Row>
                 </View>
@@ -574,8 +654,8 @@ function MainPage(props){
         <Modal
         animationType="slide"
         transparent={true}
-        visible={existingDialog}
-        onRequestClose={() => {setExistingDialog(!existingDialog);}}
+        visible={NcpAsyncCheck}
+        onRequestClose={() => {setNcpAsyncCheck(!NcpAsyncCheck);}}
         >
             <CheckModal
             TitleView={<JuaText style={{fontSize: 32}}>확인</JuaText>}
@@ -584,11 +664,31 @@ function MainPage(props){
                 <NotoSansText style={{fontSize: 20}}>{'이어서 하시겠습니까?'}</NotoSansText>
                 </>}
             BtnView={<>
-                <CustButton onPress={()=>{CancelExisting()}}>취소</CustButton>
-                <CustButton onPress={()=>{OKExisting()}}>확인</CustButton>
+                <CustButton onPress={()=>{NcpCancelAsync()}}>취소</CustButton>
+                <CustButton onPress={()=>{NcpOkAsync()}}>확인</CustButton>
             </>}
             />
         </Modal>
+
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={CareAsyncCheck}
+        onRequestClose={() => {setCareAsyncCheck(!CareAsyncCheck);}}
+        >
+            <CheckModal
+            TitleView={<JuaText style={{fontSize: 32}}>확인</JuaText>}
+            TextContentView={ <>
+                <NotoSansText style={{fontSize: 20}}>{'이전에 중단된 요청서가 있습니다.'}</NotoSansText>
+                <NotoSansText style={{fontSize: 20}}>{'이어서 하시겠습니까?'}</NotoSansText>
+                </>}
+            BtnView={<>
+                <CustButton onPress={()=>{CareCancelAsync()}}>취소</CustButton>
+                <CustButton onPress={()=>{CareOkAsync()}}>확인</CustButton>
+            </>}
+            />
+        </Modal>
+
 
         </>
     )

@@ -1,25 +1,24 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Text, StyleSheet, View, ActivityIndicator, Alert, TouchableOpacity, FlatList, Platform } from 'react-native';
-import Icon  from "react-native-vector-icons/Ionicons";
-import { Button, Provider as PaperProvider } from 'react-native-paper';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, FlatList } from 'react-native'
+import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import SearchBar from "react-native-dynamic-search-bar";
-//components
+//component
 import Background from "../components/Background";
 import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from "../components/TextStyle";
-import Row from '../components/Row';
 import TopBox from "../components/TopBox";
-//constants
-import Color from '../constants/Color';
+import Row from "../components/Row";
+//constant
+import Color from "../constants/Color";
 import { CarNames } from "../constants/LIST";
 //function
-import storage from '../function/storage';
+import storage from "../function/storage";
 
-function NcpPage_1(props){
 
-    const [isLoading, setIsLoading] = React.useState(true); //로딩중...
+function CarePage_1(props){
+    const [isLoading, setIsLoading] = React.useState(false);
     const [carName, setCarName] = React.useState(null);
     const [searchSpinner, setSearchSpinner] = React.useState(false);
     const [filter, setFilter] = React.useState({
@@ -35,22 +34,22 @@ function NcpPage_1(props){
     React.useEffect(() => {
         if(isFoucused){
             setIsLoading(true);
-            storage.fetch('BidOrder')
+            storage.fetch('CareOrder')
             .then(response => {
                 if(response != null){
                     if(response.carName !== null){
-                        console.log('In page 1 useEffect: ', response);  
+                        console.log('케어페이지 1 useEffect: ', response);  
                         setCarName(response.carName);
                     }
                     else{
-                        console.log('Async error: there is not carName');
-                        AsyncStorage.removeItem('BidOrder')
+                        console.log('CareOrder캐시 없음.');
+                        AsyncStorage.removeItem('CareOrder')
                         .then(() => {
-                            console.log('remove bidOrder Async');
+                            console.log('CareOrder 캐시 제거');
                         })
                         .catch(error => {
                             console.log(error);
-                        })
+                        });
                     }
                     setIsLoading(false);
                 }
@@ -64,28 +63,41 @@ function NcpPage_1(props){
         }
     }, [isFoucused]);
 
+    function askCancelCare(){
+        Alert.alert(
+            '입력을 중단하겠습니까?',
+            '지금까지 입력된 내용은 저장되지 않습니다.',
+            [
+                {text: '취소', onPress: () => {}},
+                {text: '확인', onPress: () => {
+                    props.navigation.popToTop();
+                }},
+            ],
+            { cancelable: true }
+        );
+    }
+
     async function storeCarName(carName){
         try{
             if(carName !== null && carName !== ""){
-                let newOrder = null;
-                const response = await storage.fetch('BidOrder');
+                let newOrder = {
+                    processPage: null,
+                    carName: null,
+                    options: null,
+                    require: null,
+                    region: null,
+                };
+                const response = await storage.fetch('CareOrder');
                 if(response !== null){
                     newOrder = {...response};
                     if(newOrder.processPage <= 1) newOrder.processPage = 1;
                 }
                 else{
-                    newOrder = {
-                        processPage: null,
-                        carName: null,
-                        options: null,
-                        require: null,
-                        region: null,
-                    };
                     newOrder.processPage = 1;
                 }
                 newOrder.carName = carName;
-                await storage.store('BidOrder', newOrder);
-                props.navigation.navigate("NcpPage_2");
+                await storage.store('CareOrder', newOrder);
+                props.navigation.navigate("CarePage_2");
             }
             else {
                 Alert.alert(
@@ -107,38 +119,15 @@ function NcpPage_1(props){
     function cancelCarName(){
         //지금 까지의 입력 싹 다 취소
         setCarName(null);
-        AsyncStorage.removeItem('BidOrder')
+        AsyncStorage.removeItem('CareOrder')
                     .then(() => {
-                        console.log('remove bidOrder Async');
+                        console.log('CareOrder 캐시 삭제');
                         props.navigation.navigate("MainPage");
                     })
                     .catch(error => {
                         console.log(error);
                     })
         props.navigation.navigate("MainPage");
-    }
-
-    function askCancelCarName(){
-        Alert.alert(
-            '입력을 중단하겠습니까?',
-            '현재 페이지에 입력된 내용은 저장되지 않습니다.',
-            [
-                {text: '취소', onPress: () => {}},
-                {text: '확인', onPress: () => {
-                    //지금 까지의 입력 싹 다 취소
-                    setCarName(null);
-                    AsyncStorage.removeItem('BidOrder')
-                        .then(() => {
-                            console.log('remove bidOrder Async');
-                            props.navigation.navigate("MainPage");
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                }},
-            ],
-            { cancelable: true }
-        );
     }
 
     const searchItem = (item) =>{
@@ -151,7 +140,6 @@ function NcpPage_1(props){
             </TouchableOpacity>
         )
     }
-
     const filterList = (text) => {
         if(text === null || text === ''){
             setFilter({
@@ -180,11 +168,10 @@ function NcpPage_1(props){
         setSearchSpinner(true);
         filterList(text);
     }
-
     const Top = ()=>{
         return(
             <TopBox topbar={<TopBar/>}>
-                <MainText>시공을 원하는</MainText>
+                <MainText>케어를 원하는</MainText>
                 <Row>
                     <MainText style={{color: 'white'}}> 차종을</MainText>
                     <MainText> 입력해 주세요.</MainText>
@@ -196,7 +183,7 @@ function NcpPage_1(props){
     const TopBar = () => {
         return(
             <View style={{width: '100%', height: '100%', paddingRight: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-                <TouchableOpacity style={{padding: 5, marginLeft: 15}} onPress={()=>{askCancelCarName();}}>
+                <TouchableOpacity style={{padding: 5, marginLeft: 15}} onPress={()=>{askCancelCare();}}>
                     <Icon name="close" size={23} color={Color.mainText}></Icon>
                 </TouchableOpacity>
             </View>
@@ -273,4 +260,4 @@ const styles = {
     },
 }
 
-export default NcpPage_1;
+export default CarePage_1;

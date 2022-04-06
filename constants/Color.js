@@ -3,9 +3,9 @@ export default {
     //  main: '#5B56B6',
     main: '#87CDFC',
     sub: '#DAEFFE',
-    mainText: '#2569C1',
+    mainText: '#2871CC',
     menuBackgrund: '#F3FAFE',
-    menuBoder: '#DDEEFD',
+    menuBorder: '#DDEEFD',
     menuTitle: '#FFFFFF',
     menuTitleBorder: '#ABCCE7',
 };

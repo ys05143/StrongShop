@@ -17,7 +17,7 @@ function CheckErrorCode(e, navigation) {
             '현재 다른 기기에서 로그인 중입니다.',
             '다시 로그인해야 합니다.',
             [
-                {text: '확인', onPress: () => { navigation.navigate("LoginScreen")}},
+                {text: '확인', onPress: () => { navigation.navigate("LoginPage")}},
             ],
             { cancelable: false }
         );

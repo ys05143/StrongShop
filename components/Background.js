@@ -49,13 +49,12 @@ const TotalView = styled.View`
     /* margin-top: ${NOTCH}px; */
     /* padding-top: ${(LargeCircleWidth+TopValue)}px; */
     top: ${(LargeCircleWidth+TopValue)}px;
-    background-color: white;
 `;
 
 function Background(props){
     return(
-        <View style={{alignItems: 'center', backgroundColor: 'white'}}>
-            <TotalView>
+        <View style={{alignItems: 'center', backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
+            <TotalView style={{backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
                 {props.children}
             </TotalView>
             <LargeCircle>

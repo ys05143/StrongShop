@@ -14,4 +14,8 @@ export default { //height => iphone X 이상에서는 노치의 높이와 home i
     TopBar: 60,
     IOS_notch: getStatusBarHeight(true),
     HomeIndicator: HomeIndicator(), 
+    LargeCircleWidth : 1000,
+    SmallCircleWidth : 970,
+    TopValue : -770,
+    New_total: data.height - (1000-770)//(LargeCircleWidth+TopValue)
 };

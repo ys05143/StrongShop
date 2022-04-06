@@ -2,34 +2,37 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Title  , ProgressBar, Avatar , Appbar , List , Badge , Button , IconButton , Portal , Provider, FAB, Divider}  from 'react-native-paper';
 import { FlatList , ScrollView, Alert, Text, ActivityIndicator, Modal, TouchableOpacity, View } from 'react-native';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Icon from "react-native-vector-icons/Ionicons";
 import StepIndicator from 'react-native-step-indicator';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-//import { request , PERMISSIONS } from 'react-native-permissions';
-import Swiper  from 'react-native-swiper';
 import database from '@react-native-firebase/database';
-import storage from '../function/storage';
 import TopBar from '../components/TopBar';
 import Color from '../constants/Color';
-import JustShowOrder from '../NewCarPackage/JustShowOrder';
+import JustShowOrder from './JustShowOrder';
 import ModalView from '../components/ModalView';
-import FinalReceipt from '../NewCarPackage/FinalReceipt';
-import Row from '../components/Row';
+import FinalReceipt from './FinalReceipt';
+import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from "../components/TextStyle";
+import Accordion from 'react-native-collapsible/Accordion';
 //for server
 import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
-import TotalView from '../components/TotalView';
 import AppWindow from '../constants/AppWindow';
+import CustButton from '../components/CustButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import TotalIndicator from '../components/TotalIndicator';
 
 const WIDTH = AppWindow.width;
-
+const Row = styled.View`
+    flex-direction: row ;
+    align-items: center;
+`;
 const ImageView = styled.TouchableOpacity`
     width: ${(WIDTH-6)/3}px;
     height: ${(WIDTH-6)/3}px;
@@ -37,74 +40,32 @@ const ImageView = styled.TouchableOpacity`
     margin: 1px;
 `;
 const SwiperView = styled.View`
-    width: 100%;
+    width: ${WIDTH}px;
     flex: 1;
+    background-color: white;
 `;
-const InfoView = styled.View`
+
+const MenuBox = styled.View`
     width: 95%;
-    border-radius: 10px;
-    padding: 5px 10px;
-    border: 3px solid gray;
+    border: 2px solid ${Color.menuBorder};
+    background-color: ${Color.menuBackgrund};
+    border-radius: 5px;
+    margin-bottom: 10px;
 `;
-
-const styles = {
-    listAccordionStyle : {
-        backgroundColor: 'white' ,
-        borderTopWidth: 1 ,
-        borderTopColor: 'lightgray'        
-    } ,
-    listStyle1 : {
-        fontSize: 15 , 
-        fontWeight: 'bold',
-    } ,
-    listStyle : {
-        fontWeight: 'bold',
-        fontSize: 13 , 
-    } ,
-    itemText: {
-        fontSize: 13 ,
-        fontWeight: 'bold' ,
-        alignSelf: 'center'
-    } ,
-    labelStyle : {
-    },
-    total : {
-        borderBottomWidth: 1 , 
-        borderColor: 'lightgray',
-    },
-    totalprice : {
-        fontWeight: 'bold',
-        fontSize: 15 , 
-    } ,
-    title : {
-        fontFamily : 'DoHyeon-Regular' ,
-        fontSize: 30 ,
-        padding: 20
-    },
-    progress : {
-      height: 5
-    },
-    icon : {
-        backgroundColor: 'transparent'
-
-    } ,
-    text : {
-        fontSize: 17 ,
-        fontWeight: 'bold'
-    },
-    subTitle : {
-
-    },
-}
-
-
-const TEXT = {
-    first : '탁송주소지를 아래 주소로 변경해주세요.' ,
-    second : '업체에서 신차검수 중입니다.' ,
-    third : '신차검수가 완료되었습니다.' ,
-    fourth : '업체에서 시공 중 입니다.',
-    fifth : '모든 시공이 완료되었습니다.',
-}
+const MenuTitle = styled.View`
+    width: 100%;
+    height: 35px;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+    border-bottom-color: ${Color.menuTitleBorder};
+    border-bottom-width: 2px;
+    flex-direction: row;
+`;
+const MenuContent = styled.View`
+    width: 100%;
+    padding: 10px 0px;
+`;
 
 // 화면 구성 할 때 데이타
 const progress = [
@@ -113,21 +74,25 @@ const progress = [
     },
     {
         title : '차량 탁송지 지정하기' ,
-        text: '고객님께서 \'직접\'\n구매사를 통해\n아래 주소로 변경해주셔야 합니다.'
+        text: '고객님께서 \'직접\'\n구매사를 통해\n아래 주소로 변경해주셔야 합니다.',
+        stateText: '업체에서 대기 중 입니다.'
     } ,
     {
         title : '신차검수 현황' ,
+        stateText: '업체에서 신차를 검수 중 입니다.'
     } ,
     {
         title : '시공 현황' ,
+        stateText: '업체에서 시공 중 입니다.'
     } ,
     {
         title : '시공완료/출고' ,
-        text: '🎉오래 기다리셨습니다!!!🎉\n고객님의 시공이 모두 완료되었습니다.\n아래의 주소로 차량을 찾으러오세요.'
+        text: '🎉오래 기다리셨습니다!!!🎉\n고객님의 시공이 모두 완료되었습니다.\n아래의 주소로 차량을 찾으러오세요.',
+        stateText: '업체에서 모든 시공을 완료하였습니다.'
     } ,
 ]
 
-const labels = ["탁송지\n지정","신차검수","검수완료","시공중","시공완료","출고대기"];
+const labels = ["탁송지\n지정","신차검수","검수완료","시공 중","시공완료","출고대기"];
 const customStyles = {
     stepIndicatorSize: 25,
     currentStepIndicatorSize: 32,
@@ -160,7 +125,8 @@ const DATA=[
         companyId: 0,
         contractId: 0,
     },{
-        shipmentLocation: ''
+        shipmentLocation: '',
+        receipt: {...InitialOptions},
     },{
         inspectionImages: []
     },{
@@ -170,9 +136,75 @@ const DATA=[
         receipt: ''
     }
 ]
+const InitialOptions = {
+    tinting: false,
+    detailTinting: {
+        LUMA: false,
+        SOLAR: false,
+        RAINBOW: false,
+        RAYNO: false,
+        ANY: false,
+        ETC: '',
+    },
+    ppf: false,
+    detailPpf: {
+        BONNET: false,
+        SIDEMIRROR: false,
+        FRONTBUMPER: false,
+        FRONTBUMPERSIDE:false,
+        BACKBUMPER: false,
+        BACKBUMPERSIDE: false,
+        HEADLIGHT: false,
+        TAILLAMP: false,
+        BCFILTER: false,
+        DOOR: false,
+        HOOD: false,
+        ETC: '',
+    },
+    blackbox: false,
+    detailBlackbox: {
+        FINETECH: false,
+        INAVI: false,
+        MANDO: false,
+        ANY: false,
+        ETC: '',
+    },
+    battery: false,
+    detailBattery: {
+        V6: false,
+        V12: false,
+        ANY: false,
+        ETC: '',
+    },
+    afterblow: false,
+    detailAfterblow: {
+        ANY: false,
+        ETC: '',
+    },
+    //추가옵션
+    soundproof: false,
+    detailSoundproof: {
+        DOORSOUND: false,
+        INSIDEFLOOR: false,
+        FENDER: false,
+        BONNETSOUND: false,
+        TRUNK: false,
+        ETC: '',
+    },
+    wrapping: false,
+    detailWrapping: {
+        DESIGN: '',
+    },
+    bottomcoating: false,
+    detailBottomcoating:{
+        UNDER: false,
+        POLYMER: false,
+    },
+    glasscoating: false,
+}
 
 
-function ProgressScreen( props ) {
+function NcpProgressPage( props ) {
     const[orderId, setOrderId] = React.useState(props.route.params.orderId);
     const[contractId, setContractId] = React.useState();
     const[state,setState] = React.useState(props.route.params.state);
@@ -189,24 +221,11 @@ function ProgressScreen( props ) {
     const[addChatNum, setAddChatNum] = React.useState(0);
     const[isSending, setIsSending] = React.useState(false);
     const[ReceiptModal, setReceiptModal] = React.useState(false);
+    const swiper = React.useRef();
 
     function getReceiptModal(close){
         setReceiptModal(close);
     }
-
-
-    // async function rdbOn(id){ //캐시를 이용해서 읽지 않은 채팅 감지
-    //     console.log(`chat${id}`);
-    //     database().goOnline();
-    //     database().ref(`chat${id}`).on('value', snapshot => {
-    //         //console.log(snapshot.numChildren());
-    //         storage.fetch(`chat${id}`)
-    //         .then(res=>{
-    //             console.log(addChat);
-    //             if(snapshot.numChildren() > res) setAddChat(true);
-    //         });
-    //     });
-    // }
 
     async function checkAddChat(id){
         database().ref(`chat${id}`).on('value', snapshot => {
@@ -272,7 +291,7 @@ function ProgressScreen( props ) {
                 if(auth !== null){
                     const response = await axios({
                         method: 'PUT',
-                        url : `${server.url}/api/contract/7/${contractId}` ,
+                        url : `${server.url}/api/contract/ncp/7/${contractId}` ,
                         headers : {Auth: auth},
                     })
                     .catch(e=>{
@@ -281,7 +300,7 @@ function ProgressScreen( props ) {
                     //console.log(response);
                     const receiptDetails = response.data.data.details;
                     rdbOff();
-                    props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails, flag: false});
+                    props.navigation.replace("RegisterReviewScreen",{completedContractId: response.data.data.id, companyName: shopData[0].companyName, receipt: receiptDetails, flag: true});
                 }
               }},
             ],
@@ -298,7 +317,7 @@ function ProgressScreen( props ) {
             if(auth !== null){
                 const response = await axios({
                     method: 'GET',
-                    url : `${server.url}/api/contract/3/${orderId}`,
+                    url : `${server.url}/api/contract/ncp/3/${orderId}`,
                     headers : {Auth: auth},
                 })
                 .catch(e=>{
@@ -318,7 +337,7 @@ function ProgressScreen( props ) {
                     if(state >= 4){
                         const img_res = await axios({
                             method: 'GET',
-                            url : `${server.url}/api/contract/4/${rawData.contract_id}`,
+                            url : `${server.url}/api/contract/ncp/4/${rawData.contract_id}`,
                             headers : {Auth: auth},
                         })
                         .catch(
@@ -338,7 +357,7 @@ function ProgressScreen( props ) {
                     if(state >= 6){
                         const img_res = await axios({
                             method: 'GET',
-                            url : `${server.url}/api/contract/6/${rawData.contract_id}`,
+                            url : `${server.url}/api/contract/ncp/6/${rawData.contract_id}`,
                             headers : {Auth: auth},
                         })
                         .catch(
@@ -378,10 +397,10 @@ function ProgressScreen( props ) {
         }
         catch{
             Alert.alert(
-                '정보 조회 오류',
+                '정보 조회 실패',
                 '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {}},
+                    {text: '확인', onPress: () => {props.navigation.navigate("MainScreen");}},
                 ],
                 { cancelable: false }
             );
@@ -392,16 +411,18 @@ function ProgressScreen( props ) {
     async function NextState(){
         try{
             Alert.alert(
-                state === 3 ? '탁송지를 변경하셨습니까?' : state === 5 ? '시공을 승인하시겠습니까?' : '승인하시겠습니까?',
-                state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '되돌릴 수 없습니다.' : '되돌릴 수 없습니다.',
+                state === 3 ? '탁송지를 변경하셨습니까?' : state === 5 ? '차량을 인수하시겠습니까?' : '승인하시겠습니까?',
+                state === 3 ? '변경하지 않으면 시공을 받으실 수 없습니다.' : state === 5 ? '인수를 결정하시면 바로 시공을 시작합니다.' : '되돌릴 수 없습니다.',
                 [
                     {text: '취소', onPress: () => {}},
                     {text: '확인', onPress: async () => {
+                        setIsLoading(true);
+                        setIsSending(true);
                         const auth = await checkJwt();
                         if(auth !== null){
                             const response = await axios({
                                 method: 'PUT',
-                                url : `${server.url}/api/contract/${state}/${orderId}` ,
+                                url : `${server.url}/api/contract/ncp/${state}/${orderId}` ,
                                 data : {
                                     orderId: orderId
                                 },
@@ -409,7 +430,6 @@ function ProgressScreen( props ) {
                             }).catch(e=>{
                                 checkErrorCode(e, props.navigation);
                             })
-                            //console.log(response);
                             setState(state+1);
                         }
                         else{
@@ -422,6 +442,8 @@ function ProgressScreen( props ) {
                                 { cancelable: false }
                             );
                         }
+                        setIsLoading(false);
+                        setIsSending(false);
                     }},
                 ],
                 { cancelable: false }
@@ -440,6 +462,49 @@ function ProgressScreen( props ) {
             console.log(e);
         }}
     }
+
+    function changeSwiper(position){
+        if( position > state-3 ){
+            return ;
+        }
+        else{
+            if(position === 0) swiper.current.scrollTo(0);
+            else if(position === 1 || position === 2) swiper.current.scrollTo(1);
+            else if(position === 3) swiper.current.scrollTo(2);
+            else if(position === 4 || position === 5) swiper.current.scrollTo(3);
+            else swiper.current.scrollTo(state-3);
+        }
+
+    }
+
+     //for acodian
+     const [activeSections, setActiveSections] = React.useState([]);
+
+     function _renderHeader (section, index, isActive) {
+         return (
+             <MenuTitle>
+                <MenuTitleText>시공 내역</MenuTitleText>
+                <View style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end'}}>
+                    <IconButton icon= {isActive ? 'chevron-up' : 'chevron-down'} size={18}  color={Color.mainText}/>
+                </View>
+            </MenuTitle>
+            
+         );
+     };
+ 
+     const _renderContent = section => {
+         return(
+            <MenuContent style={{height: 200}}>
+                <ScrollView>
+                    <FinalReceipt getModal={getReceiptModal} receipt={shopData[1].receipt} isModal={false} kind={'NewCarPackage'}/>
+                </ScrollView>
+            </MenuContent>
+         )
+     };
+ 
+     const _updateSections = activeSections => {
+         setActiveSections(activeSections);
+     };
 
     return(
         <Provider>
@@ -464,76 +529,90 @@ function ProgressScreen( props ) {
             <IconButton icon='close' style={{ alignSelf: 'flex-end', position: 'absolute', top: 30}} color={'white'} onPress={ () => { setVisibleConstruction(false) }} />
         </Modal>
 
-        <TotalView notchColor={Color.main} homeIndicatorColor={'white'}>
-            <View style={{backgroundColor: 'white'}}>
-                {/* <Appbar.Header style={{ backgroundColor: Color.main }}>
-                <Appbar.BackAction onPress={() => { props.navigation.goBack(); rdbOff(); }} />
-                <Appbar.Content title={shopData[0].companyName} titleStyle={{ fontFamily : 'DoHyeon-Regular' , fontSize: 30}} />
-                
-                </Appbar.Header>   */}
-                <TopBar style={{backgroundColor: 'white', borderBottomWidth: 0}}>
-                    <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}}  onPress={() => { props.navigation.goBack(); rdbOff(); }}>
-                        <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("ShopScreen_1", {companyId: shopData[0].companyId});}}>
-                        <Text style={{ fontFamily : 'DoHyeon-Regular' , fontSize: 25, color: 'black'}}>{shopData[0].companyName}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'flex-end'}} onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
-                        <MaterialComunityIcons name={"chat"} size={30} color={'black'} style={{elevation: 0}}/>
-                        {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={15}>{addChatNum}</Badge>}
-                    </TouchableOpacity>
-                </TopBar>
-                
-                <Row style={{alignItems: 'center'}}>
-                    <Title style={styles.title}>시공 진행 상황</Title>
-                    {/* <Title style={{ marginLeft: 20 , color : 'gray' ,marginBottom: 10}}>
-                        {
-                            state == 3 ? TEXT.first : state == 4 ? TEXT.second : state == 5 ? TEXT.third : state == 6 ? TEXT.fourth : TEXT.fifth 
-                        }
-                    </Title> */}
-                    <Button mode={"outlined"} color={'gray'} icon={'clipboard-check-outline'} onPress={()=>{setReceiptModal(true)}}>시공 목록</Button>
-                </Row>
-                <View style={{width: '100%', marginBottom: 10}}>
-                    <StepIndicator
-                        customStyles={customStyles}
-                        currentPosition={state-3}
-                        labels={labels}
-                        stepCount={6}
-                    />
-                </View>
-            </View>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
             
-            <SwiperView style={{backgroundColor: 'white', marginTop: 10}}>
-                <Swiper horizontal={true} index={state-3}
-                    //showsButtons={true}
-                    // showsHorizontalScrollIndicator={true}
-                    showsPagination={false}
-                    // prevButton={<Icon name='chevron-back-outline' color={'black'} size={25}/>}
-                    // nextButton={<Icon name='chevron-forward-outline' color={'black'} size={25}/>}
-                    overScrollMode='auto'
-                    loop={false}
-                    //onIndexChanged={index=>setDisplay(index)}
-                    // renderPagination = { (index,total) => <Title style={{ alignSelf: 'center'}}>{ index+1}/{total}</Title>}
-                >  
-                    {state >= 3 && <SwiperView>
-                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 3 ? 'red' : 'black', fontWeight: 'bold'}}>
-                            {progress[1].title}
-                        </Title>
-                        <View style={{flex: 1, alignItems: 'center'}}>
-                            <View style={{width: '75%', flex: 1, justifyContent: 'space-between'}}>
-                                <Title style={{fontSize: 18}}>{progress[1].text}</Title>
-                                <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15, ...styles.title}}>{'업체 주소:\n'+shopData[1].shipmentLocation}</Title>
-                            </View>
-                            {state === 3 && <Button mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); NextState();}} contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center'}} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '완료'}</Button>}
-                        </View>
-                    </SwiperView>}
-                    
-                    {state >= 4 && <SwiperView>
-                        <Row style={{alignItems: 'center'}}>
-                            <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : (state === 4 || state ===5) ? 'red' : 'black', fontWeight: 'bold'}}>
-                                {progress[2].title}
-                            </Title>
+            <TopBar style={{backgroundColor: 'white', borderBottomWidth: 0}}>
+                <TouchableOpacity style={{height: 60, width: 60, justifyContent: 'center', paddingHorizontal: 5}}  onPress={() => { props.navigation.goBack(); rdbOff(); }}>
+                    <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
+                </TouchableOpacity>
+                <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} onPress={()=>{props.navigation.navigate("CompanyPage", {companyId: shopData[0].companyId});}}>
+                    <JuaText style={{ fontSize: 25 }}>{shopData[0].companyName}</JuaText>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'flex-end'}} onPress={() => { rdbOff(); props.navigation.navigate('ChatPage',{ companyName : shopData[0].companyName, contractId: contractId}) }}>
+                    <MaterialComunityIcons name={"chat"} size={30} color={'black'} style={{elevation: 0}}/>
+                    {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1, top: 13, right: 2}} size={15}>{addChatNum}</Badge>}
+                </TouchableOpacity>
+            </TopBar>
+            
+            <View style={{backgroundColor: 'white', alignItems: 'center'}}>
+                <MenuBox>
+                    <MenuTitle>
+                        <MenuTitleText>시공 진행 상황</MenuTitleText>
+                    </MenuTitle>
+                    <MenuContent>
+                        <Row style={{marginLeft: 10, marginTop: 5, marginBottom: 10}}>
+                            <Icon name={'ellipse'} style={{marginRight: 5}} size={10}/>
+                            <JuaText style={{fontSize: 18}}>시공 진행 상황:</JuaText>
+                            {/* <JuaText style={{color: 'gray', fontSize: 16, marginLeft: 5}}>{progress[state-2].stateText}</JuaText> */}
                         </Row>
+                        <View style={{width: '100%'}}>
+                            <StepIndicator
+                                customStyles={customStyles}
+                                currentPosition={state-3}
+                                labels={labels}
+                                stepCount={6}
+                                onPress={(position)=>{changeSwiper(position)}}
+                            />
+                        </View> 
+                    </MenuContent>
+                </MenuBox>
+                <MenuBox>
+                    <Accordion
+                    sections={['시공내용']}
+                    activeSections={activeSections}
+                    renderHeader={_renderHeader}
+                    renderContent={_renderContent}
+                    onChange={_updateSections}
+                    underlayColor='transparent'
+                    />
+                </MenuBox>
+            </View>
+
+            <Divider style={{height: 10}}/>
+            
+
+            <SwiperFlatList 
+                ref={swiper}
+                horizontal={true} 
+                index={state === 3 ? 0 : state === 4 ? 1 : state === 5 ? 1 : state === 6 ? 2 : state === 7 ? 3 : 0}
+                showsPagination={false}
+                loop={false}
+                style={{flex: 1}}
+            >  
+                {state >= 3 && <SwiperView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <JuaText style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 3 ? 'red' : 'black', fontSize: 23}}>
+                            {progress[1].title}
+                        </JuaText>
+                        <View style={{alignItems: 'center'}}>
+                            <View style={{width: '75%'}}>
+                                <NotoSansText style={{fontSize: 18}}>{progress[1].text}</NotoSansText>
+                                <View>
+                                    <JuaText style={{paddingHorizontal: 15, marginTop: 15, fontSize: 20}}>{'업체 주소:'}</JuaText>
+                                    <JuaText style={{paddingHorizontal: 15, marginBottom: 15, fontSize: 30}}>{shopData[1].shipmentLocation}</JuaText>
+                                </View>
+                            </View>
+                            {state === 3 && <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{setIsSending(true); NextState();}} style={{ width: '95%', height: 50, justifyContent: 'center', borderRadius: 15, borderWidth: 2, borderColor: Color.main, backgroundColor: 'white'}} contentStyle={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', borderRadius: 15}} labelStyle={{fontFamily: 'NotoSansKR-Medium', fontSize: 18}}>탁송지 지정 완료</Button>}
+                        </View>
+                    </ScrollView>
+                </SwiperView>}
+                {state >= 4 && <SwiperView>
+                    <Row>
+                        <JuaText style={{ paddingHorizontal: 10 , paddingVertical: 15, color : (state === 4 || state ===5) ? 'red' : 'black', fontSize: 23}}>
+                            {progress[2].title}
+                        </JuaText>
+                    </Row>
+                    <View style={{flex: 1, alignItems: 'center'}}>
                         <FlatList
                             style={{width: '100%', flex: 1}}
                             data={shopData[2].inspectionImages}
@@ -543,14 +622,20 @@ function ProgressScreen( props ) {
                             numColumns={3}
                             onRefresh={()=>{getData()}}
                             refreshing={refresh}
+                            showsVerticalScrollIndicator={false}
                         />
-                        {state === 5 && <Button mode={"contained"} disabled={isSending} onPress={() => {setIsSending(true); NextState();}} contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center'}} labelStyle={{fontSize: 15}} color={Color.main}>{isSending ? '전달중...': '승인'}</Button>}
-                    </SwiperView>}
+                        {state === 5 && <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{setIsSending(true); NextState();}} style={{ width: '95%', height: 50, justifyContent: 'center', borderRadius: 15, borderWidth: 2, borderColor: Color.main, backgroundColor: 'white'}} contentStyle={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', borderRadius: 15}} labelStyle={{fontFamily: 'NotoSansKR-Medium', fontSize: 18}}>{isSending ? '전달중...': '승인'}</Button>}
+                    </View>
+                    
+                </SwiperView>}
 
-                    {state >= 6 && <SwiperView>
-                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 6 ? 'red' : 'black', fontWeight: 'bold'}}>
+                {state >= 6 && <SwiperView>
+                    <Row>
+                        <JuaText style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 6 ? 'red' : 'black', fontSize: 23}}>
                             {progress[3].title}
-                        </Title>
+                        </JuaText>
+                    </Row>
+                    <View style={{flex: 1}}>
                         <FlatList
                             style={{width: '100%', flex: 1}}
                             data={shopData[3].constructionImages}
@@ -560,37 +645,34 @@ function ProgressScreen( props ) {
                             numColumns={3}
                             onRefresh={()=>{getData()}}
                             refreshing={refresh}
+                            showsVerticalScrollIndicator={false}
                         />
-                    </SwiperView>}
+                    </View>
+                </SwiperView>}
 
-                    {state >= 7 && <SwiperView>
-                        <Title style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 7 ? 'red' : 'black', fontWeight: 'bold'}}>
+                {state >= 7 && <SwiperView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <JuaText style={{ paddingHorizontal: 10 , paddingVertical: 15, color : state === 7 ? 'red' : 'black', fontSize: 23}}>
                             {progress[4].title}
-                        </Title>
-                        <View style={{width: '100%', flex: 1}}>
-                            <ScrollView>
-                            <Title style={{padding: 10, fontSize: 15}}>{progress[4].text}</Title>
-                            <Title style={{fontWeight: 'bold', paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].shipmentLocation}</Title>
+                        </JuaText>
+                        <View style={{flex: 1}}>
+                            <NotoSansText style={{padding: 10, fontSize: 15}}>{progress[4].text}</NotoSansText>
+                            <JuaText style={{fontSize: 20, paddingHorizontal: 15, marginTop: 15}}>{'=> '+shopData[4].shipmentLocation}</JuaText>
                             <View style={{paddingHorizontal: 10, marginTop: 10, marginBottom: 15}}>
-                                <Title style={{color: 'black', fontSize: 15}}>{'모든시공이 완료되었는지 확인 후\n아래 \'출고 확정\' 버튼을 눌러주세요'}</Title>
+                                <NotoSansText style={{color: 'black', fontSize: 15}}>{'모든시공이 완료되었는지 확인 후\n아래 \'출고 확정\' 버튼을 눌러주세요'}</NotoSansText>
                             </View>
-                            <FinalReceipt receipt={shopData[4].receipt} isModal={false}/>
-                            <Button contentStyle={{width: '100%', height: '100%'}} style={{width: '100%', height: 50, justifyContent: 'center', marginTop: 20}} labelStyle={{fontSize: 15}} color={Color.main}mode={'contained'} disabled={isSending} onPress={()=>{setIsSending(true); FinalConfirm()}}>{isSending ? '확정중...':'출고 확정'}</Button>
-                            </ScrollView>
+                            <FinalReceipt receipt={shopData[4].receipt} isModal={false} kind={'NewCarPackage'}/>
                         </View>
-                    </SwiperView>}
-                    
-                </Swiper>
-            </SwiperView>
-            {/* <View style={{position: 'absolute', bottom: 20, alignSelf: 'flex-end', right: 25,}}>
-                <FAB style={{ backgroundColor: Color.main, alignItems: 'center', justifyContent: 'center', elevation: 0, width: 70, height: 70, borderRadius: 50}} icon="chat" onPress={() => { rdbOff(); props.navigation.navigate('ChatScreen',{ companyName : shopData[0].companyName, contractId: contractId}) }} color='white'/>
-                {addChatNum !== 0 && <Badge style={{position: 'absolute', elevation: 1}}>{addChatNum}</Badge>}
-            </View> */}
-            {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
-                <ActivityIndicator size = 'large' color= {Color.main}/>
-            </View>}
+                        <View style={{width: '100%', alignItems: 'center', marginTop: 10}}>
+                            <Button mode={"contained"} color={Color.main} disabled={isSending} onPress={()=>{setIsSending(true); FinalConfirm();}} style={{ width: '95%', height: 50, justifyContent: 'center', borderRadius: 15, borderWidth: 2, borderColor: Color.main, backgroundColor: 'white'}} contentStyle={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', borderRadius: 15}} labelStyle={{fontFamily: 'NotoSansKR-Medium', fontSize: 18}}>{isSending ? '확정중...':'출고 확정'}</Button>
+                        </View>
+                    </ScrollView>
+                </SwiperView>}
+            </SwiperFlatList>
 
-        </TotalView>
+            {(isLoading || isSending) && <TotalIndicator/>}
+
+        </SafeAreaView>
 
         <Modal
             animationType="slide"
@@ -599,8 +681,10 @@ function ProgressScreen( props ) {
             onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
         >
             <ModalView>
-                <View style={{width: '90%'}}>
-                    <JustShowOrder getModal={getReceiptModal} orderId={orderId}/>
+                <View style={{width: '90%', height: '90%',backgroundColor: 'white', padding: 20, justifyContent: 'center'}}>
+                    <ScrollView>
+                        <FinalReceipt getModal={getReceiptModal} receipt={shopData[1].receipt} isModal={true} kind={'NewCarPackage'}/>
+                    </ScrollView>
                 </View>
             </ModalView>
         </Modal>
@@ -608,4 +692,4 @@ function ProgressScreen( props ) {
     );
 }
 
-export default ProgressScreen;
+export default NcpProgressPage;

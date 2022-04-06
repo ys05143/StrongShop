@@ -142,7 +142,7 @@ function BidShop(props, {navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
                 <DetailView>
                     <Receipt item={item} kind={props.kind}/>
-                    <Button mode={'contained'} disabled={isSending} color={Color.main} style={{alignSelf: 'flex-end'}} onPress={()=>{finalCheck(props.orderId, section.bidId, props.kind)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
+                    <Button mode={'outlined'} disabled={isSending} color={'black'} style={{alignSelf: 'flex-end', borderRadius: 15, borderWidth: 2, borderColor: Color.main, backgroundColor: 'white'}} onPress={()=>{finalCheck(props.orderId, section.bidId, props.kind)}}>{isSending? '입찰등록중...':'선택하기' }</Button>
                 </DetailView>
                 
             </View>

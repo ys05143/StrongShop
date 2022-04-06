@@ -3,10 +3,11 @@ import { Text,View } from 'react-native';
 import styled from 'styled-components/native';
 import Accordion from 'react-native-collapsible/Accordion';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from "../components/TextStyle";
 
 const NameView = styled.View`
     flex-direction: row;
-    height: 50px;
+    height: 30px;
     align-items: center;
 `;
 const DetailView = styled.View`
@@ -23,7 +24,7 @@ function ExpandProduct(props){
     function _renderHeader (section, index, isActive) {
         return (
             <NameView>
-                <Text style={{fontSize: 18, marginRight: 10, fontWeight: 'bold'}}>{section.name}</Text>
+                <NotoSansText style={{fontSize: 18, marginRight: 10, fontWeight: 'bold'}}>{section.name}</NotoSansText>
                 <MaterialIcons name={isActive?"expand-less": "expand-more"} size={20} color= 'black'></MaterialIcons>
             </NameView>
         );
@@ -32,8 +33,8 @@ function ExpandProduct(props){
     const _renderContent = section => {
         return(
             <DetailView>
-                <Text style={{fontWeight: 'bold', color: 'gray'}}>[상세설명]</Text>
-                <Text style={{marginTop: 5}}>{section.additionalInfo}</Text>
+                <NotoSansText style={{fontWeight: 'bold', color: 'gray'}}>[상세설명]</NotoSansText>
+                <NotoSansText style={{marginTop: 5}}>{section.additionalInfo}</NotoSansText>
             </DetailView>
         )
     };

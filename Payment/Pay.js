@@ -10,6 +10,7 @@ import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
+import { NotoSansText } from '../components/TextStyle';
 
 function Pay(props){
     const [payData, setPayData] = React.useState(props.route.params.payData);
@@ -51,7 +52,7 @@ function Pay(props){
                     headers : {Auth: auth},
                 })
                 //console.log(response);
-                props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
+                props.navigation.replace("NcpProgressPage", {orderId: orderId, state: 3, bidId: bidId});
                 setIsSending(false);
             }
         }
@@ -60,7 +61,7 @@ function Pay(props){
                 '네트워크 오류',
                 '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {props.navigation.replace("MainScreen")}},
+                    {text: '확인', onPress: () => {props.navigation.replace("MainSPage")}},
                 ],
                 { cancelable: false }
             );
@@ -82,7 +83,7 @@ function Pay(props){
                     headers : {Auth: auth},
                 })
                 //console.log(response);
-                props.navigation.replace("CareProgressScreen", {orderId: orderId, state: 3, bidId: bidId});
+                props.navigation.replace("CareProgressPage", {orderId: orderId, state: 3, bidId: bidId});
                 setIsSending(false);
             }
         }
@@ -91,7 +92,7 @@ function Pay(props){
                 '네트워크 오류',
                 '다시 시도해주세요.',
                 [
-                    {text: '확인', onPress: () => {props.navigation.replace("MainScreen")}},
+                    {text: '확인', onPress: () => {props.navigation.replace("MainPage")}},
                 ],
                 { cancelable: false }
             );
@@ -102,7 +103,7 @@ function Pay(props){
         return(
             <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
-                <Title>로딩중...</Title>
+                <NotoSansText style={{fontSize: 23}}>로딩중...</NotoSansText>
             </View>
         )
     }

@@ -17,6 +17,8 @@ import server from '../server';
 import checkJwt from '../function/checkJwt';
 import { useIsFocused } from '@react-navigation/native';
 import checkErrorCode from '../function/checkErrorCode';
+import TotalIndicator from '../components/TotalIndicator';
+import { JuaText, NotoSansText } from '../components/TextStyle';
 
 const ProfileView = styled.View`
     width: 100%;
@@ -40,6 +42,7 @@ const ProfileName = styled.TextInput`
     height: 40px;
     font-size: 15px;
     color: black;
+    font-family: NotoSansKR-Medium;
 `;
 const InfoView = styled.View`
     width: 100%;
@@ -64,7 +67,7 @@ const InfoOptions = styled.View`
 const PhoneNum = styled.View`
     width: 250px;
     height: 100%;
-    background-color: #e5e5e5;
+    background-color: #F4F4F4;
     flex-direction: row;
 `;
 const Record = styled.TouchableOpacity`
@@ -281,10 +284,10 @@ function MyPageScreen(props){
                     <Icon name="chevron-back-outline" size={30} color={'black'}></Icon>
                 </TouchableOpacity>
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>내 정보</Text>
+                    <JuaText style={{fontSize: 25}}>내 정보</JuaText>
                 </View>
                 <TouchableOpacity style={{width: 60, height: 60, justifyContent: 'center', paddingHorizontal: 5, alignItems: 'center'}} onPress={()=>{afterUpdate ? sendData() : logOut();}}>
-                    <Text>{afterUpdate ? '저장': '로그아웃'}</Text>
+                    <NotoSansText style={{fontSize: 13}}>{afterUpdate ? '저장': '로그아웃'}</NotoSansText>
                 </TouchableOpacity>
             </TopBar>
             <ProfileView>
@@ -307,7 +310,7 @@ function MyPageScreen(props){
             </ProfileView>
             <InfoView>
                 <InfoOptions>
-                    <Text>휴대전화</Text>
+                    <NotoSansText>휴대전화</NotoSansText>
                     <PhoneNum>
                         <TextInput style={{width: 190, paddingLeft: 5}}
                                     keyboardType={'number-pad'}
@@ -319,33 +322,31 @@ function MyPageScreen(props){
                                     maxLength={13}
                                     onSubmitEditing={() => {regex.test(phoneNumInput)}}/>
                         {afterUpdate && <TouchableOpacity style={{width: 60, height: '100%', backgroundColor: Color.main, justifyContent: 'center', alignItems: 'center'}} onPress={()=>{props.navigation.navigate("Certification", {phoneNum: myData.phoneNum, userName: ''})}}>
-                            <Text style={{color: 'white'}}>인증</Text>
+                            <NotoSansText style={{color: 'black'}}>인증</NotoSansText>
                         </TouchableOpacity>}
                     </PhoneNum>
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10}}>
-                    <Text>로그인 연동</Text>
-                    <Image source={myData.loginVer === 'KAKAO' ? require( '../resource/kakaolink_btn_small_ov.png'): require('../resource/alpha_n_box_icon.png')} style={{width: 30, height: 30}}/>
+                    <NotoSansText>로그인 연동</NotoSansText>
+                    <Image source={myData.loginVer === 'KAKAO' ? require( '../resource/kakaolink_btn_small_ov.png'): require('../resource/btnG_아이콘사각.png')} style={{width: 30, height: 30}}/>
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10, marginBottom: 15}}>
-                    <Text>푸시 알림 동의</Text>
+                    <NotoSansText>푸시 알림 동의</NotoSansText>
                     <Switch value={myData.fcm} color={Color.main}/>
                 </InfoOptions>
             </InfoView>
             <RecordView>
                 <Record onPress={()=>{props.navigation.navigate('RecordScreen')}}>
-                    <Text>과거 시공 기록</Text>
+                    <NotoSansText>과거 시공 기록</NotoSansText>
                     <Icon name="chevron-forward-outline" size={20} color={'black'}></Icon>
                 </Record>
             </RecordView>
             <View style={{marginTop: 10, alignItems: 'flex-end', paddingHorizontal: 15}}>
                 <TouchableOpacity style={{height: 20, justifyContent: 'center'}} onPress={()=>{deleteUser();}}>
-                    <Text style={{color: 'gray'}}>회원탈퇴</Text>
+                    <NotoSansText style={{color: 'gray'}}>회원탈퇴</NotoSansText>
                 </TouchableOpacity>
             </View>
-            {isLoading && <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)', position: 'absolute'}}>
-                <ActivityIndicator color= {Color.main}/>
-            </View>}
+            {isLoading && <TotalIndicator/>}
         </TotalView>
     );
 }

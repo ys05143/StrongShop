@@ -8,14 +8,12 @@ import messaging from '@react-native-firebase/messaging';
 import {Notification} from "react-native-in-app-message";
 import { navigationRef } from './Main/MainScreen';
 import * as RootNavigation from './Main/MainScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from './function/storage';
 import SplashScreen from 'react-native-splash-screen'
 
 import MainScreen from './Main/MainScreen';
 import LoginScreen from './Main/LoginScreen';
 import AlarmScreen from './Main/AlarmScreen';
-import ProgressScreen from './Main/ProgressScreen';
 import ChatScreen from './Main/ChatScreen';
 
 import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
@@ -29,7 +27,6 @@ import PaymentScreen from './Payment/PaymentScreen';
 import Pay from './Payment/Pay';
 import PayFail from './Payment/PayFail';
 
-import ShopScreen_1 from './Shop/ShopScreen_1';
 import DetailGallery from './Shop/DetailGallery';
 
 import MyPageScreen from './Mypage/MypageScreen';
@@ -50,7 +47,21 @@ import Temp from './Temp';
 
 import MainPage from './Main/MainPage';
 
+import NcpPage_1 from './NewCarPackage/NcpPage_1';
+import NcpPage_2 from './NewCarPackage/NcpPage_2';
+import NcpPage_3 from './NewCarPackage/NcpPage_3';
+
 import Context from './function/Context';
+import SelectBiddingPage from './Main/SelectBiddingPage';
+import CompanyPage from './Shop/CompanyPage';
+import CarePage_1 from './Care/CarePage_1';
+import CarePage_2 from './Care/CarePage_2';
+import CarePage_3 from './Care/CarePage_3';
+import CareProgressPage from './Care/CareProgressPage';
+import NcpProgressPage from './NewCarPackage/NcpProgressPage';
+import LoginPage from './Main/LoginPage';
+import AlarmPage from './Main/AlarmPage';
+import ChatPage from './Main/ChatPage';
 
 const Stack = createStackNavigator();
 
@@ -165,7 +176,7 @@ function App (props) {
 
   React.useEffect(()=>{ // background message open by touching
       const unsubscribe = messaging().onNotificationOpenedApp(async remoteMessage => {
-        RootNavigation.navigate("New_MainPage");
+        RootNavigation.navigate("MainPage");
       });
       return unsubscribe;
   },[])
@@ -198,34 +209,61 @@ function App (props) {
         {/* 메인화면 */}
         {/* {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="MainPage" component={MainPage} options={{headerShown:false}}/>}
-        {/* 로그인 화면 */}
-        {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>}
-        {/* 알림 화면 */}
-        {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>}
-        {/* 채팅 화면 */}
-        {<Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown:false}}/>}
 
-        {/* 신차패키지 2 */}
-        {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>}
+        {/* 로그인 화면 */}
+        {/* {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="LoginPage" component={LoginPage} options={{headerShown:false}}/>}
+
+        {/* 알림 화면 */}
+        {/* {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="AlarmPage" component={AlarmPage} options={{headerShown:false}}/>}
+
+        {/* 채팅 화면 */}
+        {/* {<Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="ChatPage" component={ChatPage} options={{headerShown:false}}/>}
+
+        {/* 신차패키지 1 */}
+        {/* {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="NcpPage_1" component={NcpPage_1} options={{headerShown:false}}/>}
+
         {/* 검색페이지 */}
         {<Stack.Screen name="SearchScreen" component={SearchScreen} options={{headerShown:false}}/>}
-        {/* 신차패키지 3 ver 3.0*/}
-        {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>}
-        {/* 신차패키지 4 */}
-        {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>}
-        {/* 신차패키지 5 */}
-        {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>}
 
-        {/* 케어페이지 1 Card Version */}
-        {<Stack.Screen name="CareScreen_1" component={CareScreen_1} options={{headerShown:false}}/>}
-        {/* 케어페이지 1 Search Version */}
-        {<Stack.Screen name="CareScreen_1_2" component={CareScreen_1_2} options={{headerShown:false}}/>}
+        {/* 신차패키지 2 ver 3.0*/}
+        {/* {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="NcpPage_2" component={NcpPage_2} options={{headerShown:false}}/>}
+
+        {/* 신차패키지 3 */}
+        {/* {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="NcpPage_3" component={NcpPage_3} options={{headerShown:false}}/>}
+
+        {/* 신차패키지 시공 중 페이지 */}
+        {/* {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="NcpProgressPage" component={NcpProgressPage} options={{headerShown:false}}/>}
+
+
+        {/* 입찰 선택 페이지 */}
+        {/* {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="SelectBiddingPage" component={SelectBiddingPage} options={{headerShown:false}}/>}
+
+        {/* 케어페이지 1 */}
+        {/* Card Version */}
+        {/* {<Stack.Screen name="CareScreen_1" component={CareScreen_1} options={{headerShown:false}}/>} */}
+        {/* Search Version */}
+        {/* {<Stack.Screen name="CareScreen_1_2" component={CareScreen_1_2} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="CarePage_1" component={CarePage_1} options={{headerShown:false}}/>}
+
         {/* 케어페이지 2 */}
-        {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="CarePage_2" component={CarePage_2} options={{headerShown:false}}/>}
+
         {/* 케어페이지 3 */}
-        {<Stack.Screen name="CareScreen_3" component={CareScreen_3} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="CareScreen_3" component={CareScreen_3} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="CarePage_3" component={CarePage_3} options={{headerShown:false}}/>}
+        
         {/* 케어 시공 중 화면 */}
-        {<Stack.Screen name="CareProgressScreen" component={CareProgressScreen} options={{headerShown:false}}/>}
+        {/* {<Stack.Screen name="CareProgressScreen" component={CareProgressScreen} options={{headerShown:false}}/>} */}
+        {<Stack.Screen name="CareProgressPage" component={CareProgressPage} options={{headerShown:false}}/>}
 
         {/* 결제페이지 */}
         {<Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{headerShown:false}}/>}
@@ -235,9 +273,10 @@ function App (props) {
         {<Stack.Screen name="PayFail" component={PayFail} options={{headerShown:false}}/>}
 
         {/* 업체페이지 */}
-        {<Stack.Screen name="ShopScreen_1" component={ShopScreen_1} options={{headerShown:false}}/>}
+        {<Stack.Screen name="CompanyPage" component={CompanyPage} options={{headerShown:false}}/>}
         {/* 업체 작업갤러리 상세 */}
         {<Stack.Screen name="DetailGallery" component={DetailGallery} options={{headerShown:false}}/>}
+
         {/* 마이페이지 */}
         {<Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{headerShown:false}}/>}
         {/* 휴대폰인증 */}
@@ -246,13 +285,10 @@ function App (props) {
         {<Stack.Screen name="RecordScreen" component={RecordScreen} options={{headerShown:false}}/>}
         {/* 리뷰 등록 페이지 */}
         {<Stack.Screen name="RegisterReviewScreen" component={RegisterReviewScreen} options={{headerShown:false}}/>}
-        {/* 사용자 차량 등록 페이지 */}
-        {<Stack.Screen name="RegisterMyCar" component={RegisterMyCar} options={{headerShown:false}}/>}
-        {/* (구) 시공중 페이지 */}
-        {<Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{headerShown:false}}/>}
-        {/* 신차패키지 시공 중 페이지 */}
-        {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>}
 
+        {/* 사용자 차량 등록 페이지 Beta (케어 페이지가 Card버전일때 사용)*/}
+        {<Stack.Screen name="RegisterMyCar" component={RegisterMyCar} options={{headerShown:false}}/>}
+        
         {/* 신차패키지 3 ver 3.0*/}
         {/* {<Stack.Screen name="PackageScreen_3_testVer" component={PackageScreen_3_testVer} options={{headerShown:false}}/>} */}
         
@@ -261,7 +297,7 @@ function App (props) {
 
       </Stack.Navigator>
     </NavigationContainer>
-    <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('New_MainPage'), inAppMessage.current?.hide()}} />
+    <Notification hideStatusBar={false} customComponent={alarmComponent()} ref={inAppMessage} onPress={()=>{RootNavigation.navigate('MainPage'), inAppMessage.current?.hide()}} />
     </React.Fragment>
     </Context>
     </>

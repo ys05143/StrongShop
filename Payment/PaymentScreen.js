@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Alert, Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Platform } from 'react-native';
-import { Button, Title } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import _ from 'lodash';
 import Accordion from 'react-native-collapsible/Accordion';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -17,8 +17,7 @@ import axios from 'axios';
 import server from '../server';
 import checkJwt from '../function/checkJwt';
 import checkErrorCode from '../function/checkErrorCode';
-
-const WIDTH = AppWindow.width;
+import { MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText } from "../components/TextStyle";
 
 const DATA = {
     pg: '',
@@ -46,13 +45,15 @@ const PayMode = styled.TouchableOpacity`
 const PolicySeperator = styled.View`
     width: 1px;
     height: 13px;
-    border-right-width: 1px;
+    border-right-width: 2px;
     border-color: gray;
     margin-right: 5px;
     margin-left: 5px;
 `;
 const PolicyText = styled.Text`
-    color: gray;
+    color: #7D7DC5;
+    font-family: NotoSansKR-Medium;
+    font-size: 10px;
 `;
 
 const Pay = [
@@ -65,33 +66,18 @@ const Pay = [
 const styles = {
     receiptTitle:{
         fontSize: 15,
-        fontWeight: 'bold',
+        fontFamily: 'Jua-Regular'
     },
     receiptSubTitle:{
         fontSize: 13,
         marginLeft: 5,
+        fontFamily: 'NotoSansKR-Medium',
     },
     receiptPrice:{
         fontSize: 15,
-        fontWeight: 'bold'
+        fontFamily: 'Jua-Regular'
     }
 }
-const RowCenter = styled.View`
-    flex-direction: row;
-    align-items: center;
-`;
-const ReceiptMatrixLine = styled.View`
-    height: 1px;
-    width: 100%;
-    border-bottom-width: 1px;
-    border-color: lightgray;
-`;
-const ReceiptItemView = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    height: 40px;
-    align-items: center;
-`;
 
 function PaymentScreen(props){
     const [orderId, setOrderId] = React.useState(props.route.params.orderId);
@@ -203,7 +189,13 @@ function PaymentScreen(props){
                     checkErrorCode(e, props.navigation);
                 })
                 //console.log(response);
-                props.navigation.replace("ProgressScreen_2", {orderId: orderId, state: 3, bidId: bidId});
+                if(kind === 'NewCarPackage'){
+                    props.navigation.replace("NcpProgressPage", {orderId: orderId, state: 3, bidId: bidId});
+                }
+                else{
+                    props.navigation.replace("CareProgressPage", {orderId: orderId, state: 3, bidId: bidId});
+                }
+                
                 setIsLoading(false);
             }
         }
@@ -256,9 +248,9 @@ function PaymentScreen(props){
             //         <Text style={{color: payName === item.label ? 'white' : 'black'}}>{item.label}</Text>
             //     </PayMode>
             // </View>
-            <TouchableOpacity key={item.label} style={{paddingHorizontal: 10, flexDirection: 'row', width: '100%', height: 50, alignItems: 'center', borderColor: payName === item.label? Color.main : 'lightgray', borderBottomWidth: index === payIndex -1 ? 0 : 2, borderLeftWidth: 2, borderRightWidth: 2, borderTopWidth: index === 0 || payName === item.label ? 2 : 0}} onPress={()=>{changePayData('pg', item)}}>
-                <Icon name={payName === item.label ? "radio-button-on-outline" : "radio-button-off-outline"} size={20} style={{color: Color.main}}/>
-                <Text style={{marginLeft: 10, color: payName === item.label ? Color.main : 'black'}}>{item.label}</Text>
+            <TouchableOpacity key={item.label} style={{paddingHorizontal: 10, flexDirection: 'row', width: '100%', height: 50, alignItems: 'center', borderColor: payName === item.label? 'black' : 'lightgray', borderBottomWidth: index === payIndex -1 ? 0 : 2, borderLeftWidth: 2, borderRightWidth: 2, borderTopWidth: index === 0 || payName === item.label ? 2 : 0}} onPress={()=>{changePayData('pg', item)}}>
+                <Icon name={payName === item.label ? "radio-button-on-outline" : "radio-button-off-outline"} size={20} style={{color: 'black'}}/>
+                <NotoSansText style={{marginLeft: 10, fontWeight: payName === item.label ? 'bold' : 'normal'}}>{item.label}</NotoSansText>
             </TouchableOpacity>
         )
     }
@@ -266,7 +258,7 @@ function PaymentScreen(props){
     function _renderHeader (section, index, isActive) {
         return (
             <Row style={{width: '100%', alignItems: 'center'}}>
-                <Title style={{paddingHorizontal: 10, fontWeight: 'bold'}}>시공 항목</Title>
+                <JuaText style={{paddingHorizontal: 10, fontSize: 23}}>시공 항목</JuaText>
                 <Icon name={isActive ? "chevron-up-outline" : "chevron-down-outline"} size={25}/>
             </Row>
         )
@@ -289,7 +281,7 @@ function PaymentScreen(props){
 
     return(
         <>
-        <TotalView notchColor={'white'} homeIndicatorColor={'white'}>
+        <TotalView notchColor={'white'}>
             <ScrollView>
                 <View style={{borderBottomWidth: 1, borderColor: 'lightgray'}}>
                 <Accordion
@@ -309,11 +301,11 @@ function PaymentScreen(props){
                         <Text style={styles.receiptPrice}>{Platform.OS ==='ios' ? payData.amount.toLocaleString("ko-KR", { style: 'currency', currency: 'KRW' }) : parseInt(payData.amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원'}</Text>
                     </Row>
                     <View style={{alignItems: 'flex-end', justifyContent: 'center', marginBottom: 10, paddingRight: 5}}>
-                        <Text style={{color: 'red'}}>시공가격은 현장결재 하시면 됩니다.</Text>
+                        <NotoSansText style={{color: 'red'}}>시공가격은 현장결재 하시면 됩니다.</NotoSansText>
                     </View>
                 </View>
                 <View style={{backgroundColor: 'white', paddingHorizontal: 10, marginBottom: 15}}>
-                    <Title style={{fontWeight: 'bold', marginTop: 15, marginBottom: 10}}>수수료 결제 방법</Title>
+                    <JuaText style={{fontSize: 25, marginTop: 15, marginBottom: 10}}>수수료 결제 방법</JuaText>
                     <Row style={{width: '100%', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20}}>
                         {_.map(Pay , (item, index)=>{
                             return( 
@@ -323,47 +315,47 @@ function PaymentScreen(props){
                 </View>
                 <View style={{alignItems: 'center', width: '100%', paddingVertical: 30}}>
                     <Row style={{alignItems: 'center'}}>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
-                            <Text>이용약관</Text>
-                        </TouchableOpacity>
-                        <PolicySeperator style={{borderColor: 'black'}}/>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
-                            <Text>개인정보처리방침</Text>
-                        </TouchableOpacity>
-                        <PolicySeperator style={{borderColor: 'black'}}/>
-                        <TouchableOpacity style={{paddingHorizontal: 10}}>
-                            <Text>청소년보호정책</Text>
-                        </TouchableOpacity>
+                        <View style={{paddingHorizontal: 10}}>
+                            <NotoSansText style={{color: '#74B7E1'}}>이용약관</NotoSansText>
+                        </View>
+                        <PolicySeperator style={{borderColor: '#74B7E1'}}/>
+                        <View style={{paddingHorizontal: 10}}>
+                            <NotoSansText style={{color: '#74B7E1'}}>개인정보처리방침</NotoSansText>
+                        </View>
+                        <PolicySeperator style={{borderColor: '#74B7E1'}}/>
+                        <View style={{paddingHorizontal: 10}}>
+                            <NotoSansText style={{color: '#74B7E1'}}>청소년보호정책</NotoSansText>
+                        </View>
                     </Row>
-                    <Text style={{marginTop: 10}}>어메이킹스튜디오</Text>
+                    <NotoSansText style={{color: '#74B7E1', margin: 10}}>어메이킹스튜디오</NotoSansText>
                     <View style={{marginTop: 10, alignItems: 'center'}}>
                         <Row style={{alignItems: 'center'}}>
-                            <PolicyText>주소</PolicyText>
-                            <PolicySeperator/>
+                            {/* <PolicyText>주소</PolicyText>
+                            <PolicySeperator/> */}
                             <PolicyText>{'경기도 화성시 동탄첨단산업1로 27, stay S921호'}</PolicyText>
                         </Row>
                         <PolicyText>{'(영천동, 금강펜테리움 IX타워)'}</PolicyText>
                     </View>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>대표</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>대표</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>김용희</PolicyText>
                     </Row>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>사업자등록번호</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>사업자등록번호</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>437-07-02325</PolicyText>
                     </Row>
-                    <Row style={{marginTop: 10, alignItems: 'center'}}>
-                        <PolicyText>제공자</PolicyText>
-                        <PolicySeperator/>
+                    <Row style={{marginTop: 5, alignItems: 'center'}}>
+                        {/* <PolicyText>제공자</PolicyText>
+                        <PolicySeperator/> */}
                         <PolicyText>어메이킹스튜디오</PolicyText>
                     </Row>
                 </View>
                 {false && <Button mode={"contained"} color={Color.main} onPress={()=>{sendData()}} style={{margin: 5, height: 50, justifyContent: 'center'}}>넘어가기</Button>}
             </ScrollView>
-            <View style={{width: '100%', height: 80, backgroundColor: 'white', paddingVertical: 10, borderTopStartRadius: 15, borderTopEndRadius: 15}}>
-                <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center'}} contentStyle={{width: '100%', height: '100%'}}>결제하기</Button>
+            <View style={{width: '100%', height: 80, paddingVertical: 10, borderTopStartRadius: 15, borderTopEndRadius: 15}}>
+                <Button mode={"contained"} color={Color.main} disabled={isLoading} onPress={()=>{MoveToPay()}} style={{margin: 5, height: 50, justifyContent: 'center', borderRadius: 15, borderWidth: 2, borderColor: Color.main, backgroundColor: 'white'}} contentStyle={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', borderRadius: 15}} labelStyle={{fontFamily: 'NotoSansKR-Medium', fontSize: 18}}>결제하기</Button>
             </View>
             {isLoading && <View style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
