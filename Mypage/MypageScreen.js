@@ -328,7 +328,7 @@ function MyPageScreen(props){
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10}}>
                     <NotoSansText>로그인 연동</NotoSansText>
-                    <Image source={myData.loginVer === 'KAKAO' ? require( '../resource/kakaolink_btn_small_ov.png'): require('../resource/btnG_아이콘사각.png')} style={{width: 30, height: 30}}/>
+                    <Image source={myData.loginVer === 'KAKAO' ? require( '../resource/kakaolink_btn_small_ov.png'): require('../resource/Naver_square_btn.png')} style={{width: 30, height: 30}}/>
                 </InfoOptions>
                 <InfoOptions style={{paddingRight: 10, marginBottom: 15}}>
                     <NotoSansText>푸시 알림 동의</NotoSansText>

@@ -427,7 +427,7 @@ function LoginScreen(props) {
                         네이버로 시작하기
                     </Button> */}
                     <TouchableOpacity style={{borderRadius: 5, overflow: 'hidden', marginTop: 20}} onPress={()=>{naverLogin(initials)}}>
-                        <Image source={require('../resource/btnG_완성형.png')} style={{width: 300, height: 50}} resizeMode={'stretch'}></Image>
+                        {/* <Image source={require('../resource/btnG_완성형.png')} style={{width: 300, height: 50}} resizeMode={'stretch'}></Image> */}
                     </TouchableOpacity>
                     <Button style={styles.loginButton} color='white' icon='alpha-t-box' onPress={()=>{testLogin()}}>
                         테스트 로그인

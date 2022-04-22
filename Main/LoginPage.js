@@ -440,7 +440,7 @@ function LoginPage(props) {
                     <Image source={require('../resource/kakao_login_medium_wide.png')} style={{width: 300, height: 50}} resizeMode={'contain'}/>
                 </TouchableOpacity>
                 <TouchableOpacity style={{borderRadius: 5, overflow: 'hidden', marginTop: 20}} onPress={()=>{naverLogin(initials)}}>
-                    <Image source={require('../resource/btnG_완성형.png')} style={{width: 300, height: 50}} resizeMode={'cover'}/>
+                    <Image source={require('../resource/Naver_fullLogin_btn.png')} style={{width: 300, height: 50}} resizeMode={'cover'}/>
                 </TouchableOpacity>
                 <Button style={styles.loginButton} color='black' icon='alpha-t-box' onPress={()=>{testLogin()}}>
                     테스트 로그인
