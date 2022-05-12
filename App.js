@@ -1,27 +1,14 @@
 
 import React from 'react';
-import styled from 'styled-components/native';
 import { View, Text, Platform, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import {Notification} from "react-native-in-app-message";
-import { navigationRef } from './Main/MainScreen';
-import * as RootNavigation from './Main/MainScreen';
+import { navigationRef } from './Main/MainPage';
+import * as RootNavigation from './Main/MainPage';
 import storage from './function/storage';
 import SplashScreen from 'react-native-splash-screen'
-
-import MainScreen from './Main/MainScreen';
-import LoginScreen from './Main/LoginScreen';
-import AlarmScreen from './Main/AlarmScreen';
-import ChatScreen from './Main/ChatScreen';
-
-import PackageScreen_2 from './NewCarPackage/PackageScreen_2';
-import PackageScreen_3 from './NewCarPackage/PackageScreen_3';
-import PackageScreen_4 from './NewCarPackage/PackageScreen_4';
-import PackageScreen_5 from './NewCarPackage/PackageScreen_5';
-import SearchScreen from './NewCarPackage/SearchScreen';
-import ProgressScreen_2 from './NewCarPackage/ProgressScreen_2';
 
 import PaymentScreen from './Payment/PaymentScreen';
 import Pay from './Payment/Pay';
@@ -34,16 +21,6 @@ import Certification from './Mypage/Certification';
 import RecordScreen from './Mypage/RecordScreen';
 import RegisterReviewScreen from './Mypage/RegisterReviewScreen';
 import RegisterMyCar from './Mypage/RegisterMyCar';
-
-import CareScreen_1 from './Care/CareScreen_1';
-import CareScreen_1_2 from './Care/CareScreen_1_2';
-import CareScreen_2 from './Care/CareScreen_2';
-import CareScreen_3 from './Care/CareScreen_3';
-import CareProgressScreen from './Care/CareProgressScreen';
-
-import Temp from './Temp';
-
-/////////////////////////////////////////////////////////
 
 import MainPage from './Main/MainPage';
 
@@ -203,66 +180,45 @@ function App (props) {
     <React.Fragment>
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        
-        { /* 개발시 보는 임시 첫화면 */}
-        {/* {<Stack.Screen name="Temp" component={Temp} options={{headerShown:false}}/>} */}
+
         {/* 메인화면 */}
-        {/* {<Stack.Screen name="MainScreen" component={MainScreen} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="MainPage" component={MainPage} options={{headerShown:false}}/>}
 
         {/* 로그인 화면 */}
-        {/* {<Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="LoginPage" component={LoginPage} options={{headerShown:false}}/>}
 
         {/* 알림 화면 */}
-        {/* {<Stack.Screen name="AlarmScreen" component={AlarmScreen} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="AlarmPage" component={AlarmPage} options={{headerShown:false}}/>}
 
         {/* 채팅 화면 */}
-        {/* {<Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="ChatPage" component={ChatPage} options={{headerShown:false}}/>}
 
         {/* 신차패키지 1 */}
-        {/* {<Stack.Screen name="PackageScreen_2" component={PackageScreen_2} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="NcpPage_1" component={NcpPage_1} options={{headerShown:false}}/>}
 
-        {/* 검색페이지 */}
-        {<Stack.Screen name="SearchScreen" component={SearchScreen} options={{headerShown:false}}/>}
-
-        {/* 신차패키지 2 ver 3.0*/}
-        {/* {<Stack.Screen name="PackageScreen_3" component={PackageScreen_3} options={{headerShown:false}}/>} */}
+        {/* 신차패키지 2 */}
         {<Stack.Screen name="NcpPage_2" component={NcpPage_2} options={{headerShown:false}}/>}
 
         {/* 신차패키지 3 */}
-        {/* {<Stack.Screen name="PackageScreen_4" component={PackageScreen_4} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="NcpPage_3" component={NcpPage_3} options={{headerShown:false}}/>}
 
-        {/* 신차패키지 시공 중 페이지 */}
-        {/* {<Stack.Screen name="ProgressScreen_2" component={ProgressScreen_2} options={{headerShown:false}}/>} */}
+        {/* 신차패키지 '시공 중' 페이지 */}
         {<Stack.Screen name="NcpProgressPage" component={NcpProgressPage} options={{headerShown:false}}/>}
 
 
         {/* 입찰 선택 페이지 */}
-        {/* {<Stack.Screen name="PackageScreen_5" component={PackageScreen_5} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="SelectBiddingPage" component={SelectBiddingPage} options={{headerShown:false}}/>}
 
         {/* 케어페이지 1 */}
-        {/* Card Version */}
-        {/* {<Stack.Screen name="CareScreen_1" component={CareScreen_1} options={{headerShown:false}}/>} */}
-        {/* Search Version */}
-        {/* {<Stack.Screen name="CareScreen_1_2" component={CareScreen_1_2} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="CarePage_1" component={CarePage_1} options={{headerShown:false}}/>}
 
         {/* 케어페이지 2 */}
-        {/* {<Stack.Screen name="CareScreen_2" component={CareScreen_2} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="CarePage_2" component={CarePage_2} options={{headerShown:false}}/>}
 
         {/* 케어페이지 3 */}
-        {/* {<Stack.Screen name="CareScreen_3" component={CareScreen_3} options={{headerShown:false}}/>} */}
         {<Stack.Screen name="CarePage_3" component={CarePage_3} options={{headerShown:false}}/>}
         
-        {/* 케어 시공 중 화면 */}
-        {/* {<Stack.Screen name="CareProgressScreen" component={CareProgressScreen} options={{headerShown:false}}/>} */}
+        {/* 케어 '시공 중' 화면 */}
         {<Stack.Screen name="CareProgressPage" component={CareProgressPage} options={{headerShown:false}}/>}
 
         {/* 결제페이지 */}
@@ -288,12 +244,6 @@ function App (props) {
 
         {/* 사용자 차량 등록 페이지 Beta (케어 페이지가 Card버전일때 사용)*/}
         {<Stack.Screen name="RegisterMyCar" component={RegisterMyCar} options={{headerShown:false}}/>}
-        
-        {/* 신차패키지 3 ver 3.0*/}
-        {/* {<Stack.Screen name="PackageScreen_3_testVer" component={PackageScreen_3_testVer} options={{headerShown:false}}/>} */}
-        
-        {/* new 메인페이지 */}
-        {/* {<Stack.Screen name="New_MainPage" component={New_MainPage} options={{headerShown:false}}/>} */}
 
       </Stack.Navigator>
     </NavigationContainer>
