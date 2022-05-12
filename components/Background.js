@@ -8,9 +8,7 @@ import Color from "../constants/Color";
 import AppWindow from "../constants/AppWindow";
 
 const WIDTH = AppWindow.width;
-const HEIGHT = AppWindow.height;
 const NOTCH = AppWindow.IOS_notch;
-const HOMEINDICATOR = AppWindow.HomeIndicator;
 const REALHEIGHT = AppWindow.realHeight;
 
 const LargeCircleWidth = 1000;
@@ -48,7 +46,7 @@ const TotalView = styled.View`
     height: ${REALHEIGHT - (LargeCircleWidth+TopValue)}px;
     /* margin-top: ${NOTCH}px; */
     /* padding-top: ${(LargeCircleWidth+TopValue)}px; */
-    top: ${(LargeCircleWidth+TopValue)}px;
+    margin-top: ${(LargeCircleWidth+TopValue)}px;
 `;
 
 function Background(props){

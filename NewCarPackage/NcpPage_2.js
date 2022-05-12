@@ -187,7 +187,7 @@ const SelectName = styled.Text`
     margin-left: 5px;
     margin-right: 5px;
     font-size: 18px;
-    font-family: NotoSansKR-Medium;
+    font-weight: bold;
 `;
 const EtcText = styled.TextInput`
     width: 100%;
@@ -197,7 +197,7 @@ const EtcText = styled.TextInput`
     height: 100%;
     border-radius: 5px;
     background-color: white;
-    font-family: NotoSansKR-Medium;
+    font-weight: bold;
 `;
 
 function NcpPage_2(props){

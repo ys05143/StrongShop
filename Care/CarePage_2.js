@@ -534,7 +534,7 @@ function CarePage_2(props){
                                                     name={'직접입력'}/>                  
                                 <Row style={{ paddingLeft: 10, height: 35, alignItems: 'center', marginTop: 10}}>
                                     <Icon name={(EtcChoose === false) ?"radio-button-off-outline": "radio-button-on-outline"} size={18} color= 'gray'></Icon>
-                                    <Text style={{fontSize: 18, color: 'black'}}>기타</Text>
+                                    <Text style={{fontSize: 18, color: 'black', fontWeight: 'bold'}}>기타</Text>
                                 </Row>
                                 <View style={{alignItems: 'center'}}>
                                     <Input value={Etc}

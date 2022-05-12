@@ -10,6 +10,6 @@ const BtnView = styled.View`
     justify-content: space-around;
     flex-direction: row;
     margin-bottom: ${HOMEINDICATOR}px;
-    margin-top: 10px;
+    background-color: transparent;
 `;
 export default BtnView;

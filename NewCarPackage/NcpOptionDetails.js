@@ -13,7 +13,6 @@ import AppWindow from '../constants/AppWindow';
 
 const HEIGHT = AppWindow.height;
 
-//onPress={()=>{ sendChoose(!isChoose); setIsChoose(!isChoose);}}
 const SelectView = styled.View`
     width: 100%;
     height: 35px;
@@ -26,7 +25,7 @@ const SelectName = styled.Text`
     margin-left: 5px;
     margin-right: 5px;
     font-size: 18px;
-    font-family: NotoSansKR-Medium;
+    font-weight: bold;
 `;
 
 function NcpOptionDetails (props){

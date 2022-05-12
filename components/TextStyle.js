@@ -20,6 +20,6 @@ const JuaText = styled.Text`
     font-family: Jua-Regular;
 `;
 const NotoSansText = styled.Text`
-    font-family: NotoSansKR-Medium;
+    font-weight: bold;
 `;
 export {MainText, MenuTitleText, MenuContentText, JuaText, NotoSansText};

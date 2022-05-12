@@ -121,6 +121,8 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+//android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -135,8 +137,8 @@ android {
         applicationId "com.mobile.strongshop.customer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "1.0.12"
+        versionCode 15
+        versionName "1.0.15"
     }
     splits {
         abi {
