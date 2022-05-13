@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Text, ActivityIndicator, View, TextInput, Alert, SectionList, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import { Text, ActivityIndicator, View, TextInput, Alert, SectionList, TouchableOpacity, Modal, ScrollView, Platform} from 'react-native';
 import Icon  from "react-native-vector-icons/Ionicons";
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import _ from 'lodash';
@@ -439,7 +439,7 @@ function CarePage_2(props){
 
     return(
         <>
-        <Background topbox={<Top/>}>
+        <Background topbox={<Top/>} androidKeyboardAware={Platform.OS === 'android'}>
             <View style={{width: '100%', paddingVertical: 20}}>
                 <SectionList
                     ref={scrollX}

@@ -240,10 +240,9 @@ function CarePage_3(props){
 
     return(
         <>
-        <Background topbox={<Top/>}>
+        <Background topbox={<Top/>} androidKeyboardAware={Platform.OS === 'android'}>
             <View style={{width: '100%', alignItems: 'center', flex: 1}}>
             <KeyboardAwareScrollView  style={{width: WIDTH, paddingTop: 10}} contentContainerStyle={{alignItems: 'center'}} extraHeight={300} showsVerticalScrollIndicator={false}>
-            {/* <Text style={{marginLeft: 10, marginBottom: 10, fontSize: 25, fontWeight: 'bold'}}>{carData.carName}</Text> */}
                     {_.map(contents, (item, index)=>{
                         return(
                             <ContentView key={index}>
@@ -297,20 +296,20 @@ function CarePage_3(props){
         
         {isLoading && <TotalIndicator/>}
 
-    <Modal
-        animationType="slide"
-        transparent={true}
-        visible={ReceiptModal}
-        onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
-    >
-        <ModalView>
-            <View style={{width: '90%'}}>
-                <FinalCareOrder getModal={getReceiptModal} navigation={props.navigation} contents={contents} carData={carData}/>
-            </View>
-        </ModalView>
-    </Modal>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={ReceiptModal}
+            onRequestClose={() => {setReceiptModal(!ReceiptModal);}}
+        >
+            <ModalView>
+                <View style={{width: '90%'}}>
+                    <FinalCareOrder getModal={getReceiptModal} navigation={props.navigation} contents={contents} carData={carData}/>
+                </View>
+            </ModalView>
+        </Modal>
 
-    </>
+        </>
     );
 }
 

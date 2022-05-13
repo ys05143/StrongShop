@@ -6,6 +6,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 //constant
 import Color from "../constants/Color";
 import AppWindow from "../constants/AppWindow";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const WIDTH = AppWindow.width;
 const NOTCH = AppWindow.IOS_notch;
@@ -51,17 +52,35 @@ const TotalView = styled.View`
 
 function Background(props){
     return(
-        <View style={{alignItems: 'center', backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
-            <TotalView style={{backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
-                {props.children}
-            </TotalView>
-            <LargeCircle>
-                <SmallCircle/>
-            </LargeCircle>
-            <TopBox>
-                {props.topbox}
-            </TopBox>
-        </View>
+        <>
+        {props.androidKeyboardAware  ? 
+            <KeyboardAwareScrollView>
+                <View style={{alignItems: 'center', backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
+                    <TotalView style={{backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
+                        {props.children}
+                    </TotalView>
+                    <LargeCircle>
+                        <SmallCircle/>
+                    </LargeCircle>
+                    <TopBox>
+                        {props.topbox}
+                    </TopBox>
+                </View>
+            </KeyboardAwareScrollView> : 
+
+            <View style={{alignItems: 'center', backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
+                <TotalView style={{backgroundColor: props.backgroundColor === null || props.backgroundColor === undefined ? 'white' : props.backgroundColor}}>
+                    {props.children}
+                </TotalView>
+                <LargeCircle>
+                    <SmallCircle/>
+                </LargeCircle>
+                <TopBox>
+                    {props.topbox}
+                </TopBox>
+            </View>
+        }
+    </>
     )
 }
 

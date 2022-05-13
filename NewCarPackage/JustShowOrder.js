@@ -9,6 +9,9 @@ import { useIsFocused } from '@react-navigation/native';
 import Color from '../constants/Color';
 import storage from '../function/storage';
 import Icon  from "react-native-vector-icons/Ionicons";
+//component
+import BtnView from '../components/BtnView';
+import CustButton from '../components/CustButton';
 //for server
 import axios from 'axios';
 import server from '../server';
@@ -93,11 +96,9 @@ function JustShowReceipt(props){
             <View style={{flex: 1, justifyContent: 'center', width: '100%'}}>
                 <ActivityIndicator size = 'small' color= {Color.main}/>
             </View>}
-            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
-                <Button mode="contained" contentStyle={{width: 100, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
-                    <Text>이전</Text>
-                </Button>
-            </View>
+             <BtnView>
+                <CustButton onPress={()=>{props.getModal(false);}}>이전</CustButton>
+            </BtnView>
         </Total>
         </>
     );

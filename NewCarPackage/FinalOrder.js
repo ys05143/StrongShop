@@ -14,6 +14,9 @@ import Icon  from "react-native-vector-icons/Ionicons";
 //server
 import server from '../server';
 import Order from '../components/Order';
+//component
+import BtnView from '../components/BtnView';
+import CustButton from '../components/CustButton';
 
 const Total = styled.View`
     width: 100%;
@@ -154,24 +157,30 @@ function FinalOrder(props){
         <>
         <Total>
             { receipt !== null && !isLoading && 
-            <><Order item={receipt} kind={'NewCarPackage'}/>
-            <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
-                    <Text>이전</Text>
-                </Button>
-                <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
-                    <Text>등록하기</Text>
-                </Button>
-            </View></>}
+            <>
+                <Order item={receipt} kind={'NewCarPackage'}/>
+                {/* <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10}} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{props.getModal(false);}}>
+                        <Text>이전</Text>
+                    </Button>
+                    <Button mode="contained" disabled={isSending} contentStyle={{width: 110, height: 50}} style={{justifyContent:'center', alignItems: 'center', borderRadius: 10 }} labelStyle={{fontSize: 20}} color={Color.main} onPress={()=>{finalCheck();}}>
+                        <Text>등록하기</Text>
+                    </Button>
+                </View> */}
+                 <BtnView>
+                <CustButton onPress={()=>{props.getModal(false);}}>이전</CustButton>
+                <CustButton onPress={()=>{finalCheck();}}>등록하기</CustButton>
+            </BtnView>
+            </>}
             {isSending && 
             <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500, backgroundColor: 'transparent'}}>
                 <ActivityIndicator size = 'large' color= {Color.main}/>
             </View>}
         </Total>
         {isLoading && 
-            <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500, backgroundColor: 'transparent'}}>
-                <ActivityIndicator size = 'large' color= {Color.main}/>
-            </View>}
+        <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', width: '100%', height: 500, backgroundColor: 'transparent'}}>
+            <ActivityIndicator size = 'large' color= {Color.main}/>
+        </View>}
         </>
     );
 }

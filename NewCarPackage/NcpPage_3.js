@@ -212,7 +212,7 @@ function NcpPage_3(props){
 
     return(
         <>
-        <Background topbox={<Top/>}>
+        <Background topbox={<Top/>} androidKeyboardAware={Platform.OS === 'android'}>
             <View style={{width: '100%', alignItems: 'center', flex: 1}}>
                 <KeyboardAwareScrollView style={{width: WIDTH, paddingTop: 10}} contentContainerStyle={{alignItems: 'center', flex: 1}} extraHeight={250}>
                     <View style={{width: '95%', alignItems: 'flex-end'}}>
